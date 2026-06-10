@@ -5,6 +5,23 @@ import {
   ChevronRight, ChevronLeft, Eye, Send, Paperclip, X, ShieldAlert
 } from "lucide-react";
 
+interface Complaint {
+  id: number;
+  user: string;
+  avatar: string;
+  type: string;
+  tagLabel: string;
+  target: string;
+  time: string;
+  text: string;
+  attachments: string;
+  status: string;
+  statusColor: string;
+  borderColor: string;
+  isAnswered: boolean;
+}
+
+
 export default function ComplaintsDashboard() {
   // 1. البيانات الكاملة والدقيقة للمنصة
 const [messages, setMessages] = useState<Message[]>([  
