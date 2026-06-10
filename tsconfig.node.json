@@ -4,9 +4,9 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "skipLibCheck": true
-  }
+  },
+  "include": ["vite.config.ts"]
 }
-
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
