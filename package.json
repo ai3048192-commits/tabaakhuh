@@ -3,11 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+"scripts": {
+  "build": "vite build"
+
   },
   "dependencies": {
     "chart.js": "^4.4.0",
