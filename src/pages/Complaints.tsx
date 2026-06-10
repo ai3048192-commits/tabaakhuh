@@ -7,7 +7,8 @@ import {
 
 export default function ComplaintsDashboard() {
   // 1. البيانات الكاملة والدقيقة للمنصة
-  const interface Message {
+const [messages, setMessages] = useState<Message[]>([  
+  
   id: number;
   user: string;
   avatar: string;
