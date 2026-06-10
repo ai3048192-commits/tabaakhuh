@@ -7,22 +7,21 @@ import {
 
 export default function ComplaintsDashboard() {
   // 1. البيانات الكاملة والدقيقة للمنصة
-  const [messages, setMessages] = useState([
-    { 
-      id: 1, 
-      user: "سارة المنصوري", 
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
-      type: "complaints", 
-      tagLabel: "شكوى جودة",
-      target: "الطباخة: أم أحمد",
-      time: "منذ ٢ ساعة",
-      text: "وصلني الطلب متأخراً ٤٠ دقيقة والطعام كان بارداً تماماً! هذه ليست المرة الأولى التي يحدث فيها هذا مع نفس الطباخة.",
-      attachments: "٢ مرفقات",
-      status: "قيد الانتظار",
-      statusColor: "text-orange-500 bg-orange-50",
-      borderColor: "border-r-red-600",
-      isAnswered: false
-    },
+  const interface Message {
+  id: number;
+  user: string;
+  avatar: string;
+  type: string;
+  tagLabel: string;
+  target: string;
+  time: string;
+  text: string;
+  attachments: string;
+  status: string;
+  statusColor: string;
+  borderColor: string;
+  isAnswered: boolean;
+}
     { 
       id: 2, 
       user: "محمد إبراهيم", 
