@@ -9,23 +9,22 @@ import {
 
 
 export default function ComplaintsDashboard() {
-const [messages, setMessages] = useState<Complaint[]>([
-  {
-    id: 1,
-    user: "سارة المنصوري",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
-    type: "complaints",
-    tagLabel: "شكوى جودة",
-    target: "الطباخة: أم أحمد",
-    time: "منذ ساعتين",
-    text: "وصلني الطلب متأخراً ٤٠ دقيقة والطعام كان بارداً تماماً!",
-    attachments: "٢ مرفقات",
-    status: "قيد الانتظار",
-    statusColor: "text-orange-500 bg-orange-50",
-    borderColor: "border-r-red-600",
-    isAnswered: false,
-  }
-]);
+  const [messages, setMessages] = useState<any[]>([ // تأكد من استخدام any أو تعريف Interface
+    {
+      id: 1,
+      user: "سارة المنصوري",
+      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
+      type: "complaints",
+      tagLabel: "شكوى جودة",
+      target: "الطباخة: أم أحمد",
+      time: "منذ ساعتين",
+      text: "وصلني الطلب متأخراً ٤٠ دقيقة والطعام كان بارداً تماماً!",
+      attachments: "٢ مرفقات",
+      status: "قيد الانتظار",
+      statusColor: "text-orange-500 bg-orange-50",
+      borderColor: "border-r-red-600",
+      isAnswered: false,
+    },
     { 
       id: 2, 
       user: "محمد إبراهيم", 
