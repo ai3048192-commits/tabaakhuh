@@ -7,7 +7,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 // مصفوفة الروابط المحدثة
 const menuItems = [
-  { name: 'لوحة التحكم', icon: LayoutGrid, path: '/' },
+  { name: 'لوحة التحكم', icon: LayoutGrid, path: '/dashboard' },
   { name: 'إدارة المستخدمين', icon: Users, path: '/users' },
   { name: 'إدارة الطلبات', icon: ShoppingBag, path: '/orders' },
   { name: 'إدارة الطباخات', icon: ChefHat, path: '/cooks' },
@@ -74,10 +74,10 @@ export default function Sidebar({ isOpen, onClose }: { isOpen: boolean, onClose:
         </div>
 
         <div className="absolute bottom-10 w-full px-8">
-          <button className="flex items-center gap-4 text-red-200 hover:text-white transition-all font-bold">
+          <Link to="/" className="flex items-center gap-4 text-red-200 hover:text-white transition-all font-bold">
             <LogOut size={20} />
             تسجيل الخروج
-          </button>
+          </Link>
         </div>
       </aside>
     </>

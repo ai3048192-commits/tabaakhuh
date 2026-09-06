@@ -1,8 +1,48 @@
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
 
+html,
+body {
+  margin: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   font-family: 'Tajawal', sans-serif;
 }
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ===== Landing page helpers ===== */
+html {
+  scroll-behavior: smooth;
+}
+
+@keyframes lp-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-16px); }
+}
+@keyframes lp-float-soft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
+}
+@keyframes lp-glow {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.08); }
+}
+
+.lp-float { animation: lp-float 6s ease-in-out infinite; }
+.lp-float-soft { animation: lp-float-soft 5s ease-in-out infinite; }
+.lp-float-delay { animation: lp-float 7s ease-in-out infinite; animation-delay: -2.5s; }
+.lp-glow { animation: lp-glow 7s ease-in-out infinite; }
+
+.lp-phone-tilt {
+  transform: perspective(1600px) rotateY(-14deg) rotateX(4deg) rotateZ(1deg);
+}
+@media (max-width: 1024px) {
+  .lp-phone-tilt { transform: none; }
+}
+
+.lp-no-scrollbar::-webkit-scrollbar { display: none; }
+.lp-no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

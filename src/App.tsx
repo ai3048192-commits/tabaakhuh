@@ -11,42 +11,53 @@ import CooksManagement from "./pages/CooksManagement";
 import FinancialReports from "./pages/FinancialReports";
 import Complaints from "./pages/Complaints";
 import Settings from "./pages/Settings";
-import Dashboard  from "./pages/Dashboard";
+import Dashboard from "./pages/Dashboard";
 import DeliveryPage from "./pages/DeliveryPage";
+import LandingPage from "./pages/LandingPage";
+import Login from "./pages/Login";
 import "./index.css";
 
-function App() {
+function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [modalType, setModalType] = useState<string | null>(null);
 
   return (
+    <div className="flex h-screen bg-[#f7f1e6] overflow-hidden" dir="rtl">
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <main className="flex-1 flex flex-col h-full overflow-y-auto">
+        <Header toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+        <Routes>
+          <Route path="/dashboard" element={<Dashboard setModalType={setModalType} />} />
+          <Route path="/users" element={<UsersManagement />} />
+          <Route path="/orders" element={<OrdersPage />} />
+          <Route path="/cooks" element={<CooksManagement />} />
+          <Route path="/reports" element={<FinancialReports />} />
+          <Route path="/complaints" element={<Complaints />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/delivery" element={<DeliveryPage />} />
+        </Routes>
+      </main>
+      {modalType === "إضافة طباخة" && (
+        <AddCookModal onClose={() => setModalType(null)} />
+      )}
+      {modalType === "إشعار عام" && (
+        <NotificationModal onClose={() => setModalType(null)} />
+      )}
+      {modalType === "مستخدم جديد" && (
+        <AddUserModal onClose={() => setModalType(null)} />
+      )}
+    </div>
+  );
+}
+
+function App() {
+  return (
     <Router>
-      <div className="flex h-screen bg-[#f7f1e6] overflow-hidden" dir="rtl">
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className="flex-1 flex flex-col h-full overflow-y-auto">
-          <Header toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
-          <Routes>
-            <Route path="/" element={<Dashboard setModalType={setModalType} />} />
-            <Route path="/users" element={<UsersManagement />} />
-            <Route path="/orders" element={<OrdersPage />} />
-            <Route path="/cooks" element={<CooksManagement />} />
-            
-            <Route path="/reports" element={<FinancialReports />} />{" "}
-            <Route path="/complaints" element={<Complaints />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/delivery" element={<DeliveryPage />} />
-          </Routes>
-        </main>
-        {modalType === "إضافة طباخة" && (
-          <AddCookModal onClose={() => setModalType(null)} />
-        )}
-        {modalType === "إشعار عام" && (
-          <NotificationModal onClose={() => setModalType(null)} />
-        )}
-        {modalType === "مستخدم جديد" && (
-          <AddUserModal onClose={() => setModalType(null)} />
-        )}
-      </div>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/*" element={<AdminLayout />} />
+      </Routes>
     </Router>
   );
 }
