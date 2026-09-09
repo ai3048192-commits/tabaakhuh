@@ -80,7 +80,9 @@ describe('Quick action — AddCookModal → POST /admin/cooks', () => {
       first_name: 'أحمد', last_name: 'محمد', email: 'a@b.com',
       phone: '+201001234567', password: 'secret12', store_name: 'مطبخ أحمد',
     })
-    expect((await screen.findAllByText('تمت إضافة الطباخة بنجاح.')).length).toBeGreaterThan(0)
+    expect(
+      (await screen.findAllByText('تمت إضافة الطباخة — ستظهر في طابور مراجعة الطباخات.')).length,
+    ).toBeGreaterThan(0)
     await vi.advanceTimersByTimeAsync(1000)
     expect(onClose).toHaveBeenCalled()
     vi.useRealTimers()

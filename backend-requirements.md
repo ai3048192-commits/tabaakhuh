@@ -436,9 +436,10 @@ POST  /admin/delivery/orders/{id}/assign          { driver_id }
 
 | Modal | `POST` | جسم الطلب (snake_case، مطابق للسيرفر) |
 |---|---|---|
-| إضافة طباخة | `/api/v1/admin/cooks` | `first_name, last_name, email, phone, password, store_name, city_id?, area?` |
+| إضافة طباخة | `/api/v1/admin/cooks` | `first_name, last_name, email, phone, password, store_name, city_id?, area?` **+ (اختياري) `bio?, address_text?, delivery_radius_km?, lat?, lng?, avatar_url?, banner_url?, national_id_front_url?, national_id_back_url?`** — لازم السيرفر ينشئ `cook_profile` بحالة `approval_status: "pending"` علشان يظهر في `GET /admin/cooks/pending` |
 | إشعار عام | `/api/v1/admin/notifications` | `title, body, audience` (`audience` ∈ `all\|customers\|cooks\|drivers`) |
 | مستخدم جديد | `/api/v1/admin/users` | `first_name, last_name, email, phone, password, role` (`role` ∈ `customer\|cook\|driver\|admin`) |
+| إضافة سائق | **`/api/v1/admin/drivers`** — **جديد، مطلوب من الباك اند** (يماثل `POST /admin/cooks`) | `first_name, last_name, email, phone, password` **+ (اختياري) `city_id?, birth_date?, vehicle_type?, vehicle_model?, vehicle_year?, vehicle_color?, vehicle_plate_no?, vehicle_plate_letters?, national_id_front_url?, national_id_back_url?, license_url?`** — ينشئ حساب السائق + طلب `pending` علشان يظهر في `GET /admin/drivers/pending`. الزر القديم كان بينده `POST /admin/users` وده بيعمل حساب دخول فقط ومبيوصلش للطابور |
 
 - `phone` يتحقّق محليًا بنفس ريجيكس السيرفر `/^\+?[1-9]\d{7,14}$/` — يعني الأرقام لازم بالصيغة
   الدولية (`+20...`)؛ الرقم اللي يبدأ بـ `0` يُرفض قبل الإرسال (مطابقة للسيرفر).

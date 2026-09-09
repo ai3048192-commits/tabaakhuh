@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Header from "./components/Header";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import NotificationModal from "./components/NotificationModal";
 import AddUserModal from "./components/AddUserModal";
@@ -27,6 +27,7 @@ import "./index.css";
 function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [modalType, setModalType] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   return (
     <div className="fixed inset-0 flex bg-[#f7f1e6] overflow-hidden" dir="rtl">
@@ -52,7 +53,10 @@ function AdminLayout() {
         </Routes>
       </main>
       {modalType === "إضافة طباخة" && (
-        <AddCookModal onClose={() => setModalType(null)} />
+        <AddCookModal
+          onClose={() => setModalType(null)}
+          onCreated={() => navigate("/cooks")}
+        />
       )}
       {modalType === "إشعار عام" && (
         <NotificationModal onClose={() => setModalType(null)} />
@@ -61,7 +65,10 @@ function AdminLayout() {
         <AddUserModal onClose={() => setModalType(null)} />
       )}
       {modalType === "إضافة سائق" && (
-        <AddDriverModal onClose={() => setModalType(null)} />
+        <AddDriverModal
+          onClose={() => setModalType(null)}
+          onCreated={() => navigate("/drivers")}
+        />
       )}
     </div>
   );
