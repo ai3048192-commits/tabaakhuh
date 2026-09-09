@@ -67,6 +67,7 @@ export const overviewMessages = {
   qaAddCook: 'إضافة طباخة جديدة',
   qaBroadcast: 'إرسال إشعار عام',
   qaNewUser: 'مستخدم جديد',
+  qaAddDriver: 'إضافة سائق جديد',
 
   deliveriesTitle: 'حالة عمليات التوصيل الحالية',
   viewAll: 'عرض الكل',

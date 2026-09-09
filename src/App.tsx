@@ -5,6 +5,7 @@ import Sidebar from "./components/Sidebar";
 import NotificationModal from "./components/NotificationModal";
 import AddUserModal from "./components/AddUserModal";
 import AddCookModal from "./components/AddCookModal";
+import AddDriverModal from "./components/AddDriverModal";
 import UsersPage from "./users/UsersPage";
 import OrdersPage from "./orders/OrdersPage";
 import WithdrawalsPage from "./withdrawals/WithdrawalsPage";
@@ -58,6 +59,9 @@ function AdminLayout() {
       )}
       {modalType === "مستخدم جديد" && (
         <AddUserModal onClose={() => setModalType(null)} />
+      )}
+      {modalType === "إضافة سائق" && (
+        <AddDriverModal onClose={() => setModalType(null)} />
       )}
     </div>
   );

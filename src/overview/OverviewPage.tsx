@@ -179,6 +179,9 @@ export default function OverviewPage({ onQuickAction }: Props) {
               <button type="button" onClick={() => fire('مستخدم جديد')} className="flex w-full items-center justify-center gap-3 rounded-xl bg-[#7a0d0d] py-4 text-sm font-black text-white">
                 <UserPlus size={20} aria-hidden="true" /> {M.qaNewUser}
               </button>
+              <button type="button" onClick={() => fire('إضافة سائق')} className="flex w-full items-center justify-center gap-3 rounded-xl bg-[#7a0d0d] py-4 text-sm font-black text-white">
+                <Bike size={20} aria-hidden="true" /> {M.qaAddDriver}
+              </button>
             </section>
           </div>
 
