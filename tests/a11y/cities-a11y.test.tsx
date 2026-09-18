@@ -77,7 +77,7 @@ describe('Cities management — accessibility (WCAG 2.1 AA, SC-010 / FR-040 / FR
     expect(await axe(container, AXE_WCAG)).toHaveNoViolations()
   })
 
-  it('the Add dialog is axe-clean; focus enters it and restores on close', async () => {
+  it('the governorate picker is axe-clean; focus restores to the opener on close', async () => {
     const user = userEvent.setup()
     fm.reply('GET /admin/cities', { json: ok(seed) })
     renderAtCities(fm)
@@ -86,35 +86,51 @@ describe('Cities management — accessibility (WCAG 2.1 AA, SC-010 / FR-040 / FR
     const addBtn = screen.getByRole('button', { name: new RegExp(M.addCity) })
     await user.click(addBtn)
     await screen.findByRole('dialog')
-    expect(screen.getByLabelText(M.fieldNameAr)).toHaveFocus()
     expect(await axe(document.body, AXE_WCAG)).toHaveNoViolations()
 
-    // a field error is associated with its input
-    await user.type(screen.getByLabelText(M.fieldNameAr), 'x'.repeat(1))
-    await user.clear(screen.getByLabelText(M.fieldNameAr))
-    const ar = screen.getByLabelText(M.fieldNameAr)
-    expect(ar).toHaveAttribute('aria-invalid', 'true')
-    expect(ar).toHaveAttribute('aria-describedby')
+    // every row is a real, named checkbox — state is not carried by colour alone
+    const boxes = within(screen.getByRole('dialog')).getAllByRole('checkbox')
+    expect(boxes.length).toBeGreaterThan(20)
+    expect(screen.getByRole('checkbox', { name: M.pickerRowLabel('القاهرة') })).toBeChecked()
+    expect(screen.getByRole('checkbox', { name: M.pickerRowLabel('الجيزة') })).not.toBeChecked()
 
     await user.keyboard('{Escape}')
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
     expect(addBtn).toHaveFocus()
   })
 
-  it('the Edit dialog is axe-clean and pre-filled; the "at least one name" error is announced', async () => {
+  it('opening the picker from a row focuses that governorate and stays axe-clean', async () => {
     const user = userEvent.setup()
     fm.reply('GET /admin/cities', { json: ok(seed) })
     renderAtCities(fm)
     await screen.findByText('القاهرة')
 
-    await user.click(screen.getByRole('button', { name: M.editLabel('القاهرة') }))
+    const editBtn = screen.getByRole('button', { name: M.editLabel('القاهرة') })
+    await user.click(editBtn)
     await screen.findByRole('dialog')
-    expect(screen.getByLabelText(M.fieldNameAr)).toHaveValue('القاهرة')
+    expect(screen.getByRole('checkbox', { name: M.pickerRowLabel('القاهرة') })).toHaveFocus()
     expect(await axe(document.body, AXE_WCAG)).toHaveNoViolations()
 
-    await user.clear(screen.getByLabelText(M.fieldNameAr))
-    await user.clear(screen.getByLabelText(M.fieldNameEn))
-    expect(await screen.findByText(M.atLeastOneName)).toBeInTheDocument()
+    await user.keyboard('{Escape}')
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+    expect(editBtn).toHaveFocus()
+  })
+
+  it('the picker is keyboard-operable: Space ticks a row and enables Apply', async () => {
+    const user = userEvent.setup()
+    fm.reply('GET /admin/cities', { json: ok(seed) })
+    renderAtCities(fm)
+    await screen.findByText('القاهرة')
+
+    await user.click(screen.getByRole('button', { name: new RegExp(M.addCity) }))
+    await screen.findByRole('dialog')
+    expect(screen.getByRole('button', { name: M.pickerApply })).toBeDisabled()
+
+    const aswan = screen.getByRole('checkbox', { name: M.pickerRowLabel('أسوان') })
+    aswan.focus()
+    await user.keyboard(' ')
+    expect(aswan).toBeChecked()
+    expect(screen.getByRole('button', { name: M.pickerApply })).toBeEnabled()
   })
 
   it('the status-toggle dialog is axe-clean; focus goes to Confirm and restores on cancel', async () => {
@@ -123,7 +139,7 @@ describe('Cities management — accessibility (WCAG 2.1 AA, SC-010 / FR-040 / FR
     renderAtCities(fm)
     await screen.findByText('القاهرة')
 
-    const toggle = screen.getByRole('switch', { name: M.rowToggleToInactive('القاهرة') })
+    const toggle = screen.getByRole('button', { name: M.rowToggleToInactive('القاهرة') })
     await user.click(toggle)
     await screen.findByRole('dialog')
     expect(screen.getByRole('button', { name: M.confirmToggle })).toHaveFocus()
@@ -134,7 +150,7 @@ describe('Cities management — accessibility (WCAG 2.1 AA, SC-010 / FR-040 / FR
     expect(toggle).toHaveFocus()
   })
 
-  it('keyboard-only: search, then open and cancel the Add dialog', async () => {
+  it('keyboard-only: the list search filters the table', async () => {
     const user = userEvent.setup()
     fm.reply('GET /admin/cities', { json: ok(seed) })
     renderAtCities(fm)

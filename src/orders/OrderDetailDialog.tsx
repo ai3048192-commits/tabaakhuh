@@ -75,7 +75,7 @@ export default function OrderDetailDialog({
         <div className="mb-3 border-t border-gray-100 pt-3">
           <Line
             label={M.colRequestedDelivery}
-            value={`${formatOrderDate(order.requested_delivery_date)} · ${order.delivery_time_slot}`}
+            value={`${formatOrderDate(order.requested_delivery_date)} · ${order.delivery_time_slot ?? '—'}`}
           />
           <Line label={M.customerLabel} value={String(order.customer_id)} />
           <Line label={M.addressLabel} value={String(order.delivery_address_id)} />

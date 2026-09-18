@@ -68,7 +68,7 @@ describe('US2 — approve a cook application', () => {
   it('AC2: controls disable while in flight and a double click sends one request (SC-005)', async () => {
     const user = userEvent.setup()
     queue()
-    fm.reply('POST /admin/cooks/1/approve', { delayMs: 40, json: ok(null) })
+    fm.reply('POST /admin/cooks/1/approve', { delayMs: 300, json: ok(null) })
     renderAtCooks(fm)
 
     await openReview(user)

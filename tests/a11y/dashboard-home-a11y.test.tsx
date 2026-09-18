@@ -20,6 +20,8 @@ function stubAll() {
   fm.reply('GET /admin/delivery/active', { json: ok([activeDelivery({ order_id: 800, driver_name: 'أحمد', total: 150, commission: 15 })]) })
   fm.reply('GET /admin/delivery/drivers', { json: deliveryDriversResponse([deliveryDriver({ id: 900 })]) })
   fm.reply('GET /admin/orders?status=preparing&page=1', { json: ordersPage([order({ id: 901, status: 'preparing', total: 450 })], { total: 1 }) })
+  fm.reply('GET /admin/orders?status=delivered&page=1', { json: ordersPage([order({ id: 950, status: 'delivered', total: 220 })], { total: 1 }) })
+  fm.reply('GET /admin/orders?status=completed&page=1', { json: ordersPage([order({ id: 902, status: 'completed', total: 300 })], { total: 1 }) })
   fm.reply('GET /admin/reports/orders-daily?days=7', { json: ok(ordersDaily(7)) })
   fm.reply('GET /admin/cooks/recent?limit=5', { json: ok([recentCook({ id: 3001 })]) })
 }

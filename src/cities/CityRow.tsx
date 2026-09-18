@@ -1,4 +1,4 @@
-import { Pencil } from 'lucide-react'
+import { Pencil, Power, PowerOff } from 'lucide-react'
 import CityStatusBadge from './CityStatusBadge'
 import { cityMessages as M } from './messages'
 import type { City, RowState } from './types'
@@ -13,12 +13,17 @@ interface Props {
 /**
  * One row: Arabic name, English name (LTR cell), status badge, and the Edit +
  * activate/deactivate controls. There is no delete control (FR-026).
+ *
+ * The status control is a plain labelled button, not a switch: changing a
+ * city's status goes through an explicit confirmation (FR-027), and a switch
+ * would promise an immediate flip it doesn't deliver.
  */
 export default function CityRow({ city, state, onEdit, onToggle }: Props) {
   const busy = state === 'submitting'
   const toggleLabel = city.is_active
     ? M.rowToggleToInactive(city.name_ar)
     : M.rowToggleToActive(city.name_ar)
+  const ToggleIcon = city.is_active ? PowerOff : Power
 
   return (
     <tr className="border-b border-gray-100 last:border-0">
@@ -43,21 +48,18 @@ export default function CityRow({ city, state, onEdit, onToggle }: Props) {
           </button>
           <button
             type="button"
-            role="switch"
-            aria-checked={city.is_active}
             aria-label={toggleLabel}
             aria-busy={busy}
             disabled={busy}
             onClick={() => onToggle(city)}
-            className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${
-              city.is_active ? 'bg-green-600' : 'bg-gray-300'
+            className={`flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-xs font-bold transition disabled:opacity-50 ${
+              city.is_active
+                ? 'border-gray-200 text-gray-600 hover:border-amber-400 hover:text-amber-700'
+                : 'border-gray-200 text-gray-600 hover:border-emerald-400 hover:text-emerald-700'
             }`}
           >
-            <span
-              className={`inline-block h-5 w-5 rounded-full bg-white shadow transition-transform ${
-                city.is_active ? 'translate-x-1' : 'translate-x-5'
-              }`}
-            />
+            <ToggleIcon size={13} aria-hidden="true" />
+            {city.is_active ? M.rowDeactivate : M.rowActivate}
           </button>
         </div>
       </td>

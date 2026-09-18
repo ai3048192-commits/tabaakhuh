@@ -63,7 +63,7 @@ describe('US2 — approve a driver application', () => {
   it('AC2: controls disable while in flight and a triple click sends one request (SC-005)', async () => {
     const user = userEvent.setup()
     queue()
-    fm.reply('POST /admin/drivers/1/approve', { delayMs: 40, json: approvedDriver({ id: 1 }) })
+    fm.reply('POST /admin/drivers/1/approve', { delayMs: 300, json: approvedDriver({ id: 1 }) })
     renderAtDrivers(fm)
 
     await openReview(user)

@@ -14,6 +14,8 @@ export interface HomeExtras {
   driversOk: boolean
   preparing: Order[] | null
   preparingOk: boolean
+  completedOrders: Order[] | null
+  completedOrdersOk: boolean
   ordersDaily: OrdersDailyPoint[] | null
   ordersDailyOk: boolean
   recentCooks: RecentCook[] | null
@@ -33,6 +35,8 @@ export function useHomeExtras(): HomeExtras {
   const [driversOk, setDriversOk] = useState(true)
   const [preparing, setPreparing] = useState<Order[] | null>(null)
   const [preparingOk, setPreparingOk] = useState(true)
+  const [completedOrders, setCompletedOrders] = useState<Order[] | null>(null)
+  const [completedOrdersOk, setCompletedOrdersOk] = useState(true)
   const [ordersDaily, setOrdersDaily] = useState<OrdersDailyPoint[] | null>(null)
   const [ordersDailyOk, setOrdersDailyOk] = useState(true)
   const [recentCooks, setRecentCooks] = useState<RecentCook[] | null>(null)
@@ -41,10 +45,12 @@ export function useHomeExtras(): HomeExtras {
 
   const load = useCallback(async () => {
     setLoading(true)
-    const [d, dr, pr, od, rc] = await Promise.allSettled([
+    const [d, dr, pr, del, comp, od, rc] = await Promise.allSettled([
       listActiveDeliveries(),
       listDeliveryDrivers(),
       listOrders({ filters: { status: 'preparing', cityId: null, from: null, to: null }, page: 1 }),
+      listOrders({ filters: { status: 'delivered', cityId: null, from: null, to: null }, page: 1 }),
+      listOrders({ filters: { status: 'completed', cityId: null, from: null, to: null }, page: 1 }),
       getOrdersDaily(7),
       getRecentCooks(5),
     ])
@@ -60,6 +66,15 @@ export function useHomeExtras(): HomeExtras {
     if (pr.status === 'fulfilled' && Array.isArray(pr.value?.items)) {
       setPreparing(pr.value.items.slice(0, 5)); setPreparingOk(true)
     } else { setPreparing([]); setPreparingOk(false) }
+
+    // "Completed" spans two terminal statuses (delivered / completed); the
+    // backend only filters by one status per request, so both are fetched
+    // and merged here, newest-first by id (no completion timestamp exists).
+    if (del.status === 'fulfilled' && Array.isArray(del.value?.items)
+      && comp.status === 'fulfilled' && Array.isArray(comp.value?.items)) {
+      const merged = [...del.value.items, ...comp.value.items].sort((a, b) => b.id - a.id)
+      setCompletedOrders(merged.slice(0, 5)); setCompletedOrdersOk(true)
+    } else { setCompletedOrders([]); setCompletedOrdersOk(false) }
 
     if (od.status === 'fulfilled' && Array.isArray(od.value)) { setOrdersDaily(od.value); setOrdersDailyOk(true) }
     else { setOrdersDaily([]); setOrdersDailyOk(false) }
@@ -82,6 +97,8 @@ export function useHomeExtras(): HomeExtras {
     driversOk,
     preparing,
     preparingOk,
+    completedOrders,
+    completedOrdersOk,
     ordersDaily,
     ordersDailyOk,
     recentCooks,

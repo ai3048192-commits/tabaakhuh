@@ -10,9 +10,12 @@ import type {
 /** Live delivery-operations endpoints (`routes/api.php` — `AdminDeliveryController`). */
 
 function toActiveDelivery(r: RawActiveDelivery): ActiveDelivery {
+  // The live backend sends the order id as `id`, not the documented `order_id`
+  // (see the note on `RawActiveDelivery`) — accept either.
+  const orderId = r.order_id ?? r.id ?? 0
   return {
-    order_id: r.order_id,
-    order_number: r.order_number ?? String(r.order_id),
+    order_id: orderId,
+    order_number: r.order_number ?? String(orderId),
     status: r.status,
     cook_name: r.cook?.store_name ?? null,
     area: r.delivery_address_text,

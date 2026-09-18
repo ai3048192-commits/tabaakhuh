@@ -20,6 +20,24 @@ const active = city({ id: 1, name_ar: 'القاهرة', name_en: 'Cairo', is_act
 const inactive = city({ id: 2, name_ar: 'الجيزة', name_en: 'Giza', is_active: false })
 
 describe('US4 — activate / deactivate a city', () => {
+  it('the row control is a labelled button, not a switch, and names the action it will take', async () => {
+    fm.reply('GET /admin/cities', { json: ok([active, inactive]) })
+    renderAtCities(fm)
+    await screen.findByText('القاهرة')
+
+    // No switch anywhere: a switch would imply an immediate flip, but every
+    // status change goes through the confirmation dialog (FR-027).
+    expect(screen.queryAllByRole('switch')).toHaveLength(0)
+
+    const cairoRow = screen.getByText('القاهرة').closest('tr')!
+    const gizaRow = screen.getByText('الجيزة').closest('tr')!
+    // the active city offers "deactivate"; the inactive one offers "activate"
+    expect(within(cairoRow).getByRole('button', { name: M.rowToggleToInactive('القاهرة') }))
+      .toHaveTextContent(M.rowDeactivate)
+    expect(within(gizaRow).getByRole('button', { name: M.rowToggleToActive('الجيزة') }))
+      .toHaveTextContent(M.rowActivate)
+  })
+
   it('AC1: deactivating opens a confirm dialog then PATCHes {is_active:false} and re-fetches', async () => {
     const user = userEvent.setup()
     fm.reply(
@@ -31,7 +49,7 @@ describe('US4 — activate / deactivate a city', () => {
     renderAtCities(fm)
 
     await screen.findByText('القاهرة')
-    await user.click(screen.getByRole('switch', { name: M.rowToggleToInactive('القاهرة') }))
+    await user.click(screen.getByRole('button', { name: M.rowToggleToInactive('القاهرة') }))
     const dialog = await screen.findByRole('dialog')
     expect(within(dialog).getByText(M.toggleToInactiveTitle('القاهرة'))).toBeInTheDocument()
 
@@ -40,7 +58,7 @@ describe('US4 — activate / deactivate a city', () => {
     await waitFor(() => expect(fm.count('PATCH /admin/cities/1/status')).toBe(1))
     expect(fm.lastCall('PATCH /admin/cities/1/status')?.body).toEqual({ is_active: false })
     await waitFor(() =>
-      expect(screen.getByRole('switch', { name: M.rowToggleToActive('القاهرة') })).toBeInTheDocument(),
+      expect(screen.getByRole('button', { name: M.rowToggleToActive('القاهرة') })).toBeInTheDocument(),
     )
     await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent(M.statusUpdatedToast))
   })
@@ -56,7 +74,7 @@ describe('US4 — activate / deactivate a city', () => {
     renderAtCities(fm)
 
     await screen.findByText('الجيزة')
-    await user.click(screen.getByRole('switch', { name: M.rowToggleToActive('الجيزة') }))
+    await user.click(screen.getByRole('button', { name: M.rowToggleToActive('الجيزة') }))
     await user.click(await screen.findByRole('button', { name: M.confirmToggle }))
 
     await waitFor(() => expect(fm.lastCall('PATCH /admin/cities/2/status')?.body).toEqual({ is_active: true }))
@@ -68,7 +86,7 @@ describe('US4 — activate / deactivate a city', () => {
     renderAtCities(fm)
 
     await screen.findByText('القاهرة')
-    await user.click(screen.getByRole('switch', { name: M.rowToggleToInactive('القاهرة') }))
+    await user.click(screen.getByRole('button', { name: M.rowToggleToInactive('القاهرة') }))
     await user.click(await screen.findByRole('button', { name: M.cancel }))
 
     expect(screen.queryByRole('dialog')).toBeNull()
@@ -82,18 +100,18 @@ describe('US4 — activate / deactivate a city', () => {
       { json: ok([active, inactive]) },
       { json: ok([city({ id: 1, is_active: false }), inactive]) },
     )
-    fm.reply('PATCH /admin/cities/1/status', { delayMs: 40, json: cityStatusChanged({ id: 1, is_active: false }) })
+    fm.reply('PATCH /admin/cities/1/status', { delayMs: 300, json: cityStatusChanged({ id: 1, is_active: false }) })
     renderAtCities(fm)
 
     await screen.findByText('القاهرة')
-    await user.click(screen.getByRole('switch', { name: M.rowToggleToInactive('القاهرة') }))
+    await user.click(screen.getByRole('button', { name: M.rowToggleToInactive('القاهرة') }))
     const confirm = await screen.findByRole('button', { name: M.confirmToggle })
     await user.click(confirm)
     await user.click(confirm)
     await user.click(confirm)
 
     // the other row's toggle stays interactive
-    expect(screen.getByRole('switch', { name: M.rowToggleToActive('الجيزة') })).toBeEnabled()
+    expect(screen.getByRole('button', { name: M.rowToggleToActive('الجيزة') })).toBeEnabled()
 
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
     expect(fm.count('PATCH /admin/cities/1/status')).toBe(1)
@@ -110,7 +128,7 @@ describe('US4 — activate / deactivate a city', () => {
     renderAtCities(fm)
 
     await screen.findByText('القاهرة')
-    await user.click(screen.getByRole('switch', { name: M.rowToggleToInactive('القاهرة') }))
+    await user.click(screen.getByRole('button', { name: M.rowToggleToInactive('القاهرة') }))
     await user.click(await screen.findByRole('button', { name: M.confirmToggle }))
 
     await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent(M.notFoundToast))
@@ -124,11 +142,11 @@ describe('US4 — activate / deactivate a city', () => {
     renderAtCities(fm)
 
     await screen.findByText('القاهرة')
-    await user.click(screen.getByRole('switch', { name: M.rowToggleToInactive('القاهرة') }))
+    await user.click(screen.getByRole('button', { name: M.rowToggleToInactive('القاهرة') }))
     await user.click(await screen.findByRole('button', { name: M.confirmToggle }))
 
     await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent(M.mutationRetryToast))
-    expect(screen.getByRole('switch', { name: M.rowToggleToInactive('القاهرة') })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: M.rowToggleToInactive('القاهرة') })).toBeInTheDocument()
     expect(fm.count('GET /admin/cities')).toBe(1)
   })
 

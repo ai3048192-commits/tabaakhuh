@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react'
+import {
+  X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, RotateCcw, ExternalLink, AlertTriangle,
+} from 'lucide-react'
 import { reviewMessages, type ReviewMessages } from './messages'
+import { resolveMedia } from './documentMedia'
 import type { DocumentRef } from './types'
 
 interface Props {
@@ -16,13 +19,48 @@ interface Props {
 const MIN_ZOOM = 1
 const MAX_ZOOM = 4
 const STEP = 0.5
+/**
+ * How long a framed document may take before the viewer stops waiting and
+ * offers the new-tab route instead. Generous: a large PDF over a slow link
+ * should still win the race.
+ */
+const FRAME_TIMEOUT_MS = 8000
+
+/** Shown in place of a document that could not be displayed inline. */
+function DocFailure({ url, M }: { url: string; M: ReviewMessages }) {
+  return (
+    <div className="flex max-w-sm flex-col items-center gap-3 p-8 text-center">
+      <AlertTriangle size={28} className="text-amber-500" aria-hidden="true" />
+      <p className="text-sm font-bold text-gray-700">{M.docLoadFailed}</p>
+      <p className="text-xs leading-relaxed text-gray-500">{M.docLoadFailedHint}</p>
+      <a
+        href={url}
+        target="_blank"
+        rel="noreferrer"
+        className="flex items-center gap-1.5 rounded-xl bg-[#7a0d0d] px-4 py-2 text-xs font-black text-white hover:bg-[#9a1212]"
+      >
+        <ExternalLink size={14} aria-hidden="true" />
+        {M.openInNewTab}
+      </a>
+    </div>
+  )
+}
 
 /**
- * In-dashboard overlay for verification images (and, for cook-review, the signed
- * contract PDF) — FR-004 / FR-004a. The raw file URL is never navigated to as a
- * top-level page; nothing is copied to storage (FR-031). Image zoom is
- * CSS-transform only. Keyboard: Esc closes, Arrow keys move between the
- * application's documents (RTL-aware), +/-/0 zoom. Focus is trapped and restored.
+ * In-dashboard overlay for verification images and the signed contract —
+ * FR-004 / FR-004a. The raw file URL is never navigated to as a top-level page;
+ * nothing is copied to storage (FR-031). Image zoom is CSS-transform only.
+ * Keyboard: Esc closes, Arrow keys move between the application's documents
+ * (RTL-aware), +/-/0 zoom. Focus is trapped and restored.
+ *
+ * How each document renders is decided by `resolveMedia`, not by its kind: a
+ * contract may come back from the backend as a PDF *or* as a scanned photo, and
+ * framing a photo (or showing a PDF in an `<img>`) yields a blank box.
+ *
+ * Inline display can also fail for reasons no detection can see — a
+ * cross-origin frame that loads a 401 page looks exactly like one that loaded
+ * the file. So the new-tab route is always on screen for framed documents,
+ * rather than appearing only when a heuristic fires.
  *
  * Shared by the cook-review and driver-review features.
  */
@@ -33,6 +71,10 @@ export default function DocumentViewer({ docs, index, onIndexChange, onClose, st
   const closeRef = useRef<HTMLButtonElement>(null)
   const restoreRef = useRef<Element | null>(null)
   const [zoom, setZoom] = useState(1)
+  // Inline-display failures, per document.
+  const [imgFailed, setImgFailed] = useState(false)
+  const [frameLoaded, setFrameLoaded] = useState(false)
+  const [frameTimedOut, setFrameTimedOut] = useState(false)
 
   useEffect(() => {
     restoreRef.current = document.activeElement
@@ -44,6 +86,9 @@ export default function DocumentViewer({ docs, index, onIndexChange, onClose, st
 
   useEffect(() => {
     setZoom(1)
+    setImgFailed(false)
+    setFrameLoaded(false)
+    setFrameTimedOut(false)
   }, [index])
 
   const go = useCallback(
@@ -95,7 +140,20 @@ export default function DocumentViewer({ docs, index, onIndexChange, onClose, st
     }
   }
 
-  const isImage = current && current.kind !== 'contract' && current.url !== null
+  const media = current ? resolveMedia(current) : 'unknown'
+  // Zoom applies to the image renderer only.
+  const isImage = media === 'image' && !imgFailed
+
+  // A framed document that never fires `load` is stuck — stop showing an empty
+  // rectangle and hand over the new-tab route. (A frame that loads an error
+  // page fires `load` normally and cannot be caught here; that is what the
+  // always-visible link below is for.)
+  const framedUrl = media === 'image' ? null : (current?.url ?? null)
+  useEffect(() => {
+    if (framedUrl === null || frameLoaded) return
+    const t = window.setTimeout(() => setFrameTimedOut(true), FRAME_TIMEOUT_MS)
+    return () => window.clearTimeout(t)
+  }, [framedUrl, frameLoaded])
 
   return createPortal(
     <div
@@ -156,26 +214,52 @@ export default function DocumentViewer({ docs, index, onIndexChange, onClose, st
         <div className="flex min-h-[240px] flex-1 items-center justify-center overflow-auto bg-gray-50 p-2">
           {!current || current.url === null ? (
             <p className="p-8 text-sm text-gray-500">{M.docUnavailable}</p>
-          ) : current.kind === 'contract' ? (
-            <div className="flex h-[70vh] w-full flex-col">
-              <iframe title={M.docContract} src={current.url} className="w-full flex-1 border-0" />
-              <a
-                href={current.url}
-                target="_blank"
-                rel="noreferrer"
-                className="p-2 text-center text-xs text-blue-600 underline"
-              >
-                {M.openInNewTab}
-              </a>
-            </div>
+          ) : media === 'image' ? (
+            imgFailed ? (
+              <DocFailure url={current.url} M={M} />
+            ) : (
+              <img
+                src={current.url}
+                alt={current.label}
+                referrerPolicy="no-referrer"
+                onError={() => setImgFailed(true)}
+                style={{ transform: `scale(${zoom})` }}
+                className="max-w-full origin-center transition-transform"
+              />
+            )
           ) : (
-            <img
-              src={current.url}
-              alt={current.label}
-              referrerPolicy="no-referrer"
-              style={{ transform: `scale(${zoom})` }}
-              className="max-w-full origin-center transition-transform"
-            />
+            <div className="flex h-[70vh] w-full flex-col">
+              {frameTimedOut ? (
+                <div className="flex flex-1 items-center justify-center">
+                  <DocFailure url={current.url} M={M} />
+                </div>
+              ) : (
+                <iframe
+                  // Remount on navigation so a stale frame never lingers.
+                  key={current.url}
+                  title={current.label}
+                  src={current.url}
+                  onLoad={() => setFrameLoaded(true)}
+                  onError={() => setFrameTimedOut(true)}
+                  className="w-full flex-1 border-0"
+                />
+              )}
+              {/* Always on screen, never behind a heuristic: a cross-origin
+                  frame that loaded a 401 page reports success just like a real
+                  one, so the admin always needs this way out. */}
+              <div className="flex shrink-0 items-center justify-center gap-2 border-t border-gray-200 p-2 text-xs">
+                {!frameTimedOut && <span className="text-gray-500">{M.docNotShowing}</span>}
+                <a
+                  href={current.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1 font-bold text-blue-600 underline"
+                >
+                  <ExternalLink size={12} aria-hidden="true" />
+                  {M.openInNewTab}
+                </a>
+              </div>
+            </div>
           )}
         </div>
 

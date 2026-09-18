@@ -1,5 +1,5 @@
 import { authedRequest } from '../api/httpClient'
-import type { City, CityNamePatch, NewCityInput } from './types'
+import type { City, NewCityInput } from './types'
 
 export type CityDirectory = Map<number, { name_ar: string; name_en: string }>
 
@@ -49,11 +49,6 @@ export function listCities(signal?: AbortSignal): Promise<City[]> {
 /** `POST /admin/cities`, body `{ name_ar, name_en }`. Resolves with the `201` city. */
 export function createCity(input: NewCityInput): Promise<City> {
   return authedRequest<City>('/admin/cities', { method: 'POST', body: input })
-}
-
-/** `PUT /admin/cities/{id}`, body = only the changed name key(s). */
-export function updateCity(id: number, patch: CityNamePatch): Promise<City> {
-  return authedRequest<City>(`/admin/cities/${id}`, { method: 'PUT', body: patch })
 }
 
 /** `PATCH /admin/cities/{id}/status`, body `{ is_active }` (always a boolean). */

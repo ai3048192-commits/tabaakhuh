@@ -35,8 +35,9 @@ export const orderMessages = {
   colSubtotal: 'المجموع',
   colDeliveryFee: 'رسوم التوصيل',
   colTotal: 'الإجمالي',
-  colActions: 'تفاصيل',
+  colActions: 'إجراءات',
   viewDetails: 'عرض التفاصيل',
+  assignDriver: 'إسناد سائق',
 
   unknownCook: 'طاهٍ غير معروف',
 

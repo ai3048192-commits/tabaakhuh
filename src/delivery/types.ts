@@ -15,9 +15,16 @@ interface RawParty {
   phone: string | null
 }
 
-/** One row of `GET /admin/delivery/active` (`data` is a flat array). */
+/**
+ * One row of `GET /admin/delivery/active` (`data` is a flat array). The order
+ * id is documented as `order_id` (admin-dashboard-api.md) but the live backend
+ * actually sends it as `id` (confirmed against the running API 2026-09-12) —
+ * `order_id` is kept optional so either shape normalises correctly; see
+ * `toActiveDelivery`.
+ */
 export interface RawActiveDelivery {
-  order_id: number
+  order_id?: number
+  id?: number
   order_number: string | null
   status: string
   delivery_address_text: string | null

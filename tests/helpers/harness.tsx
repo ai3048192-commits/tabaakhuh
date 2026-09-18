@@ -414,16 +414,16 @@ export function renderAtReports(
 /** Render the real `DeliveryPage` at `/delivery` in an already-signed-in admin session. */
 export function renderAtDelivery(
   fm: FetchMock,
-  opts: { seedMe?: boolean; admin?: boolean } = {},
+  opts: { seedMe?: boolean; admin?: boolean; path?: string } = {},
 ) {
-  const { seedMe = true, admin = true } = opts
+  const { seedMe = true, admin = true, path = '/delivery' } = opts
   const who = admin ? adminUser : { ...adminUser, role: 'customer' as const }
   localStorage.setItem(STORAGE_KEYS.token, 'tok-admin')
   localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(who))
   if (seedMe) fm.reply('GET /auth/me', { json: ok({ user: who }) })
 
   return render(
-    <MemoryRouter initialEntries={['/delivery']}>
+    <MemoryRouter initialEntries={[path]}>
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<div>صفحة تسجيل الدخول</div>} />

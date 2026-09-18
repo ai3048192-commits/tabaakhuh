@@ -36,6 +36,12 @@ function stubAll(over = overviewResponse()) {
   fm.reply('GET /admin/orders?status=preparing&page=1', { json: ordersPage([
     order({ id: 901, order_number: 'ORD-2026-000901', status: 'preparing', total: 450 }),
   ], { total: 1 }) })
+  fm.reply('GET /admin/orders?status=delivered&page=1', { json: ordersPage([
+    order({ id: 950, order_number: 'ORD-2026-000950', status: 'delivered', total: 220 }),
+  ], { total: 1 }) })
+  fm.reply('GET /admin/orders?status=completed&page=1', { json: ordersPage([
+    order({ id: 902, order_number: 'ORD-2026-000902', status: 'completed', total: 300 }),
+  ], { total: 1 }) })
   fm.reply('GET /admin/reports/orders-daily?days=7', { json: ok(ordersDaily(7)) })
   fm.reply('GET /admin/cooks/recent?limit=5', { json: ok([recentCook({ id: 3001, store_name: 'مطبخ زينب' })]) })
 }
@@ -67,6 +73,17 @@ describe('Dashboard home — rich layout', () => {
     expect(screen.getByText('أحمد الدليفري')).toBeInTheDocument()
     expect(screen.getByText('ORD-2026-000901')).toBeInTheDocument() // preparing queue
     expect(screen.getByText('مطبخ زينب')).toBeInTheDocument() // recent cooks
+  })
+
+  it('shows the completed/delivered orders section, merging both statuses', async () => {
+    stubAll()
+    renderAtDashboard(fm)
+
+    await screen.findByText(M.completedOrdersTitle)
+    expect(screen.getByText('ORD-2026-000950')).toBeInTheDocument() // delivered
+    expect(screen.getByText('ORD-2026-000902')).toBeInTheDocument() // completed
+    expect(screen.getByText(M.statusLabel.delivered)).toBeInTheDocument()
+    expect(screen.getByText(M.statusLabel.completed)).toBeInTheDocument()
   })
 
   it('opening a delivery row shows its detail modal', async () => {
@@ -107,6 +124,7 @@ describe('Dashboard home — rich layout', () => {
     expect(screen.getByText(M.chartError)).toBeInTheDocument()
     expect(screen.getByText(M.deliveriesError)).toBeInTheDocument()
     expect(screen.getByText(M.recentCooksError)).toBeInTheDocument()
+    expect(screen.getByText(M.completedOrdersError)).toBeInTheDocument()
     // drivers tiles fall back to —
     const avail = screen.getByText(M.kpiDriversAvailable).closest('div')!
     expect(within(avail).getByText(M.na)).toBeInTheDocument()
@@ -132,6 +150,8 @@ describe('Dashboard home — rich layout', () => {
     fm.reply('GET /admin/delivery/active', { json: ok([]) })
     fm.reply('GET /admin/delivery/drivers', { json: deliveryDriversResponse([]) })
     fm.reply('GET /admin/orders?status=preparing&page=1', { json: ordersPage([], { total: 0 }) })
+    fm.reply('GET /admin/orders?status=delivered&page=1', { json: ordersPage([], { total: 0 }) })
+    fm.reply('GET /admin/orders?status=completed&page=1', { json: ordersPage([], { total: 0 }) })
     fm.reply('GET /admin/reports/orders-daily?days=7', { json: ok([]) })
     fm.reply('GET /admin/cooks/recent?limit=5', { json: ok([]) })
     renderAtDashboard(fm)

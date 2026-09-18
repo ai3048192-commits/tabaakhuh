@@ -17,18 +17,6 @@ export interface NewCityInput {
   name_en: string
 }
 
-/** `PUT /admin/cities/{id}` body — only the changed name key(s); at least one. */
-export type CityNamePatch =
-  | { name_ar: string; name_en?: string }
-  | { name_ar?: string; name_en: string }
-
-/** Field-level messages for the name form (client pre-submit or a 422 `errors` map). */
-export interface NameErrors {
-  name_ar?: string
-  name_en?: string
-  form?: string
-}
-
 /** Result of a create / edit / status-change attempt (see data-model.md §5). */
 export type CityMutationOutcome =
   | { ok: true; message: string }
@@ -49,6 +37,16 @@ export type RowState = 'idle' | 'submitting'
 /** The one open dialog, or `null` when none (see data-model.md §7). */
 export type DialogState =
   | null
-  | { kind: 'add'; busy: boolean; serverErrors: NameErrors }
-  | { kind: 'edit'; city: City; busy: boolean; serverErrors: NameErrors }
+  | {
+      /**
+       * The governorate picker — opened both by "add" and by a row's edit
+       * control, which only differ by which row opens focused.
+       */
+      kind: 'picker'
+      focusKey?: string
+      busy: boolean
+      /** Actions applied / total, while a save is running. */
+      progress?: { done: number; total: number }
+      formError?: string
+    }
   | { kind: 'toggle'; city: City; busy: boolean; formError?: string }

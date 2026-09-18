@@ -14,6 +14,13 @@ export const reviewMessages = {
   docUnavailable: 'المستند غير متاح',
   openInNewTab: 'فتح في تبويب جديد',
   docContract: 'العقد الموقّع',
+
+  // --- Failure / fallback --------------------------------------------------
+  docLoadFailed: 'تعذّر عرض المستند هنا',
+  docLoadFailedHint:
+    'الملف قد يكون غير متاح، أو المضيف يمنع عرضه داخل الصفحة. جرّب فتحه في تبويب جديد.',
+  docStillLoading: 'المستند بيحمّل…',
+  docNotShowing: 'المستند مش ظاهر؟',
 } as const
 
 export type ReviewMessages = typeof reviewMessages

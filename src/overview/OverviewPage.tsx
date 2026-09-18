@@ -212,7 +212,12 @@ export default function OverviewPage({ onQuickAction }: Props) {
                   </thead>
                   <tbody>
                     {(extras.deliveries ?? []).map((d) => (
-                      <tr key={d.order_id} className="border-b border-[#e8dfc9] last:border-0 hover:bg-white/50">
+                      // `order_number` (not `order_id`): a defence-in-depth choice — the
+                      // backend has already once sent the order id under an unexpected
+                      // field name, which silently made every `order_id` here identical
+                      // and let React misattribute a stale row's content across refreshes.
+                      // `order_number` is always a distinct, non-empty string.
+                      <tr key={d.order_number} className="border-b border-[#e8dfc9] last:border-0 hover:bg-white/50">
                         <td className="py-4 font-bold text-[#7a0d0d]">{d.driver_name ?? M.na}</td>
                         <td className="py-4 text-gray-600">{d.area ?? M.na}</td>
                         <td className="py-4 text-gray-600" dir="ltr">{d.total != null ? formatCurrency(d.total) : M.na}</td>
@@ -281,6 +286,32 @@ export default function OverviewPage({ onQuickAction }: Props) {
               )}
             </section>
           </div>
+
+          {/* Completed / delivered orders */}
+          <section className="mt-6 rounded-2xl border border-[#e8dfc9] bg-[#fcf9f2] p-6">
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="font-black text-gray-800">{M.completedOrdersTitle}</h2>
+              <Link to="/orders?status=delivered" className="text-xs font-bold text-[#b68614] hover:underline">{M.viewAll}</Link>
+            </div>
+            {!extras.completedOrdersOk ? (
+              <p className="py-4 text-center text-xs text-amber-700">{M.completedOrdersError}</p>
+            ) : (extras.completedOrders?.length ?? 0) === 0 ? (
+              <p className="py-4 text-center text-sm text-gray-400">{M.noCompletedOrders}</p>
+            ) : (
+              <ul className="space-y-3">
+                {(extras.completedOrders ?? []).map((o) => (
+                  <li key={o.id} className="flex items-center justify-between gap-3 border-b pb-3 text-sm last:border-0">
+                    <span className="font-bold text-[#7a0d0d]" dir="ltr">{o.order_number}</span>
+                    <span className="rounded-full bg-green-100 px-3 py-1 text-[10px] text-green-700">{statusText(o.status)}</span>
+                    <span className="text-gray-500" dir="ltr">{formatCurrency(o.total)}</span>
+                    <button type="button" aria-label={M.colDetails} onClick={() => setDetail({ kind: 'order', row: o })}>
+                      <Eye size={18} className="text-[#7a0d0d]" aria-hidden="true" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
         </>
       )}
 

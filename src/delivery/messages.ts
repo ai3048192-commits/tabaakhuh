@@ -57,4 +57,7 @@ export const deliveryMessages = {
   notFoundToast: 'تعذّر العثور على الطلب أو السائق.',
   retryToast: 'تعذّر إتمام العملية. حاول مرة أخرى.',
   refreshFailedToast: 'تعذّر التحديث. حاول مرة أخرى.',
+  /** Landed here via a `?order=` link (from Orders Oversight) for an order
+   *  that isn't (or is no longer) in the active-deliveries list. */
+  orderNotInPipeline: 'هذا الطلب غير جاهز للإسناد حاليًا، أو تم التعامل معه بالفعل.',
 } as const

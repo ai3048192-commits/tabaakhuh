@@ -1,13 +1,57 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { RefreshCw, UserPlus } from 'lucide-react'
 import { useDelivery } from './useDelivery'
 import AssignDriverDialog from './AssignDriverDialog'
 import AddDriverModal from '../components/AddDriverModal'
 import { deliveryMessages as M } from './messages'
 
+let __renderCount = 0
+
 export default function DeliveryPage() {
   const q = useDelivery()
   const [addDriverOpen, setAddDriverOpen] = useState(false)
+  const renderN = ++__renderCount
+  console.log(`[deep-link debug] RENDER #${renderN}`, { status: q.status, assigning: q.assigning?.order_number ?? null })
+
+  // Deep link from Orders Oversight's per-row "assign driver" link
+  // (`/delivery?order=<id>`): once the active-deliveries list is in, jump
+  // straight to that order's assign dialog instead of making the admin find
+  // it in the table. `handledOrderRef` guards against reopening the dialog
+  // (e.g. if the admin cancels it) as long as the param stays in the URL.
+  const [searchParams, setSearchParams] = useSearchParams()
+  const requestedOrderId = searchParams.get('order')
+  const [orderNotFound, setOrderNotFound] = useState(false)
+  const handledOrderRef = useRef<string | null>(null)
+
+  useEffect(() => {
+    // TEMP DEBUG — remove after diagnosing the "not in pipeline" report.
+    console.log(`[deep-link debug] EFFECT (render #${renderN})`, {
+      requestedOrderId,
+      status: q.status,
+      handled: handledOrderRef.current,
+      activeIds: q.active.map((d) => ({ order_id: d.order_id, order_number: d.order_number })),
+    })
+    if (!requestedOrderId || q.status !== 'ready') return
+    if (handledOrderRef.current === requestedOrderId) return
+    handledOrderRef.current = requestedOrderId
+
+    const match = q.active.find((d) => d.order_id === Number(requestedOrderId))
+    console.log(`[deep-link debug] EFFECT (render #${renderN}) match =`, match)
+    if (match) {
+      console.log(`[deep-link debug] EFFECT (render #${renderN}) calling openAssign`)
+      q.openAssign(match)
+    } else {
+      console.log(`[deep-link debug] EFFECT (render #${renderN}) calling setOrderNotFound(true)`)
+      setOrderNotFound(true)
+    }
+    // Clear the param so a refresh or a "back" navigation doesn't reopen it.
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev)
+      next.delete('order')
+      return next
+    }, { replace: true })
+  }, [requestedOrderId, q, setSearchParams])
   const th = 'px-3 py-2 text-right text-xs font-black text-gray-500'
   const td = 'px-3 py-2.5 text-right align-middle text-sm text-gray-700'
 
@@ -23,6 +67,19 @@ export default function DeliveryPage() {
         )}
       </div>
       <p className="mb-5 text-xs text-amber-700">{M.provisionalNote}</p>
+
+      {orderNotFound && (
+        <div className="mb-5 flex items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-bold text-amber-800">
+          <span>{M.orderNotInPipeline}</span>
+          <button
+            type="button"
+            onClick={() => setOrderNotFound(false)}
+            className="shrink-0 text-amber-700 underline"
+          >
+            {M.close}
+          </button>
+        </div>
+      )}
 
       {q.status === 'loading' && <p className="text-sm text-gray-500">{M.loading}</p>}
 
@@ -54,7 +111,9 @@ export default function DeliveryPage() {
                   </thead>
                   <tbody>
                     {q.active.map((d) => (
-                      <tr key={d.order_id} className="border-b border-gray-50 last:border-0">
+                      // `order_number`, not `order_id` — see the note on the same
+                      // choice in OverviewPage's live-deliveries table.
+                      <tr key={d.order_number} className="border-b border-gray-50 last:border-0">
                         <td className={`${td} font-bold text-gray-900`}><span dir="ltr">{d.order_number}</span></td>
                         <td className={td}>{M.statusLabel[d.status] ?? d.status}</td>
                         <td className={td}>{d.cook_name ?? '—'}</td>

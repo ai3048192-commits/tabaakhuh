@@ -14,6 +14,7 @@ import DriverApplicationsPage from "./drivers/DriverApplicationsPage";
 import CitiesPage from "./cities/CitiesPage";
 import ReportsPage from "./reports/ReportsPage";
 import ComplaintsPage from "./complaints/ComplaintsPage";
+import IncidentsPage from "./incidents/IncidentsPage";
 import SettingsPage from "./settings/SettingsPage";
 import OverviewPage from "./overview/OverviewPage";
 import DeliveryPage from "./delivery/DeliveryPage";
@@ -48,6 +49,7 @@ function AdminLayout() {
           <Route path="/cities" element={<CitiesPage />} />
           <Route path="/reports" element={<ReportsPage />} />
           <Route path="/complaints" element={<ComplaintsPage />} />
+          <Route path="/incidents" element={<IncidentsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/delivery" element={<DeliveryPage />} />
         </Routes>

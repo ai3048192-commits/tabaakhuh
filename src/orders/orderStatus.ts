@@ -70,3 +70,24 @@ export const TYPE_ICONS: Record<'regular' | 'custom', LucideIcon> = {
   regular: Package,
   custom: Sparkles,
 }
+
+/**
+ * Statuses in which an order has entered the delivery pipeline and can be
+ * (re)assigned a driver — the same states `GET /admin/delivery/active` lists.
+ * Earlier statuses (pending/accepted/preparing) have no driver step yet;
+ * later ones (delivered/completed/cancelled/pending_review/quoted) are done
+ * or never enter the pipeline. Used to gate the Orders Oversight screen's
+ * link to the Delivery screen (FR-028 keeps this screen read-only — the link
+ * is navigation, not a mutation on the order).
+ */
+const DRIVER_ASSIGNABLE_STATUSES: ReadonlySet<OrderStatus> = new Set([
+  'ready_for_pickup',
+  'assigned_to_driver',
+  'picked_up',
+  'on_the_way',
+])
+
+/** Whether an order can currently be (re)assigned a driver on `/delivery`. */
+export function needsDriverAssignment(s: OrderStatus): boolean {
+  return DRIVER_ASSIGNABLE_STATUSES.has(s)
+}

@@ -4,18 +4,18 @@ import {
   createCity,
   listCities,
   setCityStatus,
-  updateCity,
 } from './citiesApi'
 import { filterCities } from './citySearch'
+import { buildRows } from './governorateSelection'
+import type { GovernorateAction, GovernorateRow } from './governorateSelection'
+import { matchKey } from './governorates'
+import { cityMessages as M } from './messages'
 import { classifyMutation } from './mutationOutcome'
 import type {
   CitiesStatus,
   City,
   CityMutationOutcome,
-  CityNamePatch,
   DialogState,
-  NameErrors,
-  NewCityInput,
   RowState,
 } from './types'
 
@@ -29,15 +29,17 @@ export interface UseCitiesManagement {
   noCities: boolean
   noMatch: boolean
   dialog: DialogState
+  /** Every governorate — catalogue plus live extras — for the picker dialog. */
+  governorateRows: GovernorateRow[]
   rowState: (id: number) => RowState
   refresh: () => void
   setSearch: (term: string) => void
-  openAdd: () => void
-  openEdit: (city: City) => void
+  openPicker: () => void
+  openPickerAt: (city: City) => void
   openToggle: (city: City) => void
   closeDialog: () => void
-  create: (input: NewCityInput) => Promise<CityMutationOutcome>
-  update: (id: number, patch: CityNamePatch) => Promise<CityMutationOutcome>
+  /** Apply the picker's create/enable/disable actions, in order. */
+  applyPlan: (plan: GovernorateAction[]) => Promise<CityMutationOutcome>
   toggleStatus: (city: City) => Promise<CityMutationOutcome>
 }
 
@@ -85,12 +87,9 @@ export function useCitiesManagement(): UseCitiesManagement {
     [rowStates],
   )
 
-  const openAdd = useCallback(
-    () => setDialog({ kind: 'add', busy: false, serverErrors: {} }),
-    [],
-  )
-  const openEdit = useCallback(
-    (city: City) => setDialog({ kind: 'edit', city, busy: false, serverErrors: {} }),
+  const openPicker = useCallback(() => setDialog({ kind: 'picker', busy: false }), [])
+  const openPickerAt = useCallback(
+    (city: City) => setDialog({ kind: 'picker', focusKey: matchKey(city), busy: false }),
     [],
   )
   const openToggle = useCallback(
@@ -107,26 +106,18 @@ export function useCitiesManagement(): UseCitiesManagement {
     setDialog((d) => (d ? { ...d, busy } : d))
   }, [])
 
-  const setServerErrors = useCallback((errors: NameErrors, formMessage: string) => {
+  const setFormError = useCallback((message: string) => {
     setDialog((d) => {
       if (!d) return d
-      if (d.kind === 'toggle') return { ...d, busy: false, formError: errors.form ?? formMessage }
-      return {
-        ...d,
-        busy: false,
-        serverErrors: Object.keys(errors).length > 0 ? errors : { form: formMessage },
-      }
+      if (d.kind === 'picker') return { ...d, busy: false, progress: undefined, formError: message }
+      return { ...d, busy: false, formError: message }
     })
   }, [])
 
   const runMutation = useCallback(
     async (call: () => Promise<City>, rowId?: number): Promise<CityMutationOutcome> => {
-      // Clear any prior server errors so a re-submit shows fresh ones.
-      setDialog((d) => {
-        if (!d) return d
-        if (d.kind === 'toggle') return { ...d, busy: true, formError: undefined }
-        return { ...d, busy: true, serverErrors: {} }
-      })
+      // Clear any prior server error so a re-submit shows a fresh one.
+      setDialog((d) => (d ? { ...d, busy: true, formError: undefined } : d))
       if (rowId !== undefined) setRow(rowId, 'submitting')
       try {
         await call()
@@ -144,7 +135,7 @@ export function useCitiesManagement(): UseCitiesManagement {
           return outcome
         }
         if (outcome.reason === 'validation') {
-          setServerErrors(outcome.fieldErrors ?? {}, outcome.message)
+          setFormError(outcome.message)
           if (rowId !== undefined) setRow(rowId, 'idle')
           return outcome
         }
@@ -160,23 +151,61 @@ export function useCitiesManagement(): UseCitiesManagement {
         return outcome
       }
     },
-    [closeDialog, load, setBusy, setRow, setServerErrors],
+    [closeDialog, load, setBusy, setFormError, setRow],
   )
 
-  const create = useCallback(
-    (input: NewCityInput) => runMutation(() => createCity(input)),
-    [runMutation],
+  /**
+   * Run the picker's plan sequentially, reporting progress as it goes. A failed
+   * action stops the run: the dialog stays open showing how far it got, the
+   * list is re-fetched so the applied changes are visible, and the admin's
+   * un-applied ticks are still in the picker for a retry.
+   */
+  const applyPlan = useCallback(
+    async (plan: GovernorateAction[]): Promise<CityMutationOutcome> => {
+      if (plan.length === 0) return { ok: true, message: '' }
+      setDialog((d) =>
+        d ? { ...d, busy: true, formError: undefined, progress: { done: 0, total: plan.length } } : d,
+      )
+      for (let i = 0; i < plan.length; i++) {
+        const action = plan[i]
+        try {
+          if (action.op === 'create') {
+            await createCity({ name_ar: action.name_ar, name_en: action.name_en })
+          } else {
+            await setCityStatus(action.city.id, action.op === 'enable')
+          }
+        } catch (err) {
+          const outcome = classifyMutation(err)
+          if (outcome.ok) continue
+          // Whatever landed before the failure is real — show it.
+          void load()
+          __resetCityDirectory()
+          if (outcome.reason === 'not_found') {
+            // The city vanished server-side; the re-fetch above resolves it.
+            continue
+          }
+          setFormError(M.pickerPartialError)
+          return outcome
+        }
+        setDialog((d) =>
+          d?.kind === 'picker' ? { ...d, progress: { done: i + 1, total: plan.length } } : d,
+        )
+      }
+      closeDialog()
+      void load()
+      __resetCityDirectory()
+      return { ok: true, message: '' }
+    },
+    [closeDialog, load, setFormError],
   )
-  const update = useCallback(
-    (id: number, patch: CityNamePatch) => runMutation(() => updateCity(id, patch)),
-    [runMutation],
-  )
+
   const toggleStatus = useCallback(
     (city: City) => runMutation(() => setCityStatus(city.id, !city.is_active), city.id),
     [runMutation],
   )
 
   const cities = useMemo(() => filterCities(allCities, search), [allCities, search])
+  const governorateRows = useMemo(() => buildRows(allCities), [allCities])
   const noCities = status === 'ready' && allCities.length === 0
   const noMatch = status === 'ready' && allCities.length > 0 && cities.length === 0
 
@@ -188,15 +217,15 @@ export function useCitiesManagement(): UseCitiesManagement {
     noCities,
     noMatch,
     dialog,
+    governorateRows,
     rowState,
     refresh: load,
     setSearch,
-    openAdd,
-    openEdit,
+    openPicker,
+    openPickerAt,
     openToggle,
     closeDialog,
-    create,
-    update,
+    applyPlan,
     toggleStatus,
   }
 }

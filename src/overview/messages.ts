@@ -83,6 +83,10 @@ export const overviewMessages = {
   preparingTitle: 'طلبات بانتظار التحضير',
   noPreparing: 'لا توجد طلبات قيد التحضير.',
 
+  completedOrdersTitle: 'الطلبات المكتملة والموصّلة',
+  noCompletedOrders: 'لا توجد طلبات مكتملة بعد.',
+  completedOrdersError: 'تعذّر تحميل الطلبات المكتملة. حدّث الصفحة وحاول تاني.',
+
   recentCooksTitle: 'أحدث الطهاة المنضمّين',
   noRecentCooks: 'لا يوجد طهاة جدد.',
   recentCooksError: 'تعذّر تحميل قائمة الطهاة. حدّث الصفحة وحاول تاني.',

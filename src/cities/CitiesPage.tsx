@@ -3,10 +3,11 @@ import { Plus, RefreshCw } from 'lucide-react'
 import { useCitiesManagement } from './useCitiesManagement'
 import CitiesTable from './CitiesTable'
 import SearchBox from './SearchBox'
-import CityFormDialog from './CityFormDialog'
+import GovernoratePickerDrawer from './GovernoratePickerDrawer'
 import StatusToggleDialog from './StatusToggleDialog'
 import { cityMessages as M } from './messages'
-import type { CityMutationOutcome, CityNamePatch, NewCityInput } from './types'
+import type { GovernorateAction } from './governorateSelection'
+import type { CityMutationOutcome } from './types'
 
 /** `/cities` — the Cities Management screen (US1–US4). */
 export default function CitiesPage() {
@@ -25,12 +26,8 @@ export default function CitiesPage() {
     // 'validation' → surfaced inside the open dialog, no toast
   }
 
-  const submitAdd = async (payload: NewCityInput | CityNamePatch) => {
-    handleOutcome(await q.create(payload as NewCityInput), M.createdToast)
-  }
-  const submitEdit = async (payload: NewCityInput | CityNamePatch) => {
-    if (q.dialog?.kind !== 'edit') return
-    handleOutcome(await q.update(q.dialog.city.id, payload as CityNamePatch), M.updatedToast)
+  const submitPlan = async (plan: GovernorateAction[]) => {
+    handleOutcome(await q.applyPlan(plan), M.updatedToast)
   }
   const submitToggle = async () => {
     if (q.dialog?.kind !== 'toggle') return
@@ -40,7 +37,7 @@ export default function CitiesPage() {
   const addButton = (
     <button
       type="button"
-      onClick={q.openAdd}
+      onClick={q.openPicker}
       className="flex items-center gap-2 rounded-xl bg-[#7a0d0d] px-3 py-2 text-xs font-black text-white"
     >
       <Plus size={14} aria-hidden="true" />
@@ -111,7 +108,7 @@ export default function CitiesPage() {
             <CitiesTable
               cities={q.cities}
               rowState={q.rowState}
-              onEdit={q.openEdit}
+              onEdit={q.openPickerAt}
               onToggle={q.openToggle}
             />
           )}
@@ -132,22 +129,14 @@ export default function CitiesPage() {
         </div>
       )}
 
-      {q.dialog?.kind === 'add' && (
-        <CityFormDialog
-          mode="add"
-          serverErrors={q.dialog.serverErrors}
+      {q.dialog?.kind === 'picker' && (
+        <GovernoratePickerDrawer
+          rows={q.governorateRows}
+          focusKey={q.dialog.focusKey}
           busy={q.dialog.busy}
-          onSubmit={submitAdd}
-          onCancel={q.closeDialog}
-        />
-      )}
-      {q.dialog?.kind === 'edit' && (
-        <CityFormDialog
-          mode="edit"
-          initialValues={{ name_ar: q.dialog.city.name_ar, name_en: q.dialog.city.name_en }}
-          serverErrors={q.dialog.serverErrors}
-          busy={q.dialog.busy}
-          onSubmit={submitEdit}
+          progress={q.dialog.progress}
+          formError={q.dialog.formError}
+          onSubmit={submitPlan}
           onCancel={q.closeDialog}
         />
       )}

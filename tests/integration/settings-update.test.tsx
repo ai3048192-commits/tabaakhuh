@@ -130,7 +130,7 @@ describe('Platform settings — update (US2)', () => {
 
   it('AC7: Save shows the saving state while in flight; rapid clicks send exactly one PUT', async () => {
     const { user, field } = await open(25)
-    fm.reply('PUT /admin/settings', { delayMs: 40, json: updatedSettings(30) })
+    fm.reply('PUT /admin/settings', { delayMs: 300, json: updatedSettings(30) })
     await user.clear(field)
     await user.type(field, '30')
 

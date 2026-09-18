@@ -53,7 +53,8 @@ export interface Order {
   delivery_address_id: number
   /** `YYYY-MM-DD`. */
   requested_delivery_date: string
-  delivery_time_slot: string
+  /** May be `null` in practice even though the spec implies a string. */
+  delivery_time_slot: string | null
   subtotal: number
   delivery_fee: number
   total: number

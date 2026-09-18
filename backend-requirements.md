@@ -10,6 +10,16 @@
 - **الأكواد:** `200` · `201` (فقط `POST /admin/cities`) · `401` (`Unauthenticated.`) · `403` (مسجّل غير أدمن) · `404` · `422` (تحقّق/قاعدة عمل — `message` يحمل السبب) · `429` (throttle، login فقط) · `500` (`Something went wrong. Please try again.`)
 - **الحماية:** كل `/admin/*` تحتاج `auth:sanctum` + `role:admin`. `/auth/me` و`/auth/logout` تحتاجان `auth:sanctum` فقط. `/auth/login` عام.
 - الفرونت اند يقرأ فقط `data` / `success` / `message` / `errors` من الغلاف.
+- **⚠️ اللغة (2026-09-18):** الداشبورد **عربي بالكامل ومفيش فيه نظام ترجمة/تبديل لغة**. أي نص
+  من `message` أو `errors.<field>[]` بيتعرض للأدمن **حرفيًا زي ما هو**، بدون أي طبقة ترجمة في
+  الفرونت (الفرونت عنده نصوصه العربية الجاهزة بس كـ fallback للحالات المعروفة؛ لو الباك اند
+  بعت نص فعلي هو ده اللي بيتعرض بدل الاحتياطي). يعني: **أي `message`/`errors` نصّي بيوصل
+  لشاشة أدمن لازم يتكتب عربي من الباك اند من الأساس** — رسائل النجاح العامة الموثّقة في هذا
+  المستند بالإنجليزي (زي `"City created."`, `"Application approved."`) **أمثلة شكل فقط
+  ولازم تتحوّل عربي فعليًا عند التنفيذ** (زي `"تم إنشاء المدينة."`)، وكذلك رسائل الأعمال
+  الديناميكية (زي رسالة "الطلب مبقاش pending" أو "حقل السبب مطلوب") اللي بتتعرض حرفيًا في
+  withdrawals/cooks/drivers. البيانات المرجعية زي المدن (`name_ar`/`name_en`) هي الاستثناء
+  الوحيد اللي لازم يرجع باللغتين معًا (تفاصيلها تحت) — أما نصوص الرسائل والأخطاء فعربي فقط.
 
 ---
 
@@ -29,7 +39,10 @@
 **`GET /admin/delivery/active`** — مصفوفة، كل عنصر:
 `order_id`, `order_number`, `status`, `cook_name`, `customer_area|null`, `driver_id|null`,
 `driver_name|null`, `placed_at` (ISO)، واختياري: `total`, `commission`, `assigned_at`, `picked_up_at`.
-لو الـ Resource بيسمّي المفتاح `id` بدل `order_id` → لازم تعديل سطر واحد في الفرونت — بلّغني.
+
+> **✅ تأكّد (2026-09-12):** الـ Resource فعلاً بيسمّي المفتاح `id` مش `order_id` — الفرونت عدّل
+> سطر واحد ليقبل الاتنين (`src/delivery/deliveryApi.ts` → `toActiveDelivery`)، مفيش حاجة
+> مطلوبة من الباك اند. سيبوا `id` زي ما هو أو وحّدوها مع باقي الـ Resources، الاتنين شغّالين.
 
 **`GET /admin/delivery/drivers`** — `{ available_count:int, busy_count:int, items:[ { id, name, phone, is_available:bool, active_deliveries:int } ] }`.
 
@@ -314,9 +327,16 @@ PATCH  /admin/users/{id}/status                  { status }
 GET /admin/reports/financial?from=&to=&group_by=day|month&city_id=
     → { totals: { revenue, commission, payouts, orders },
         series:    [{ period, revenue, commission, payouts }],
-        breakdown: [{ label, revenue, orders }] }
+        breakdown: [{ city_id, name_ar, name_en, revenue, orders }] }
 ```
 العقد النهائي والمقاييس موثّقة في `admin-dashboard-api.md` Phase 8.2. باختصار: `revenue`/`orders` من الطلبات المكتملة، `commission` = نسبةً من الإيراد (`settings.commission_percent`)، `payouts` = طلبات السحب المدفوعة خلال الفترة. `from`/`to` اختياريان (افتراضي آخر 30 يوماً، توقيت `Africa/Cairo`). أخطاء الفلاتر ترجع `422` والسبب في `message`.
+
+> **⚠️ تصحيح (2026-09-18):** `breakdown[]` كان موثّق بمفتاح `label` نص عربي جاهز فقط
+> (`cities.name_ar` أو `"غير محدد"`). ده الحقل الوحيد في العقد بالكامل اللي بيكسر قاعدة
+> «كل بيانات المدن ترجع `name_ar` + `name_en` معًا» (زي `GET /admin/cities` وكل مكان تاني
+> فيه مدينة). لازم يتصحّح لـ `{ city_id, name_ar, name_en }` — ولمن بلا مدينة:
+> `{ city_id: null, name_ar: "غير محدد", name_en: "Unspecified" }` — علشان الفرونت يقدر
+> يعرض الاسم بأي لغة زي باقي الشاشات.
 
 ### الشكاوى والاقتراحات — `/complaints`
 ```
@@ -363,11 +383,13 @@ POST  /admin/delivery/orders/{id}/assign          { driver_id }
 | 20 | `GET /admin/orders?status=&city_id=&placed_from=&placed_to=&page=` | — | مُرقّم 20 · توقيت مصر |
 | 21 | `GET /admin/reports/overview` | — | لحظي |
 
-## أهم 3 قرارات لازمة قبل التنفيذ
+## أهم 4 قرارات لازمة قبل التنفيذ
 
 1. **توقيت `placed_from`/`placed_to` في `GET /admin/orders`** → Africa/Cairo (المفترض) أم UTC؟
 2. **`per_page` ثابت 20** في `withdrawals` و`orders` ويُرجَع في جسم الاستجابة — تأكيد.
 3. **إجراءات `withdrawals` بلا body** ونص `422` يُعرض للأدمن حرفيًا — تأكيد.
+4. **كل نصوص `message`/`errors.*` لازم تتبعت عربي** (مش إنجليزي زي الأمثلة في هذا المستند) —
+   الداشبورد مفيهوش ترجمة، فأي نص بيوصل من الباك اند بيتعرض للأدمن زي ما هو.
 
 ---
 

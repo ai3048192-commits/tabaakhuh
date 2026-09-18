@@ -26,7 +26,23 @@ export const cityMessages = {
   statusInactive: 'معطّلة',
 
   addCity: 'إضافة مدينة',
-  editCity: 'تعديل اسم المدينة',
+  editCity: 'تعديل',
+
+  // --- Governorate picker (replaces the free-text add/edit form) -----------
+  pickerTitle: 'المحافظات المتاحة',
+  pickerSubtitle: 'فعّل المحافظات اللي تشتغل فيها المنصة، وألغِ اللي مش عايزها.',
+  pickerSearch: 'ابحث عن محافظة',
+  pickerEmptyMatch: 'لا توجد محافظة مطابقة لبحثك.',
+  pickerCustomTag: 'مضافة يدويًا',
+  pickerSelectedCount: (n: number) => `${n} مفعّلة`,
+  pickerWillAdd: 'ستُضاف وتُفعّل',
+  pickerWillEnable: 'ستُفعّل',
+  pickerWillDisable: 'ستُعطّل',
+  pickerNoChanges: 'لم تغيّر أي شيء بعد.',
+  pickerChangeCount: (n: number) => (n === 1 ? 'تغيير واحد' : `${n} تغييرات`),
+  pickerApply: 'حفظ التغييرات',
+  pickerApplying: (done: number, total: number) => `جارٍ الحفظ… ${done}/${total}`,
+  pickerPartialError: 'بعض التغييرات لم تُحفظ. راجع القائمة وحاول مرة أخرى.',
 
   fieldNameAr: 'الاسم بالعربية',
   fieldNameEn: 'الاسم بالإنجليزية',
@@ -36,10 +52,14 @@ export const cityMessages = {
   nameDuplicateFallback: 'اسم المدينة مستخدم بالفعل.',
 
   save: 'حفظ',
+  saving: 'جارٍ الحفظ…',
   cancel: 'إلغاء',
   close: 'إغلاق',
+  fieldWillUpdate: 'سيتم تحديث هذا الاسم.',
+  editHint: 'عدّل اسمًا واحدًا على الأقل بالعربية أو بالإنجليزية لتفعيل الحفظ.',
 
   editLabel: (nameAr: string) => `تعديل مدينة ${nameAr}`,
+  pickerRowLabel: (nameAr: string) => `تفعيل محافظة ${nameAr}`,
   toggleToInactiveTitle: (nameAr: string) => `تعطيل مدينة ${nameAr}؟`,
   toggleToActiveTitle: (nameAr: string) => `تفعيل مدينة ${nameAr}؟`,
   toggleToInactiveBody: 'لن تظهر هذه المدينة للعملاء حتى يُعاد تفعيلها.',
@@ -47,6 +67,9 @@ export const cityMessages = {
   confirmToggle: 'تأكيد',
   rowToggleToInactive: (nameAr: string) => `تعطيل ${nameAr}`,
   rowToggleToActive: (nameAr: string) => `تفعيل ${nameAr}`,
+  /** Visible text on the row's status control — the aria-label names the city. */
+  rowDeactivate: 'تعطيل',
+  rowActivate: 'تفعيل',
 
   createdToast: 'تمت إضافة المدينة.',
   updatedToast: 'تم تحديث المدينة.',

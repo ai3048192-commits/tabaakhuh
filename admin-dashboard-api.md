@@ -750,7 +750,7 @@ Message: `Withdrawal request marked paid.`
     { "period": "2026-08-10", "revenue": 5200.0, "commission": 520.0, "payouts": 3000.0 }
   ],
   "breakdown": [
-    { "label": "القاهرة", "revenue": 90000.0, "orders": 540 }
+    { "city_id": 1, "name_ar": "القاهرة", "name_en": "Cairo", "revenue": 90000.0, "orders": 540 }
   ]
 }
 ```
@@ -762,7 +762,7 @@ Message: `Withdrawal request marked paid.`
 | `totals.commission` | `revenue × settings.commission_percent ÷ 100` (لا يوجد عمود عمولة تاريخي على الطلب، فتُطبَّق النسبة الحالية) |
 | `totals.payouts` | مجموع `amount` لطلبات السحب المدفوعة (`paid`) التي سُوّيت (`processed_at`) داخل الفترة |
 | `series[]` | نقطة لكل فترة، الأقدم أولاً، مملوءة بالأصفار. `period` = `YYYY-MM-DD` مع `day` و`YYYY-MM` مع `month` |
-| `breakdown[]` | توزيع الإيراد وعدد الطلبات حسب مدينة الطاهي، تنازلياً بالإيراد. `label` = `cities.name_ar` أو `"غير محدد"` لمن بلا مدينة |
+| `breakdown[]` | توزيع الإيراد وعدد الطلبات حسب مدينة الطاهي، تنازلياً بالإيراد. `city_id`/`name_ar`/`name_en` = نفس مفاتيح `cities` (**وليس `label` نص جاهز بلغة واحدة**، حتى يقدر الفرونت يعرض الاسم بالعربي أو الإنجليزي زي باقي الشاشات)؛ لمن بلا مدينة: `city_id: null, name_ar: "غير محدد", name_en: "Unspecified"` |
 
 **أخطاء:** `422` — تاريخ غير صالح · `from` بعد `to` · `group_by` غير معروف · فترة أوسع من `admin.reports_max_range_days` (افتراضي 366 يوماً) · `city_id` غير موجود. السبب في `message`.
 

@@ -1,11 +1,18 @@
-import { Eye } from 'lucide-react'
+import { Eye, Truck } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import OrderTypeBadge from './OrderTypeBadge'
 import OrderStatusBadge from './OrderStatusBadge'
 import { formatOrderDate } from './cairoDates'
+import { needsDriverAssignment } from './orderStatus'
 import { orderMessages as M } from './messages'
 import type { Order } from './types'
 
-/** One row of the oversight table. Read-only — the only action is "view details". */
+/**
+ * One row of the oversight table. Read-only — no mutation happens here
+ * (FR-028): "view details" opens an in-page dialog, and "assign driver" (shown
+ * only while the order is in the delivery pipeline) is a plain navigation to
+ * the `/delivery` screen, which owns the actual assignment.
+ */
 export default function OrderRow({
   order,
   onOpenDetail,
@@ -46,7 +53,7 @@ export default function OrderRow({
         <OrderStatusBadge status={order.status} />
       </td>
       <td className={td} dir="ltr">
-        {formatOrderDate(order.requested_delivery_date)} · {order.delivery_time_slot}
+        {formatOrderDate(order.requested_delivery_date)} · {order.delivery_time_slot ?? '—'}
       </td>
       <td className={td} dir="ltr">
         {M.currency(order.subtotal)}
@@ -58,14 +65,25 @@ export default function OrderRow({
         {M.currency(order.total)}
       </td>
       <td className={td}>
-        <button
-          type="button"
-          onClick={() => onOpenDetail(order)}
-          className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-bold text-[#7a0d0d]"
-        >
-          <Eye size={13} aria-hidden="true" />
-          {M.viewDetails}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => onOpenDetail(order)}
+            className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-bold text-[#7a0d0d]"
+          >
+            <Eye size={13} aria-hidden="true" />
+            {M.viewDetails}
+          </button>
+          {needsDriverAssignment(order.status) && (
+            <Link
+              to={`/delivery?order=${order.id}`}
+              className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-bold text-[#7a0d0d]"
+            >
+              <Truck size={13} aria-hidden="true" />
+              {M.assignDriver}
+            </Link>
+          )}
+        </div>
       </td>
     </tr>
   )
