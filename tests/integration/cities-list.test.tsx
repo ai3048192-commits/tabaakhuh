@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { screen, within, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderAtCities } from '../helpers/harness'
-import { installFetchMock, type FetchMock } from '../helpers/fetchMock'
+import { installFetchMock, type FetchMock, openGate } from '../helpers/fetchMock'
 import { ok, fail, city } from '../helpers/fixtures'
 import { cityMessages as M } from '../../src/cities/messages'
 import type { City } from '../../src/cities/types'
@@ -42,10 +42,12 @@ describe('US1 — view the cities list and search', () => {
   })
 
   it('AC2/AC3: a slow load shows loading; an empty list shows the "no cities" state with Add', async () => {
-    fm.reply('GET /admin/cities', { delayMs: 25, json: ok([]) })
+    const g = openGate()
+    fm.reply('GET /admin/cities', { gate: g.gate, json: ok([]) })
     renderAtCities(fm)
 
     expect(await screen.findByText(M.loading)).toBeInTheDocument()
+    g.land()
     expect(await screen.findByText(M.emptyNoCities)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: new RegExp(M.addCity) })).toBeInTheDocument()
   })

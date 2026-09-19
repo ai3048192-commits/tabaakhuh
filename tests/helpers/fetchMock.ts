@@ -7,6 +7,13 @@ export interface MockReply {
   networkError?: boolean
   /** Hold the response open for this many ms (to observe in-flight UI). */
   delayMs?: number
+  /**
+   * Hold the response until this promise settles. Unlike `delayMs` this is not
+   * a race against the wall clock, so a test can assert in-flight UI and only
+   * then let the reply land — the deterministic choice whenever the assertion
+   * must happen *while* the request is open.
+   */
+  gate?: PromiseLike<unknown>
 }
 
 export interface RecordedCall {
@@ -36,6 +43,27 @@ function safeParse(s: string): unknown {
   }
 }
 
+/**
+ * A reply held open until the test says so.
+ *
+ *     const g = openGate()
+ *     fm.reply(KEY, { gate: g.gate, json: … })
+ *     renderX(fm)
+ *     await screen.findByText(M.loading)   // guaranteed still in flight
+ *     g.land()
+ *
+ * Prefer this over `delayMs` whenever an assertion has to happen *during* a
+ * request. A wall-clock delay races the assertion, and the reply wins often
+ * enough under a loaded full-suite run to break CI at random.
+ */
+export function openGate(): { gate: Promise<void>; land: () => void } {
+  let land!: () => void
+  const gate = new Promise<void>((resolve) => {
+    land = resolve
+  })
+  return { gate, land }
+}
+
 export function installFetchMock(): FetchMock {
   const calls: RecordedCall[] = []
   const queues = new Map<string, MockReply[]>()
@@ -60,6 +88,7 @@ export function installFetchMock(): FetchMock {
     const reply = queue.length > 1 ? (queue.shift() as MockReply) : queue[0]
 
     if (reply.delayMs) await new Promise((r) => setTimeout(r, reply.delayMs))
+    if (reply.gate) await reply.gate
     if (reply.networkError) throw new TypeError('Failed to fetch')
 
     return new Response(JSON.stringify(reply.json ?? null), {

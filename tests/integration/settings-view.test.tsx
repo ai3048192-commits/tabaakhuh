@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderAtSettings } from '../helpers/harness'
-import { installFetchMock, type FetchMock } from '../helpers/fetchMock'
+import { installFetchMock, type FetchMock, openGate } from '../helpers/fetchMock'
 import { fail, settingsResponse } from '../helpers/fixtures'
 import { settingsMessages as M } from '../../src/settings/messages'
 
@@ -29,11 +29,13 @@ describe('Platform settings — view (US1)', () => {
   })
 
   it('AC2: a pending load shows a loading state and no Save control', async () => {
-    fm.reply('GET /admin/settings', { delayMs: 40, json: settingsResponse(25) })
+    const g = openGate()
+    fm.reply('GET /admin/settings', { gate: g.gate, json: settingsResponse(25) })
     renderAtSettings(fm)
 
     expect(await screen.findByText(M.loading)).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: M.save })).toBeNull()
+    g.land()
     await screen.findByLabelText(M.feeFieldLabel)
   })
 

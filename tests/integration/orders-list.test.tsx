@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { screen, within, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderAtOrders } from '../helpers/harness'
-import { installFetchMock, type FetchMock } from '../helpers/fetchMock'
+import { installFetchMock, type FetchMock, openGate } from '../helpers/fetchMock'
 import { ok, order, customOrder, ordersPage, cityList } from '../helpers/fixtures'
 import { orderMessages as M } from '../../src/orders/messages'
 import { daysAgoCairo } from '../../src/orders/cairoDates'
@@ -37,9 +37,11 @@ describe('US1 — review the paginated orders list', () => {
   })
 
   it('AC2/AC3: a slow load shows loading; an empty default view shows "no orders"', async () => {
-    fm.reply(DEFAULT_KEY, { delayMs: 20, json: ordersPage([], { total: 0 }) })
+    const g = openGate()
+    fm.reply(DEFAULT_KEY, { gate: g.gate, json: ordersPage([], { total: 0 }) })
     renderAtOrders(fm)
     expect(await screen.findByText(M.loading)).toBeInTheDocument()
+    g.land()
     expect(await screen.findByText(M.emptyNoOrders)).toBeInTheDocument()
   })
 

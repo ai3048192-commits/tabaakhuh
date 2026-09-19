@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { screen, within, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderAtDrivers } from '../helpers/harness'
-import { installFetchMock, type FetchMock } from '../helpers/fetchMock'
+import { installFetchMock, type FetchMock, openGate } from '../helpers/fetchMock'
 import { ok, fail, pendingDriver, cityList } from '../helpers/fixtures'
 import { driverMessages as M } from '../../src/drivers/messages'
 
@@ -152,10 +152,12 @@ describe('US1 — review the pending driver queue', () => {
   })
 
   it('FR-008: a slow load shows the loading state, distinct from empty', async () => {
-    fm.reply('GET /admin/drivers/pending', { delayMs: 30, json: ok([]) })
+    const g = openGate()
+    fm.reply('GET /admin/drivers/pending', { gate: g.gate, json: ok([]) })
     renderAtDrivers(fm)
 
     expect(await screen.findByText(M.loading)).toBeInTheDocument()
+    g.land()
     expect(await screen.findByText(M.empty)).toBeInTheDocument()
   })
 

@@ -3,7 +3,7 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'vitest-axe'
 import { renderAtSettings } from '../helpers/harness'
-import { installFetchMock, type FetchMock } from '../helpers/fetchMock'
+import { installFetchMock, type FetchMock, openGate } from '../helpers/fetchMock'
 import { fail, settingsResponse, updatedSettings } from '../helpers/fixtures'
 import { settingsMessages as M } from '../../src/settings/messages'
 
@@ -30,10 +30,12 @@ function describedText(el: HTMLElement): string {
 
 describe('Platform settings — accessibility (FR-026 / FR-027, SC-008 / SC-009)', () => {
   it('the loading state has no AA violations', async () => {
-    fm.reply('GET /admin/settings', { delayMs: 40, json: settingsResponse(25) })
+    const g = openGate()
+    fm.reply('GET /admin/settings', { gate: g.gate, json: settingsResponse(25) })
     const { container } = renderAtSettings(fm)
     await screen.findByText(M.loading)
     expect(await axe(container, AXE_WCAG)).toHaveNoViolations()
+    g.land()
   })
 
   it('the error + retry state has no AA violations', async () => {
@@ -70,7 +72,8 @@ describe('Platform settings — accessibility (FR-026 / FR-027, SC-008 / SC-009)
 
   it('the saving state has no AA violations and Save exposes aria-busy', async () => {
     fm.reply('GET /admin/settings', { json: settingsResponse(25) })
-    fm.reply('PUT /admin/settings', { delayMs: 60, json: updatedSettings(30) })
+    const g = openGate()
+    fm.reply('PUT /admin/settings', { gate: g.gate, json: updatedSettings(30) })
     const user = userEvent.setup()
     const { container } = renderAtSettings(fm)
 
@@ -83,6 +86,7 @@ describe('Platform settings — accessibility (FR-026 / FR-027, SC-008 / SC-009)
     expect(busy).toHaveAttribute('aria-busy', 'true')
     expect(busy).toBeDisabled()
     expect(await axe(container, AXE_WCAG)).toHaveNoViolations()
+    g.land()
   })
 
   it('keyboard: type a new value, Tab to Save, activate with Enter', async () => {

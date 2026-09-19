@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderAtCities } from '../helpers/harness'
-import { installFetchMock, type FetchMock } from '../helpers/fetchMock'
+import { installFetchMock, type FetchMock, openGate } from '../helpers/fetchMock'
 import { ok, fail, city, createdCity, cityStatusChanged } from '../helpers/fixtures'
 import type { MockReply } from '../helpers/fetchMock'
 import { cityMessages as M } from '../../src/cities/messages'
@@ -254,13 +254,17 @@ describe('the governorate picker drawer replaces the add/edit name form', () => 
       { json: ok(seed) },
       { json: ok([...seed, city({ id: 9 })]) },
     )
-    fm.reply('POST /admin/cities', { delayMs: 40, status: 201, json: createdCity({ id: 9 }) })
+    // Gated, not timed: the guard is only under test while the first POST is
+    // still open, and a 40ms timer could land before the later clicks.
+    const g = openGate()
+    fm.reply('POST /admin/cities', { gate: g.gate, status: 201, json: createdCity({ id: 9 }) })
 
     await user.click(tick('أسوان'))
     const apply = applyBtn()
     await user.click(apply)
     await user.click(apply)
     await user.click(apply)
+    g.land()
 
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
     expect(fm.count('POST /admin/cities')).toBe(1)

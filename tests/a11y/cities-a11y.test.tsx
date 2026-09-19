@@ -3,7 +3,7 @@ import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'vitest-axe'
 import { renderAtCities } from '../helpers/harness'
-import { installFetchMock, type FetchMock } from '../helpers/fetchMock'
+import { installFetchMock, type FetchMock, openGate } from '../helpers/fetchMock'
 import { ok, fail, city } from '../helpers/fixtures'
 import { cityMessages as M } from '../../src/cities/messages'
 
@@ -51,12 +51,14 @@ describe('Cities management — accessibility (WCAG 2.1 AA, SC-010 / FR-040 / FR
 
   it('the loading, empty and no-match states have no AA violations', async () => {
     const user = userEvent.setup()
-    fm.reply('GET /admin/cities', { delayMs: 20, json: ok(seed) })
+    const g = openGate()
+    fm.reply('GET /admin/cities', { gate: g.gate, json: ok(seed) })
     const { container } = renderAtCities(fm)
 
     await screen.findByText(M.loading)
     expect(await axe(container, AXE_WCAG)).toHaveNoViolations()
 
+    g.land()
     await screen.findByText('القاهرة')
     await user.type(screen.getByLabelText(M.searchLabel), 'zzz')
     await screen.findByText(M.emptyNoMatch)

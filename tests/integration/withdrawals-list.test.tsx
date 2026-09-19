@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderAtWithdrawals } from '../helpers/harness'
-import { installFetchMock, type FetchMock } from '../helpers/fetchMock'
+import { installFetchMock, type FetchMock, openGate } from '../helpers/fetchMock'
 import { withdrawal, withdrawalPage } from '../helpers/fixtures'
 import { withdrawalMessages as M } from '../../src/withdrawals/messages'
 
@@ -72,9 +72,15 @@ describe('US1 — review the withdrawals queue', () => {
   })
 
   it('AC4/AC6: empty filter → empty state; slow reply → loading state', async () => {
-    fm.reply(PENDING_P1, { delayMs: 20, json: withdrawalPage([], { total: 0 }) })
+    // Gated, not timed: the loading state is only on screen once the auth gate
+    // clears *and* the list request is still open. A wall-clock `delayMs` made
+    // that a race the reply could win under full-suite load, so the test holds
+    // the response open until it has seen the loading state.
+    const g = openGate()
+    fm.reply(PENDING_P1, { gate: g.gate, json: withdrawalPage([], { total: 0 }) })
     renderAtWithdrawals(fm)
     expect(await screen.findByText(M.loading)).toBeInTheDocument()
+    g.land()
     expect(await screen.findByText(M.emptyFor('pending'))).toBeInTheDocument()
   })
 

@@ -3,7 +3,7 @@ import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'vitest-axe'
 import { renderAtDrivers } from '../helpers/harness'
-import { installFetchMock, type FetchMock } from '../helpers/fetchMock'
+import { installFetchMock, type FetchMock, openGate } from '../helpers/fetchMock'
 import { ok, fail, pendingDriver, cityList } from '../helpers/fixtures'
 import { driverMessages as M } from '../../src/drivers/messages'
 
@@ -55,10 +55,12 @@ describe('Driver review — accessibility (WCAG 2.1 AA, SC-009 / FR-034)', () =>
   })
 
   it('the loading state has no AA violations', async () => {
-    fm.reply('GET /admin/drivers/pending', { delayMs: 30, json: ok([]) })
+    const g = openGate()
+    fm.reply('GET /admin/drivers/pending', { gate: g.gate, json: ok([]) })
     const { container } = renderAtDrivers(fm)
     await screen.findByText(M.loading)
     expect(await axe(container, AXE_WCAG)).toHaveNoViolations()
+    g.land()
   })
 
   it('the empty state has no AA violations', async () => {
