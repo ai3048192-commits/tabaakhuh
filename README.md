@@ -17,9 +17,81 @@ npm run dev               # http://localhost:5173
 | Command | Purpose |
 |---------|---------|
 | `npm run dev` | Vite dev server |
-| `npm run build` | Production build |
+| `npm run build` | Typecheck, then production build (cross-origin API) |
+| `npm run build:same-origin` | Production build when the API shares this origin |
+| `npm run preview` | Serve the built `dist/` locally |
+| `npm run typecheck` | `tsc --noEmit` |
+| `npm run lint` | ESLint |
 | `npm run test` | Vitest (watch) — unit, integration, and accessibility suites |
 | `npm run test:run` | Vitest single pass (CI) |
+| `npm run test:coverage` | Vitest with a V8 coverage report |
+| `npm run verify` | Typecheck + lint + full test suite — the pre-deploy gate |
+
+## Deploying
+
+### 1. Point the build at the API
+
+`VITE_API_BASE_URL` is read at **build** time, not at runtime: it is baked into
+the bundle *and* into the `connect-src` of the Content-Security-Policy that
+`vite.config.ts` injects into `dist/index.html`. Getting it wrong produces a
+dashboard that loads and then silently fails every request, so the build
+refuses to run rather than let that ship.
+
+```bash
+# API on its own domain
+VITE_API_BASE_URL=https://api.example.com/api/v1 npm run build
+
+# API under this same domain (dist/ served by the backend, or proxied at /api)
+npm run build:same-origin
+```
+
+Set the Cloudinary variables from `.env.example` too, or Settings → store
+logo/icon uploads will fail.
+
+### 2. Serve `dist/` with an SPA fallback
+
+React Router owns every path, so the host must return `index.html` for any
+request that does not match a real file. Without it, a refresh on `/orders` is
+a 404. Ready-made config is committed:
+
+| Host | File | Notes |
+|------|------|-------|
+| Netlify, Cloudflare Pages | `public/_redirects` | Copied into `dist/` by the build |
+| Vercel | `vercel.json` | Rewrites + cache and security headers |
+| Apache | `public/.htaccess` | Copied into `dist/` by the build |
+| nginx | `deploy/nginx.conf` | `try_files`, caching, optional `/api` proxy |
+
+### 3. Headers the page cannot set itself
+
+A `<meta>` CSP cannot express `frame-ancestors`, so **clickjacking protection
+must come from a server header**. The nginx, Apache and Vercel configs above
+already send `Content-Security-Policy: frame-ancestors 'none'`; if you deploy
+somewhere else, set it there.
+
+### 4. Gate the deploy
+
+```bash
+npm run verify   # typecheck + lint + 503 tests
+```
+
+`.github/workflows/ci.yml` runs exactly this on every push and pull request,
+plus a production build, so a broken `VITE_API_BASE_URL` or a failing test is
+caught before anyone deploys.
+
+## Bundle shape
+
+Routes are code-split (`React.lazy` in `src/App.tsx`), so the first download is
+the shell plus one screen rather than the whole dashboard:
+
+| Chunk | gzip | Loaded when |
+|-------|------|-------------|
+| `index` (shell: React, Router, auth, Header/Sidebar) | ~66 kB | always |
+| One page chunk per route | 0.5–9 kB | that route is opened |
+| `OrdersBarChart` (Chart.js) | ~55 kB | the dashboard chart renders |
+| `LandingPage` + photography | ~9 kB + images | `/` only |
+
+Keep it that way: import a page into `App.tsx` eagerly and it rejoins the
+initial bundle.
 
 ## Authentication & session (`src/auth`, `src/api`)
 

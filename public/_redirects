@@ -1,0 +1,5 @@
+# Netlify / Cloudflare Pages SPA fallback.
+# React Router owns every path; without this, a direct visit or a refresh on
+# /dashboard, /orders, … asks the host for a file that does not exist and gets
+# a 404. Assets are real files and are served before this rule is consulted.
+/*  /index.html  200
