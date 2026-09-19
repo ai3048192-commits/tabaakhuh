@@ -20,9 +20,11 @@ import OverviewPage from "./overview/OverviewPage";
 import DeliveryPage from "./delivery/DeliveryPage";
 import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Login";
+import NotFound from "./pages/NotFound";
 import { AuthProvider, useAuth } from "./auth/AuthContext";
 import RequireAdmin from "./auth/RequireAdmin";
 import FullScreenLoader from "./auth/FullScreenLoader";
+import ErrorBoundary from "./shared/ErrorBoundary";
 import "./index.css";
 
 function AdminLayout() {
@@ -52,6 +54,7 @@ function AdminLayout() {
           <Route path="/incidents" element={<IncidentsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/delivery" element={<DeliveryPage />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       {modalType === "إضافة طباخة" && (
@@ -86,22 +89,24 @@ function LoginRoute() {
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginRoute />} />
-          <Route
-            path="/*"
-            element={
-              <RequireAdmin>
-                <AdminLayout />
-              </RequireAdmin>
-            }
-          />
-        </Routes>
-      </AuthProvider>
-    </Router>
+    <ErrorBoundary>
+      <Router>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginRoute />} />
+            <Route
+              path="/*"
+              element={
+                <RequireAdmin>
+                  <AdminLayout />
+                </RequireAdmin>
+              }
+            />
+          </Routes>
+        </AuthProvider>
+      </Router>
+    </ErrorBoundary>
   );
 }
 
