@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { X } from 'lucide-react'
 import DialogShell from '../shared/DialogShell'
+import { safeUrl } from '../shared/safeUrl'
 import { incidentMessages as M } from './messages'
 import type { IncidentDetail, IncidentStatus } from './types'
 
@@ -92,8 +93,8 @@ export default function IncidentDetailDialog({
             {attachment && (
               <div className="mb-4">
                 <p className="mb-1 text-xs font-black text-gray-500">{M.attachment}</p>
-                <a href={attachment} target="_blank" rel="noreferrer">
-                  <img src={attachment} alt="" className="max-h-48 rounded-xl border border-gray-100 object-cover" />
+                <a href={safeUrl(attachment)} target="_blank" rel="noreferrer">
+                  <img src={safeUrl(attachment)} alt="" className="max-h-48 rounded-xl border border-gray-100 object-cover" />
                 </a>
               </div>
             )}
@@ -141,7 +142,7 @@ export default function IncidentDetailDialog({
               >
                 {M.send}
               </button>
-              {NEXT_STATUSES[detail.status].map((next) => (
+              {(NEXT_STATUSES[detail.status] ?? []).map((next) => (
                 <button
                   key={next}
                   type="button"

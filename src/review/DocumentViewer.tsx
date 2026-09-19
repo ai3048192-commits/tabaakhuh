@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import {
   X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, RotateCcw, ExternalLink, AlertTriangle,
 } from 'lucide-react'
+import { safeUrl } from '../shared/safeUrl'
 import { reviewMessages, type ReviewMessages } from './messages'
 import { resolveMedia } from './documentMedia'
 import type { DocumentRef } from './types'
@@ -34,7 +35,7 @@ function DocFailure({ url, M }: { url: string; M: ReviewMessages }) {
       <p className="text-sm font-bold text-gray-700">{M.docLoadFailed}</p>
       <p className="text-xs leading-relaxed text-gray-500">{M.docLoadFailedHint}</p>
       <a
-        href={url}
+        href={safeUrl(url)}
         target="_blank"
         rel="noreferrer"
         className="flex items-center gap-1.5 rounded-xl bg-[#7a0d0d] px-4 py-2 text-xs font-black text-white hover:bg-[#9a1212]"
@@ -238,7 +239,7 @@ export default function DocumentViewer({ docs, index, onIndexChange, onClose, st
                   // Remount on navigation so a stale frame never lingers.
                   key={current.url}
                   title={current.label}
-                  src={current.url}
+                  src={safeUrl(current.url)}
                   onLoad={() => setFrameLoaded(true)}
                   onError={() => setFrameTimedOut(true)}
                   className="w-full flex-1 border-0"
@@ -250,7 +251,7 @@ export default function DocumentViewer({ docs, index, onIndexChange, onClose, st
               <div className="flex shrink-0 items-center justify-center gap-2 border-t border-gray-200 p-2 text-xs">
                 {!frameTimedOut && <span className="text-gray-500">{M.docNotShowing}</span>}
                 <a
-                  href={current.url}
+                  href={safeUrl(current.url)}
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center gap-1 font-bold text-blue-600 underline"
