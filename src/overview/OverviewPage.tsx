@@ -1,14 +1,5 @@
-import { useMemo, useState } from 'react'
+import { lazy, Suspense, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Bar } from 'react-chartjs-2'
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Tooltip,
-  Legend,
-} from 'chart.js'
 import {
   Users, ChefHat, Bike, MapPin, ShoppingCart, Coins,
   PlusCircle, Send, UserPlus, RefreshCw, AlertTriangle, Eye, X, TableProperties,
@@ -21,7 +12,8 @@ import { overviewMessages as M } from './messages'
 import type { ActiveDelivery } from '../delivery/types'
 import type { Order } from '../orders/types'
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend)
+/** Chart.js is pulled in only when there is actually a chart to draw. */
+const OrdersBarChart = lazy(() => import('./OrdersBarChart'))
 
 /** Backend order-status enum → Arabic label, with a fallback for unknown values. */
 const statusText = (s: string): string =>
@@ -158,12 +150,13 @@ export default function OverviewPage({ onQuickAction }: Props) {
                 <p className="mt-6 text-xs text-gray-400">{M.chartEmpty}</p>
               ) : (
                 <div className="mt-4 h-48">
-                  <Bar
-                    data={chart.data}
-                    options={chart.options}
-                    role="img"
-                    aria-label={M.chartTitle}
-                  />
+                  <Suspense fallback={<div className="h-full w-full animate-pulse rounded-xl bg-[#f0e7d4]" />}>
+                    <OrdersBarChart
+                      data={chart.data}
+                      options={chart.options}
+                      label={M.chartTitle}
+                    />
+                  </Suspense>
                 </div>
               )}
             </section>

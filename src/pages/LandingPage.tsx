@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import heroFood from "../assets/Egyptian Home Food.png";
+import heroFood from "../assets/egyptian-home-food.webp";
 import logoIcon from "../assets/logo_icon_trim.png";
 import chickenImg from "../assets/chicken.jpeg";
 import kosharyImg from "../assets/koshary.jpeg";
