@@ -6,13 +6,9 @@ import AssignDriverDialog from './AssignDriverDialog'
 import AddDriverModal from '../components/AddDriverModal'
 import { deliveryMessages as M } from './messages'
 
-let __renderCount = 0
-
 export default function DeliveryPage() {
   const q = useDelivery()
   const [addDriverOpen, setAddDriverOpen] = useState(false)
-  const renderN = ++__renderCount
-  console.log(`[deep-link debug] RENDER #${renderN}`, { status: q.status, assigning: q.assigning?.order_number ?? null })
 
   // Deep link from Orders Oversight's per-row "assign driver" link
   // (`/delivery?order=<id>`): once the active-deliveries list is in, jump
@@ -25,24 +21,14 @@ export default function DeliveryPage() {
   const handledOrderRef = useRef<string | null>(null)
 
   useEffect(() => {
-    // TEMP DEBUG — remove after diagnosing the "not in pipeline" report.
-    console.log(`[deep-link debug] EFFECT (render #${renderN})`, {
-      requestedOrderId,
-      status: q.status,
-      handled: handledOrderRef.current,
-      activeIds: q.active.map((d) => ({ order_id: d.order_id, order_number: d.order_number })),
-    })
     if (!requestedOrderId || q.status !== 'ready') return
     if (handledOrderRef.current === requestedOrderId) return
     handledOrderRef.current = requestedOrderId
 
     const match = q.active.find((d) => d.order_id === Number(requestedOrderId))
-    console.log(`[deep-link debug] EFFECT (render #${renderN}) match =`, match)
     if (match) {
-      console.log(`[deep-link debug] EFFECT (render #${renderN}) calling openAssign`)
       q.openAssign(match)
     } else {
-      console.log(`[deep-link debug] EFFECT (render #${renderN}) calling setOrderNotFound(true)`)
       setOrderNotFound(true)
     }
     // Clear the param so a refresh or a "back" navigation doesn't reopen it.

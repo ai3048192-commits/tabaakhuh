@@ -29,13 +29,15 @@ export const ACCEPT_ATTR = ACCEPTED_TYPES.join(',')
 export type UploadErrorKind = 'unconfigured' | 'bad_type' | 'too_large' | 'network' | 'rejected'
 
 export class CloudinaryError extends Error {
-  constructor(
-    readonly kind: UploadErrorKind,
-    /** Cloudinary's own message when it rejected the upload, if any. */
-    readonly detail?: string,
-  ) {
+  readonly kind: UploadErrorKind
+  /** Cloudinary's own message when it rejected the upload, if any. */
+  readonly detail?: string
+
+  constructor(kind: UploadErrorKind, detail?: string) {
     super(detail ?? kind)
     this.name = 'CloudinaryError'
+    this.kind = kind
+    this.detail = detail
   }
 }
 

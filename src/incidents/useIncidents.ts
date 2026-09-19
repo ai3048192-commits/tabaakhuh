@@ -54,24 +54,31 @@ export function useIncidents(): UseIncidents {
     window.setTimeout(() => setToast((t) => (t === msg ? null : t)), 6000)
   }, [])
 
-  const load = useCallback(async () => {
-    if (!hasPageRef.current) setStatus('loading')
-    try {
-      const data = await listIncidents({ filters, page: pageNum })
-      setPageData(data)
-      setStatus('ready')
-    } catch {
-      if (hasPageRef.current) {
+  const load = useCallback(
+    async (signal?: AbortSignal) => {
+      if (!hasPageRef.current) setStatus('loading')
+      try {
+        const data = await listIncidents({ filters, page: pageNum }, signal)
+        setPageData(data)
         setStatus('ready')
-        showToast('تعذّر التحديث. حاول مرة أخرى.')
-      } else {
-        setStatus('error')
+      } catch (err) {
+        // A superseded filter/page change — its replacement owns the state now.
+        if ((err as Error | undefined)?.name === 'AbortError') return
+        if (hasPageRef.current) {
+          setStatus('ready')
+          showToast('تعذّر التحديث. حاول مرة أخرى.')
+        } else {
+          setStatus('error')
+        }
       }
-    }
-  }, [filters, pageNum, showToast])
+    },
+    [filters, pageNum, showToast],
+  )
 
   useEffect(() => {
-    void load()
+    const ac = new AbortController()
+    void load(ac.signal)
+    return () => ac.abort()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, pageNum])
 
@@ -84,13 +91,21 @@ export function useIncidents(): UseIncidents {
     setPageNum(1)
   }
 
+  // Only the newest open/close wins: a slow response for a ticket the admin has
+  // since closed or navigated away from must not reopen or swap the dialog.
+  const detailReqRef = useRef(0)
+
   const openDetail = useCallback(async (id: number) => {
+    const req = ++detailReqRef.current
     setDetail(null)
     setDetailStatus('loading')
     try {
-      setDetail(await getIncident(id))
+      const fresh = await getIncident(id)
+      if (detailReqRef.current !== req) return
+      setDetail(fresh)
       setDetailStatus('idle')
     } catch {
+      if (detailReqRef.current !== req) return
       setDetailStatus('error')
     }
   }, [])
@@ -185,6 +200,7 @@ export function useIncidents(): UseIncidents {
     refresh: () => void load(),
     openDetail: (id) => void openDetail(id),
     closeDetail: () => {
+      detailReqRef.current++ // discard any open request still in flight
       setDetail(null)
       setDetailStatus('idle')
     },

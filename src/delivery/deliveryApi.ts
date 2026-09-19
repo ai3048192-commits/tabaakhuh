@@ -9,10 +9,12 @@ import type {
 
 /** Live delivery-operations endpoints (`routes/api.php` — `AdminDeliveryController`). */
 
-function toActiveDelivery(r: RawActiveDelivery): ActiveDelivery {
+/** `null` for a row carrying no usable order id — it could not be assigned or deep-linked. */
+function toActiveDelivery(r: RawActiveDelivery): ActiveDelivery | null {
   // The live backend sends the order id as `id`, not the documented `order_id`
   // (see the note on `RawActiveDelivery`) — accept either.
-  const orderId = r.order_id ?? r.id ?? 0
+  const orderId = r.order_id ?? r.id
+  if (orderId == null) return null
   return {
     order_id: orderId,
     order_number: r.order_number ?? String(orderId),
@@ -44,7 +46,7 @@ function toDeliveryDriver(r: RawDeliveryDriver): DeliveryDriver {
 /** `GET /admin/delivery/active` → in-progress deliveries (nested rows, flattened here). */
 export async function listActiveDeliveries(signal?: AbortSignal): Promise<ActiveDelivery[]> {
   const rows = await authedRequest<RawActiveDelivery[]>('/admin/delivery/active', { signal })
-  return (rows ?? []).map(toActiveDelivery)
+  return (rows ?? []).map(toActiveDelivery).filter((d): d is ActiveDelivery => d !== null)
 }
 
 export interface DeliveryDriversResult {
