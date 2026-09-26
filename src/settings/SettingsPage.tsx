@@ -4,7 +4,6 @@ import { RefreshCw, Wallet, Info, Bell, MapPin } from 'lucide-react'
 import { fetchCityDirectory } from '../cities/citiesApi'
 import { usePlatformSettings } from './usePlatformSettings'
 import { useSystemSettings } from './useSystemSettings'
-import DeliveryFeeForm from './DeliveryFeeForm'
 import ImageUploadField from './ImageUploadField'
 import SettingsCard from './SettingsCard'
 import { settingsMessages as M } from './messages'
@@ -113,7 +112,10 @@ function Toggle({
   )
 }
 
-/** `/settings` — platform settings. Delivery fee + all §6 system settings + the cities view. */
+/**
+ * `/settings` — platform settings: all §6 system settings + the cities view.
+ * Delivery fees are no longer set here — they're per area, on `/delivery-pricing`.
+ */
 export default function SettingsPage() {
   const s = usePlatformSettings()
   const sys = useSystemSettings(s.saved, s.applyServerSettings)
@@ -131,12 +133,6 @@ export default function SettingsPage() {
   const showToast = (msg: string) => {
     setToast(msg)
     window.setTimeout(() => setToast((t) => (t === msg ? null : t)), 6000)
-  }
-
-  const runFeeSave = async () => {
-    const outcome = await s.save()
-    if (outcome.ok) showToast(M.updatedToast)
-    else if (outcome.reason === 'transient') showToast(M.saveRetryToast)
   }
 
   const runSystemSave = async () => {
@@ -176,15 +172,13 @@ export default function SettingsPage() {
         <>
           <div className="grid gap-6 lg:grid-cols-2">
             <SettingsCard title={M.cardFinanceTitle} icon={<Wallet size={18} aria-hidden="true" />}>
-              <DeliveryFeeForm
-                savedFee={s.savedFee}
-                draft={s.draft}
-                fieldError={s.fieldError}
-                canSave={s.canSave}
-                saving={s.saving}
-                onDraftChange={s.setDraft}
-                onSave={runFeeSave}
-              />
+              <p className="text-sm text-gray-600">{M.deliveryPricingMoved}</p>
+              <Link
+                to="/delivery-pricing"
+                className="mt-3 inline-block rounded-xl bg-[#7a0d0d] px-4 py-2 text-sm font-black text-white"
+              >
+                {M.deliveryPricingLink}
+              </Link>
               <div className="mt-6 space-y-3 border-t border-gray-100 pt-4">
                 <p className="text-[11px] font-bold text-gray-400">{M.financeExtraHeading}</p>
                 <div className="grid gap-3 sm:grid-cols-2">

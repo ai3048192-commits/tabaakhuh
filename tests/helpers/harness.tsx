@@ -11,6 +11,7 @@ import CookApplicationsPage from '../../src/cooks/CookApplicationsPage'
 import DriverApplicationsPage from '../../src/drivers/DriverApplicationsPage'
 import SettingsPage from '../../src/settings/SettingsPage'
 import CitiesPage from '../../src/cities/CitiesPage'
+import DeliveryPricingPage from '../../src/areas/DeliveryPricingPage'
 import OverviewPage from '../../src/overview/OverviewPage'
 import OrdersPage from '../../src/orders/OrdersPage'
 import WithdrawalsPage from '../../src/withdrawals/WithdrawalsPage'
@@ -432,6 +433,37 @@ export function renderAtDelivery(
             element={
               <RequireAdmin>
                 <DeliveryPage />
+              </RequireAdmin>
+            }
+          />
+        </Routes>
+      </AuthProvider>
+    </MemoryRouter>,
+  )
+}
+
+/**
+ * Render the real `DeliveryPricingPage` at `/delivery-pricing` inside an
+ * already-signed-in admin session. The test stubs `GET /admin/cities` and
+ * `GET /admin/areas?city_id=…` on `fm` before calling.
+ */
+export function renderAtDeliveryPricing(fm: FetchMock, opts: { admin?: boolean } = {}) {
+  const { admin = true } = opts
+  const who = admin ? adminUser : { ...adminUser, role: 'customer' as const }
+  localStorage.setItem(STORAGE_KEYS.token, 'tok-admin')
+  localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(who))
+  fm.reply('GET /auth/me', { json: ok({ user: who }) })
+
+  return render(
+    <MemoryRouter initialEntries={['/delivery-pricing']}>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<div>صفحة تسجيل الدخول</div>} />
+          <Route
+            path="/*"
+            element={
+              <RequireAdmin>
+                <DeliveryPricingPage />
               </RequireAdmin>
             }
           />

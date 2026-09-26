@@ -25,7 +25,7 @@ describe('Settings — rich multi-card layout', () => {
     })
     renderAtSettings(fm)
 
-    await screen.findByLabelText(M.feeFieldLabel)
+    await screen.findByLabelText(M.commissionLabel)
     expect(screen.getByText(M.liveNote)).toBeInTheDocument()
     for (const t of [M.cardFinanceTitle, M.cardCitiesTitle, M.cardStoreTitle, M.cardNotifTitle]) {
       expect(screen.getByRole('heading', { name: t })).toBeInTheDocument()
@@ -55,7 +55,8 @@ describe('Settings — rich multi-card layout', () => {
     expect(screen.getByLabelText(M.supportEmailLabel)).toBeEnabled()
     expect(screen.getByLabelText(M.notifPushLabel)).toBeEnabled()
     expect(screen.getByLabelText(M.commissionLabel)).toBeEnabled()
-    expect(screen.getByLabelText(M.feeFieldLabel)).toBeEnabled()
+    // delivery fees moved to their own per-area screen
+    expect(screen.getByRole('link', { name: M.deliveryPricingLink })).toHaveAttribute('href', '/delivery-pricing')
     // the shared system-settings save starts disabled (nothing dirty)
     expect(screen.getByRole('button', { name: M.saveSettings })).toBeDisabled()
   })

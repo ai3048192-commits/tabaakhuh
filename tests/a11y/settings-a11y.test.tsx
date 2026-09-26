@@ -1,10 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { screen } from '@testing-library/react'
 import { axe } from 'vitest-axe'
 import { renderAtSettings } from '../helpers/harness'
 import { installFetchMock, type FetchMock, openGate } from '../helpers/fetchMock'
-import { fail, settingsResponse, updatedSettings } from '../helpers/fixtures'
+import { fail, settingsResponse } from '../helpers/fixtures'
 import { settingsMessages as M } from '../../src/settings/messages'
 
 const AXE_WCAG = {
@@ -20,13 +19,6 @@ afterEach(() => {
   vi.unstubAllGlobals()
   localStorage.clear()
 })
-
-function describedText(el: HTMLElement): string {
-  return (el.getAttribute('aria-describedby') ?? '')
-    .split(/\s+/)
-    .map((id) => document.getElementById(id)?.textContent ?? '')
-    .join(' ')
-}
 
 describe('Platform settings — accessibility (FR-026 / FR-027, SC-008 / SC-009)', () => {
   it('the loading state has no AA violations', async () => {
@@ -45,65 +37,12 @@ describe('Platform settings — accessibility (FR-026 / FR-027, SC-008 / SC-009)
     expect(await axe(container, AXE_WCAG)).toHaveNoViolations()
   })
 
-  it('the pristine form has no AA violations; the field is labelled and its unit is described', async () => {
+  it('the loaded page has no AA violations and is RTL', async () => {
     fm.reply('GET /admin/settings', { json: settingsResponse(25) })
     const { container } = renderAtSettings(fm)
 
-    const field = await screen.findByLabelText(M.feeFieldLabel)
-    expect(field).toHaveAttribute('aria-describedby')
-    expect(describedText(field)).toContain(M.feeUnitName)
+    await screen.findByLabelText(M.commissionLabel)
     expect(container.querySelector('[dir="rtl"]')).toBeTruthy()
     expect(await axe(container, AXE_WCAG)).toHaveNoViolations()
-  })
-
-  it('the field-error state has no AA violations and the error is associated with the field', async () => {
-    fm.reply('GET /admin/settings', { json: settingsResponse(25) })
-    const user = userEvent.setup()
-    const { container } = renderAtSettings(fm)
-
-    const field = await screen.findByLabelText(M.feeFieldLabel)
-    await user.clear(field)
-    await user.type(field, '-5')
-
-    expect(field).toHaveAttribute('aria-invalid', 'true')
-    expect(describedText(field)).toContain(M.feeNegative)
-    expect(await axe(container, AXE_WCAG)).toHaveNoViolations()
-  })
-
-  it('the saving state has no AA violations and Save exposes aria-busy', async () => {
-    fm.reply('GET /admin/settings', { json: settingsResponse(25) })
-    const g = openGate()
-    fm.reply('PUT /admin/settings', { gate: g.gate, json: updatedSettings(30) })
-    const user = userEvent.setup()
-    const { container } = renderAtSettings(fm)
-
-    const field = await screen.findByLabelText(M.feeFieldLabel)
-    await user.clear(field)
-    await user.type(field, '30')
-    await user.click(screen.getByRole('button', { name: M.save }))
-
-    const busy = screen.getByRole('button', { name: M.saving })
-    expect(busy).toHaveAttribute('aria-busy', 'true')
-    expect(busy).toBeDisabled()
-    expect(await axe(container, AXE_WCAG)).toHaveNoViolations()
-    g.land()
-  })
-
-  it('keyboard: type a new value, Tab to Save, activate with Enter', async () => {
-    fm.reply('GET /admin/settings', { json: settingsResponse(25) })
-    fm.reply('PUT /admin/settings', { json: updatedSettings(30) })
-    const user = userEvent.setup()
-    renderAtSettings(fm)
-
-    const field = await screen.findByLabelText(M.feeFieldLabel)
-    await user.click(field)
-    await user.clear(field)
-    await user.type(field, '30')
-    await user.tab()
-    expect(screen.getByRole('button', { name: M.save })).toHaveFocus()
-    await user.keyboard('{Enter}')
-
-    await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent(M.updatedToast))
-    expect(fm.count('PUT /admin/settings')).toBe(1)
   })
 })

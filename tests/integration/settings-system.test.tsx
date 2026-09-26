@@ -22,7 +22,7 @@ async function open(overrides: Record<string, unknown> = {}) {
   fm.reply('GET /admin/cities', { json: ok([]) })
   const user = userEvent.setup()
   renderAtSettings(fm)
-  await screen.findByLabelText(M.feeFieldLabel)
+  await screen.findByLabelText(M.commissionLabel)
   return { user }
 }
 
@@ -125,7 +125,7 @@ describe('Platform settings — the §6 system settings cards', () => {
     fm.reply('GET /admin/cities', { json: ok([]) })
     const user = userEvent.setup()
     const { container } = renderAtSettings(fm)
-    await screen.findByLabelText(M.feeFieldLabel)
+    await screen.findByLabelText(M.commissionLabel)
 
     const secureUrl = 'https://res.cloudinary.com/test-cloud/image/upload/v1/tabaakhuh/settings/logo.png'
     fm.reply('POST /v1_1/test-cloud/image/upload', { json: { secure_url: secureUrl, width: 240, height: 240, bytes: 900 } })
@@ -149,7 +149,7 @@ describe('Platform settings — the §6 system settings cards', () => {
     fm.reply('GET /admin/cities', { json: ok([]) })
     const user = userEvent.setup()
     const { container } = renderAtSettings(fm)
-    await screen.findByLabelText(M.feeFieldLabel)
+    await screen.findByLabelText(M.commissionLabel)
 
     fm.reply('POST /v1_1/test-cloud/image/upload', {
       status: 400,

@@ -17,13 +17,14 @@ afterEach(() => {
 })
 
 describe('Platform settings — view (US1)', () => {
-  it('AC1: loads once and shows the current fee as an EGP amount', async () => {
+  it('AC1: loads once; delivery fees are no longer a flat setting here but link to per-area pricing', async () => {
     fm.reply('GET /admin/settings', { json: settingsResponse(25) })
     renderAtSettings(fm)
 
-    const field = await screen.findByLabelText(M.feeFieldLabel)
-    expect(field).toHaveValue('25.00')
-    expect(screen.getByText('25.00')).toBeInTheDocument()
+    await screen.findByLabelText(M.commissionLabel)
+    expect(screen.queryByLabelText(M.feeFieldLabel)).toBeNull()
+    expect(screen.getByText(M.deliveryPricingMoved)).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: M.deliveryPricingLink })).toHaveAttribute('href', '/delivery-pricing')
     expect(fm.count('GET /admin/settings')).toBe(1)
     expect(fm.lastCall('GET /admin/settings')?.authorization).toBe('Bearer tok-admin')
   })
@@ -34,9 +35,9 @@ describe('Platform settings — view (US1)', () => {
     renderAtSettings(fm)
 
     expect(await screen.findByText(M.loading)).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: M.save })).toBeNull()
+    expect(screen.queryByRole('button', { name: M.saveSettings })).toBeNull()
     g.land()
-    await screen.findByLabelText(M.feeFieldLabel)
+    await screen.findByLabelText(M.commissionLabel)
   })
 
   it('AC3: a failed load shows a retryable error and no editable value', async () => {
@@ -45,7 +46,7 @@ describe('Platform settings — view (US1)', () => {
 
     expect(await screen.findByText(M.loadError)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: M.retry })).toBeInTheDocument()
-    expect(screen.queryByLabelText(M.feeFieldLabel)).toBeNull()
+    expect(screen.queryByLabelText(M.commissionLabel)).toBeNull()
   })
 
   it('AC3: a transport failure is also the error state', async () => {
@@ -66,8 +67,7 @@ describe('Platform settings — view (US1)', () => {
 
     await user.click(await screen.findByRole('button', { name: M.retry }))
 
-    const field = await screen.findByLabelText(M.feeFieldLabel)
-    expect(field).toHaveValue('40.00')
+    await screen.findByLabelText(M.commissionLabel)
     expect(fm.count('GET /admin/settings')).toBe(2)
   })
 

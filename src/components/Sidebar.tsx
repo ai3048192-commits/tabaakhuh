@@ -1,7 +1,7 @@
 import {
   LayoutGrid, Users, ShoppingBag, ChefHat,
   TrendingUp, MessageSquareWarning, Settings, LogOut, X,
-  Bike, MapPin, Wallet, AlertTriangle
+  Bike, MapPin, Wallet, AlertTriangle, Truck
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
@@ -19,6 +19,7 @@ const menuItems = [
   { name: 'الشكاوى والاقتراحات', icon: MessageSquareWarning, path: '/complaints' },
   { name: 'بلاغات الحوادث', icon: AlertTriangle, path: '/incidents' },
   { name: 'إدارة المدن', icon: MapPin, path: '/cities' },
+  { name: 'أسعار التوصيل', icon: Truck, path: '/delivery-pricing' },
   { name: 'إعدادات النظام', icon: Settings, path: '/settings' },
 ];
 

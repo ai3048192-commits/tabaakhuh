@@ -34,6 +34,9 @@ export const settingsMessages = {
   pendingBackend: 'بانتظار الباك اند',
 
   cardFinanceTitle: 'الإعدادات المالية',
+  deliveryPricingMoved:
+    'سعر التوصيل بقى بيتحدد لكل منطقة على حدة (مثلًا: مدينة نصر ٥٠ ج.م)، وبيظهر للعميل والطباخة والمندوب.',
+  deliveryPricingLink: 'إدارة أسعار التوصيل',
   cardStoreTitle: 'بيانات المتجر',
   cardNotifTitle: 'الإشعارات ونطاق التوصيل',
   cardCitiesTitle: 'المدن والمناطق',
