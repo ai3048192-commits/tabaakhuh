@@ -69,7 +69,7 @@ export default function OrderRow({
           <button
             type="button"
             onClick={() => onOpenDetail(order)}
-            className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-bold text-brand"
+            className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-bold text-[#7a0d0d]"
           >
             <Eye size={13} aria-hidden="true" />
             {M.viewDetails}
@@ -77,7 +77,7 @@ export default function OrderRow({
           {needsDriverAssignment(order.status) && (
             <Link
               to={`/delivery?order=${order.id}`}
-              className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-bold text-brand"
+              className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-bold text-[#7a0d0d]"
             >
               <Truck size={13} aria-hidden="true" />
               {M.assignDriver}

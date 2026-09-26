@@ -40,7 +40,7 @@ function NumField({
         onChange={(e) => onChange(field, e.target.value)}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errId : undefined}
-        className="rounded-xl border border-gray-200 p-2.5 text-sm focus-visible:outline-2 focus-visible:outline-brand"
+        className="rounded-xl border border-gray-200 p-2.5 text-sm focus-visible:outline-2 focus-visible:outline-[#7a0d0d]"
       />
       <p id={errId} aria-live="polite" className="min-h-[0.9rem] text-[11px] text-red-600">{error ?? ''}</p>
     </div>
@@ -79,7 +79,7 @@ function TextField({
         onChange={(e) => onChange(field, e.target.value)}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errId : undefined}
-        className="rounded-xl border border-gray-200 p-2.5 text-sm focus-visible:outline-2 focus-visible:outline-brand"
+        className="rounded-xl border border-gray-200 p-2.5 text-sm focus-visible:outline-2 focus-visible:outline-[#7a0d0d]"
       />
       <p id={errId} aria-live="polite" className="min-h-[0.9rem] text-[11px] text-red-600">{error ?? ''}</p>
     </div>
@@ -106,7 +106,7 @@ function Toggle({
         type="checkbox"
         checked={checked}
         onChange={(e) => onChange(field, e.target.checked)}
-        className="h-4 w-4 accent-brand"
+        className="h-4 w-4 accent-[#7a0d0d]"
       />
     </label>
   )
@@ -142,9 +142,9 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-full bg-ivory p-4 font-['Tajawal'] md:p-6" dir="rtl">
+    <div className="min-h-full bg-[#fcf9f2] p-4 font-['Tajawal'] md:p-6" dir="rtl">
       <div className="mb-4">
-        <h1 className="text-xl font-black text-brand">{M.pageTitle}</h1>
+        <h1 className="text-xl font-black text-[#7a0d0d]">{M.pageTitle}</h1>
         <p className="mt-1 text-xs font-bold text-gray-400">{M.subtitle}</p>
       </div>
       <p className="mb-6 flex items-start gap-2 rounded-2xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
@@ -160,7 +160,7 @@ export default function SettingsPage() {
           <button
             type="button"
             onClick={s.reload}
-            className="inline-flex items-center gap-2 rounded-xl bg-brand px-4 py-2 text-sm font-black text-white"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#7a0d0d] px-4 py-2 text-sm font-black text-white"
           >
             <RefreshCw size={14} aria-hidden="true" />
             {M.retry}
@@ -175,7 +175,7 @@ export default function SettingsPage() {
               <p className="text-sm text-gray-600">{M.deliveryPricingMoved}</p>
               <Link
                 to="/delivery-pricing"
-                className="mt-3 inline-block rounded-xl bg-brand px-4 py-2 text-sm font-black text-white"
+                className="mt-3 inline-block rounded-xl bg-[#7a0d0d] px-4 py-2 text-sm font-black text-white"
               >
                 {M.deliveryPricingLink}
               </Link>
@@ -209,7 +209,7 @@ export default function SettingsPage() {
               <p className="mt-4 text-xs text-gray-400">{M.citiesHint}</p>
               <Link
                 to="/cities"
-                className="mt-2 inline-block rounded-xl bg-brand px-4 py-2 text-sm font-black text-white"
+                className="mt-2 inline-block rounded-xl bg-[#7a0d0d] px-4 py-2 text-sm font-black text-white"
               >
                 {M.manageCities}
               </Link>
@@ -247,7 +247,7 @@ export default function SettingsPage() {
               onClick={runSystemSave}
               disabled={!sys.canSave}
               aria-busy={sys.saving}
-              className="rounded-xl bg-brand px-5 py-2.5 text-sm font-black text-white disabled:opacity-50"
+              className="rounded-xl bg-[#7a0d0d] px-5 py-2.5 text-sm font-black text-white disabled:opacity-50"
             >
               {sys.saving ? M.saving : M.saveSettings}
             </button>

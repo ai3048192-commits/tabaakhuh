@@ -106,7 +106,7 @@ export default function IncidentDetailDialog({
                   key={m.id}
                   className={`rounded-xl p-2.5 text-sm ${
                     m.author === 'admin'
-                      ? 'bg-brand/5 text-gray-800'
+                      ? 'bg-[#7a0d0d]/5 text-gray-800'
                       : 'bg-gray-100 text-gray-700'
                   }`}
                 >
@@ -138,7 +138,7 @@ export default function IncidentDetailDialog({
                 disabled={busy || draft.trim() === ''}
                 aria-busy={busy}
                 onClick={() => void send()}
-                className="rounded-xl bg-brand px-4 py-2 text-sm font-black text-white disabled:opacity-50"
+                className="rounded-xl bg-[#7a0d0d] px-4 py-2 text-sm font-black text-white disabled:opacity-50"
               >
                 {M.send}
               </button>

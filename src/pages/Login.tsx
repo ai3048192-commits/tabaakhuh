@@ -75,11 +75,11 @@ export default function Login() {
   return (
     <div
       dir="rtl"
-      className="flex min-h-screen items-center justify-center bg-papyrus p-4 text-gray-800"
+      className="flex min-h-screen items-center justify-center bg-[#f7f1e6] p-4 text-gray-800"
     >
       <div className="grid w-full max-w-4xl overflow-hidden rounded-[2rem] bg-white shadow-[0_40px_90px_-30px_rgba(122,13,13,0.4)] md:grid-cols-2">
         {/* Brand panel */}
-        <div className="relative hidden flex-col justify-between overflow-hidden bg-gradient-to-br from-brand to-brand-dark p-10 text-white md:flex">
+        <div className="relative hidden flex-col justify-between overflow-hidden bg-gradient-to-br from-[#7a0d0d] to-[#5a0909] p-10 text-white md:flex">
           <div className="pointer-events-none absolute inset-0 opacity-[0.08] [background-image:radial-gradient(circle,#fff_1.5px,transparent_1.5px)] [background-size:24px_24px]" />
           <Link to="/" className="relative flex items-center gap-2">
             <img src={logoIcon} alt="طباخه" className="h-10 w-auto object-contain" />
@@ -109,11 +109,11 @@ export default function Login() {
         <div className="p-8 sm:p-10">
           <div className="mb-8 text-center md:text-right">
             <div className="mb-4 flex justify-center md:hidden">
-              <div className="grid h-14 w-14 place-items-center rounded-2xl bg-brand">
+              <div className="grid h-14 w-14 place-items-center rounded-2xl bg-[#7a0d0d]">
                 <img src={logoIcon} alt="طباخه" className="h-9 w-auto object-contain" />
               </div>
             </div>
-            <h1 className="text-2xl font-black text-brand">تسجيل الدخول</h1>
+            <h1 className="text-2xl font-black text-[#7a0d0d]">تسجيل الدخول</h1>
             <p className="mt-1 text-sm text-gray-500">اكتب بيانات حسابك للدخول على لوحة التحكم.</p>
           </div>
 
@@ -135,7 +135,7 @@ export default function Login() {
               <label htmlFor={idField} className="mb-1.5 block text-sm font-bold text-gray-700">
                 البريد الإلكتروني أو رقم الهاتف
               </label>
-              <div className="flex items-center gap-2 rounded-xl border border-line bg-ivory px-3 focus-within:border-brand">
+              <div className="flex items-center gap-2 rounded-xl border border-[#e8dfc9] bg-[#fcf9f2] px-3 focus-within:border-[#7a0d0d]">
                 <User size={18} className="text-gray-400" aria-hidden="true" />
                 <input
                   id={idField}
@@ -163,7 +163,7 @@ export default function Login() {
               <label htmlFor={pwField} className="mb-1.5 block text-sm font-bold text-gray-700">
                 كلمة المرور
               </label>
-              <div className="flex items-center gap-2 rounded-xl border border-line bg-ivory px-3 focus-within:border-brand">
+              <div className="flex items-center gap-2 rounded-xl border border-[#e8dfc9] bg-[#fcf9f2] px-3 focus-within:border-[#7a0d0d]">
                 <Lock size={18} className="text-gray-400" aria-hidden="true" />
                 <input
                   id={pwField}
@@ -183,7 +183,7 @@ export default function Login() {
                   onClick={() => setShowPass((v) => !v)}
                   aria-label={showPass ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
                   aria-pressed={showPass}
-                  className="text-gray-400 transition hover:text-brand"
+                  className="text-gray-400 transition hover:text-[#7a0d0d]"
                 >
                   {showPass ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
                 </button>
@@ -198,7 +198,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={submitting}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand py-3.5 text-sm font-black text-white shadow-lg transition hover:bg-brand-dark disabled:opacity-60"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#7a0d0d] py-3.5 text-sm font-black text-white shadow-lg transition hover:bg-[#5a0909] disabled:opacity-60"
             >
               <LogIn size={18} aria-hidden="true" />
               {submitting ? "جاري الدخول..." : "دخول"}
@@ -206,7 +206,7 @@ export default function Login() {
           </form>
 
           <p className="mt-6 text-center text-xs text-gray-400 md:hidden">
-            <Link to="/" className="font-bold text-brand hover:underline">
+            <Link to="/" className="font-bold text-[#7a0d0d] hover:underline">
               رجوع للموقع
             </Link>
           </p>

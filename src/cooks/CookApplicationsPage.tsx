@@ -69,10 +69,10 @@ export default function CookApplicationsPage() {
   }
 
   return (
-    <div className="min-h-full bg-ivory p-4 font-['Tajawal'] md:p-6" dir="rtl">
+    <div className="min-h-full bg-[#fcf9f2] p-4 font-['Tajawal'] md:p-6" dir="rtl">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-black text-brand">{M.pageTitle}</h1>
+          <h1 className="text-xl font-black text-[#7a0d0d]">{M.pageTitle}</h1>
           {q.status === 'ready' && (
             <p className="mt-1 text-xs font-bold text-gray-400">{M.awaitingCount(q.count)}</p>
           )}
@@ -97,7 +97,7 @@ export default function CookApplicationsPage() {
           <button
             type="button"
             onClick={q.refresh}
-            className="rounded-xl bg-brand px-4 py-2 text-sm font-black text-white"
+            className="rounded-xl bg-[#7a0d0d] px-4 py-2 text-sm font-black text-white"
           >
             {M.retry}
           </button>

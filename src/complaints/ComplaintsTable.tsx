@@ -57,7 +57,7 @@ export default function ComplaintsTable({
                   <button
                     type="button"
                     onClick={() => onOpen(c.id)}
-                    className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-bold text-brand"
+                    className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-bold text-[#7a0d0d]"
                   >
                     <Eye size={13} aria-hidden="true" />
                     {M.open}

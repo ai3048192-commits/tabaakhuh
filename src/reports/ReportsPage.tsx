@@ -9,9 +9,9 @@ function Kpi({ label, value, icon: Icon }: { label: string; value: string; icon:
     <div className="flex items-center justify-between rounded-2xl border border-gray-100 bg-white p-4">
       <div>
         <p className="text-[11px] font-bold text-gray-400">{label}</p>
-        <p className="mt-1 text-lg font-black text-brand" dir="ltr">{value}</p>
+        <p className="mt-1 text-lg font-black text-[#7a0d0d]" dir="ltr">{value}</p>
       </div>
-      <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand/5 text-brand">
+      <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#7a0d0d]/5 text-[#7a0d0d]">
         <Icon size={20} aria-hidden="true" />
       </span>
     </div>
@@ -27,9 +27,9 @@ export default function ReportsPage() {
   const r = q.report
 
   return (
-    <div className="min-h-full bg-ivory p-4 font-['Tajawal'] md:p-6" dir="rtl">
+    <div className="min-h-full bg-[#fcf9f2] p-4 font-['Tajawal'] md:p-6" dir="rtl">
       <div className="mb-2 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-xl font-black text-brand">{M.pageTitle}</h1>
+        <h1 className="text-xl font-black text-[#7a0d0d]">{M.pageTitle}</h1>
         {q.status === 'ready' && (
           <button type="button" onClick={q.refresh} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-gray-600">
             <RefreshCw size={14} aria-hidden="true" />
@@ -55,7 +55,7 @@ export default function ReportsPage() {
             <option value="month">{M.groupByMonth}</option>
           </select>
         </div>
-        <button type="button" onClick={q.apply} className="rounded-lg bg-brand px-4 py-2 text-sm font-black text-white">{M.apply}</button>
+        <button type="button" onClick={q.apply} className="rounded-lg bg-[#7a0d0d] px-4 py-2 text-sm font-black text-white">{M.apply}</button>
         {q.dateError && <p className="w-full text-xs text-red-600" role="alert">{M.fromAfterTo}</p>}
       </div>
 
@@ -64,7 +64,7 @@ export default function ReportsPage() {
       {q.status === 'error' && (
         <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
           <p className="mb-3 text-sm text-red-700">{M.listError}</p>
-          <button type="button" onClick={q.refresh} className="rounded-xl bg-brand px-4 py-2 text-sm font-black text-white">{M.retry}</button>
+          <button type="button" onClick={q.refresh} className="rounded-xl bg-[#7a0d0d] px-4 py-2 text-sm font-black text-white">{M.retry}</button>
         </div>
       )}
 

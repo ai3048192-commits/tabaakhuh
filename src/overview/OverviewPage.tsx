@@ -61,8 +61,8 @@ export default function OverviewPage({ onQuickAction }: Props) {
         datasets: [{
           label: M.chartLabel,
           data: pts.map((p) => p.count),
-          backgroundColor: '#6B1010',
-          hoverBackgroundColor: '#A52020',
+          backgroundColor: '#7a0d0d',
+          hoverBackgroundColor: '#9a1212',
           borderRadius: 8,
           barThickness: 22,
           maxBarThickness: 34,
@@ -74,7 +74,7 @@ export default function OverviewPage({ onQuickAction }: Props) {
         plugins: { legend: { display: false } },
         scales: {
           y: { display: false },
-          x: { grid: { display: false }, ticks: { color: '#6B1010', font: { size: 11, weight: 'bold' as const } } },
+          x: { grid: { display: false }, ticks: { color: '#7a0d0d', font: { size: 11, weight: 'bold' as const } } },
         },
       },
     }
@@ -83,10 +83,10 @@ export default function OverviewPage({ onQuickAction }: Props) {
   const fire = (t: string) => onQuickAction?.(t)
 
   return (
-    <div className="min-h-full bg-ivory p-4 font-['Tajawal'] md:p-6" dir="rtl">
+    <div className="min-h-full bg-[#fcf9f2] p-4 font-['Tajawal'] md:p-6" dir="rtl">
       <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-xl font-black text-brand">{M.pageTitle}</h1>
+          <h1 className="text-xl font-black text-[#7a0d0d]">{M.pageTitle}</h1>
           <p className="mt-1 text-xs font-bold text-gray-400">{M.subtitle}</p>
           {status === 'ready' && lastUpdated && (
             <p className="mt-1 text-xs font-bold text-gray-400">{M.lastUpdated(formatTime(lastUpdated))}</p>
@@ -110,7 +110,7 @@ export default function OverviewPage({ onQuickAction }: Props) {
         <div className="mb-6 flex flex-wrap items-center gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
           <AlertTriangle size={16} aria-hidden="true" />
           <span>{M.refreshFailedNotice}</span>
-          <button type="button" onClick={refresh} disabled={refreshing} className="rounded-lg bg-brand px-3 py-1.5 text-xs font-black text-white disabled:opacity-60">
+          <button type="button" onClick={refresh} disabled={refreshing} className="rounded-lg bg-[#7a0d0d] px-3 py-1.5 text-xs font-black text-white disabled:opacity-60">
             {M.retry}
           </button>
         </div>
@@ -121,7 +121,7 @@ export default function OverviewPage({ onQuickAction }: Props) {
       {status === 'error' && (
         <div className="max-w-md rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
           <p className="mb-3 text-sm text-red-700">{M.loadError}</p>
-          <button type="button" onClick={refresh} className="inline-flex items-center gap-2 rounded-xl bg-brand px-4 py-2 text-sm font-black text-white">
+          <button type="button" onClick={refresh} className="inline-flex items-center gap-2 rounded-xl bg-[#7a0d0d] px-4 py-2 text-sm font-black text-white">
             <RefreshCw size={14} aria-hidden="true" />
             {M.retry}
           </button>
@@ -142,7 +142,7 @@ export default function OverviewPage({ onQuickAction }: Props) {
 
           {/* Chart + quick actions */}
           <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
-            <section className="rounded-[2rem] border border-line bg-ivory p-6 lg:col-span-2">
+            <section className="rounded-[2rem] border border-[#e8dfc9] bg-[#fcf9f2] p-6 lg:col-span-2">
               <h2 className="text-[10px] font-black uppercase tracking-widest text-gray-400">{M.chartTitle}</h2>
               {!extras.ordersDailyOk ? (
                 <p className="mt-6 text-xs text-amber-700">{M.chartError}</p>
@@ -161,28 +161,28 @@ export default function OverviewPage({ onQuickAction }: Props) {
               )}
             </section>
 
-            <section className="flex flex-col gap-4 rounded-[2rem] border border-line bg-ivory p-4">
+            <section className="flex flex-col gap-4 rounded-[2rem] border border-[#e8dfc9] bg-[#fcf9f2] p-4">
               <p className="text-center text-[10px] font-black uppercase text-gray-400">{M.quickActionsTitle}</p>
-              <button type="button" onClick={() => fire('إضافة طباخة')} className="flex w-full items-center justify-center gap-3 rounded-xl bg-brand py-4 text-sm font-black text-white">
+              <button type="button" onClick={() => fire('إضافة طباخة')} className="flex w-full items-center justify-center gap-3 rounded-xl bg-[#7a0d0d] py-4 text-sm font-black text-white">
                 <PlusCircle size={20} aria-hidden="true" /> {M.qaAddCook}
               </button>
-              <button type="button" onClick={() => fire('إشعار عام')} className="flex w-full items-center justify-center gap-3 rounded-xl bg-brand py-4 text-sm font-black text-white">
+              <button type="button" onClick={() => fire('إشعار عام')} className="flex w-full items-center justify-center gap-3 rounded-xl bg-[#7a0d0d] py-4 text-sm font-black text-white">
                 <Send size={20} aria-hidden="true" /> {M.qaBroadcast}
               </button>
-              <button type="button" onClick={() => fire('مستخدم جديد')} className="flex w-full items-center justify-center gap-3 rounded-xl bg-brand py-4 text-sm font-black text-white">
+              <button type="button" onClick={() => fire('مستخدم جديد')} className="flex w-full items-center justify-center gap-3 rounded-xl bg-[#7a0d0d] py-4 text-sm font-black text-white">
                 <UserPlus size={20} aria-hidden="true" /> {M.qaNewUser}
               </button>
-              <button type="button" onClick={() => fire('إضافة سائق')} className="flex w-full items-center justify-center gap-3 rounded-xl bg-brand py-4 text-sm font-black text-white">
+              <button type="button" onClick={() => fire('إضافة سائق')} className="flex w-full items-center justify-center gap-3 rounded-xl bg-[#7a0d0d] py-4 text-sm font-black text-white">
                 <Bike size={20} aria-hidden="true" /> {M.qaAddDriver}
               </button>
             </section>
           </div>
 
           {/* Live deliveries */}
-          <section className="mb-8 rounded-2xl border border-line bg-ivory p-6">
+          <section className="mb-8 rounded-2xl border border-[#e8dfc9] bg-[#fcf9f2] p-6">
             <div className="mb-6 flex items-center justify-between">
               <h2 className="font-black text-gray-800">{M.deliveriesTitle}</h2>
-              <Link to="/delivery" className="flex items-center gap-2 text-xs font-bold text-gold hover:underline">
+              <Link to="/delivery" className="flex items-center gap-2 text-xs font-bold text-[#b68614] hover:underline">
                 <TableProperties size={16} aria-hidden="true" /> {M.viewAll}
               </Link>
             </div>
@@ -193,7 +193,7 @@ export default function OverviewPage({ onQuickAction }: Props) {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[720px] text-right text-sm">
-                  <thead className="border-b border-line text-gray-400">
+                  <thead className="border-b border-[#e8dfc9] text-gray-400">
                     <tr>
                       <th scope="col" className="pb-3 font-bold">{M.colDriver}</th>
                       <th scope="col" className="pb-3 font-bold">{M.colOrderAddress}</th>
@@ -210,8 +210,8 @@ export default function OverviewPage({ onQuickAction }: Props) {
                       // field name, which silently made every `order_id` here identical
                       // and let React misattribute a stale row's content across refreshes.
                       // `order_number` is always a distinct, non-empty string.
-                      <tr key={d.order_number} className="border-b border-line last:border-0 hover:bg-white/50">
-                        <td className="py-4 font-bold text-brand">{d.driver_name ?? M.na}</td>
+                      <tr key={d.order_number} className="border-b border-[#e8dfc9] last:border-0 hover:bg-white/50">
+                        <td className="py-4 font-bold text-[#7a0d0d]">{d.driver_name ?? M.na}</td>
                         <td className="py-4 text-gray-600">{d.area ?? M.na}</td>
                         <td className="py-4 text-gray-600" dir="ltr">{d.total != null ? formatCurrency(d.total) : M.na}</td>
                         <td className="py-4 font-bold text-green-600" dir="ltr">{d.commission != null ? formatCurrency(d.commission) : M.na}</td>
@@ -220,7 +220,7 @@ export default function OverviewPage({ onQuickAction }: Props) {
                         </td>
                         <td className="py-4">
                           <button type="button" aria-label={M.colDetails} onClick={() => setDetail({ kind: 'delivery', row: d })}>
-                            <Eye size={18} className="text-brand hover:text-red-700" aria-hidden="true" />
+                            <Eye size={18} className="text-[#7a0d0d] hover:text-red-700" aria-hidden="true" />
                           </button>
                         </td>
                       </tr>
@@ -233,10 +233,10 @@ export default function OverviewPage({ onQuickAction }: Props) {
 
           {/* Queues */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <section className="rounded-2xl border border-line bg-ivory p-6">
+            <section className="rounded-2xl border border-[#e8dfc9] bg-[#fcf9f2] p-6">
               <div className="mb-6 flex items-center justify-between">
                 <h2 className="font-black text-gray-800">{M.preparingTitle}</h2>
-                <Link to="/orders?status=preparing" className="text-xs font-bold text-gold hover:underline">{M.viewAll}</Link>
+                <Link to="/orders?status=preparing" className="text-xs font-bold text-[#b68614] hover:underline">{M.viewAll}</Link>
               </div>
               {(extras.preparing?.length ?? 0) === 0 ? (
                 <p className="py-4 text-center text-sm text-gray-400">{M.noPreparing}</p>
@@ -244,10 +244,10 @@ export default function OverviewPage({ onQuickAction }: Props) {
                 <ul className="space-y-3">
                   {(extras.preparing ?? []).map((o) => (
                     <li key={o.id} className="flex items-center justify-between gap-3 border-b pb-3 text-sm last:border-0">
-                      <span className="font-bold text-brand" dir="ltr">{o.order_number}</span>
+                      <span className="font-bold text-[#7a0d0d]" dir="ltr">{o.order_number}</span>
                       <span className="text-gray-500" dir="ltr">{formatCurrency(o.total)}</span>
                       <button type="button" aria-label={M.colDetails} onClick={() => setDetail({ kind: 'order', row: o })}>
-                        <Eye size={18} className="text-brand" aria-hidden="true" />
+                        <Eye size={18} className="text-[#7a0d0d]" aria-hidden="true" />
                       </button>
                     </li>
                   ))}
@@ -255,10 +255,10 @@ export default function OverviewPage({ onQuickAction }: Props) {
               )}
             </section>
 
-            <section className="rounded-2xl border border-line bg-ivory p-6">
+            <section className="rounded-2xl border border-[#e8dfc9] bg-[#fcf9f2] p-6">
               <div className="mb-6 flex items-center justify-between">
                 <h2 className="font-black text-gray-800">{M.recentCooksTitle}</h2>
-                <Link to="/cooks" className="text-xs font-bold text-gold hover:underline">{M.viewAll}</Link>
+                <Link to="/cooks" className="text-xs font-bold text-[#b68614] hover:underline">{M.viewAll}</Link>
               </div>
               {!extras.recentCooksOk ? (
                 <p className="py-4 text-center text-xs text-amber-700">{M.recentCooksError}</p>
@@ -281,10 +281,10 @@ export default function OverviewPage({ onQuickAction }: Props) {
           </div>
 
           {/* Completed / delivered orders */}
-          <section className="mt-6 rounded-2xl border border-line bg-ivory p-6">
+          <section className="mt-6 rounded-2xl border border-[#e8dfc9] bg-[#fcf9f2] p-6">
             <div className="mb-6 flex items-center justify-between">
               <h2 className="font-black text-gray-800">{M.completedOrdersTitle}</h2>
-              <Link to="/orders?status=delivered" className="text-xs font-bold text-gold hover:underline">{M.viewAll}</Link>
+              <Link to="/orders?status=delivered" className="text-xs font-bold text-[#b68614] hover:underline">{M.viewAll}</Link>
             </div>
             {!extras.completedOrdersOk ? (
               <p className="py-4 text-center text-xs text-amber-700">{M.completedOrdersError}</p>
@@ -294,11 +294,11 @@ export default function OverviewPage({ onQuickAction }: Props) {
               <ul className="space-y-3">
                 {(extras.completedOrders ?? []).map((o) => (
                   <li key={o.id} className="flex items-center justify-between gap-3 border-b pb-3 text-sm last:border-0">
-                    <span className="font-bold text-brand" dir="ltr">{o.order_number}</span>
+                    <span className="font-bold text-[#7a0d0d]" dir="ltr">{o.order_number}</span>
                     <span className="rounded-full bg-green-100 px-3 py-1 text-[10px] text-green-700">{statusText(o.status)}</span>
                     <span className="text-gray-500" dir="ltr">{formatCurrency(o.total)}</span>
                     <button type="button" aria-label={M.colDetails} onClick={() => setDetail({ kind: 'order', row: o })}>
-                      <Eye size={18} className="text-brand" aria-hidden="true" />
+                      <Eye size={18} className="text-[#7a0d0d]" aria-hidden="true" />
                     </button>
                   </li>
                 ))}
@@ -311,7 +311,7 @@ export default function OverviewPage({ onQuickAction }: Props) {
       {detail && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true" aria-label={detail.kind === 'delivery' ? M.detailDeliveryTitle : M.detailOrderTitle}>
           <div className="w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-2xl">
-            <div className="flex items-center justify-between bg-gradient-to-r from-brand to-brand-light px-6 py-5 text-white">
+            <div className="flex items-center justify-between bg-gradient-to-r from-[#7a0d0d] to-[#9a1212] px-6 py-5 text-white">
               <h3 className="text-lg font-black">{detail.kind === 'delivery' ? M.detailDeliveryTitle : M.detailOrderTitle}</h3>
               <button type="button" onClick={() => setDetail(null)} aria-label={M.close} className="rounded-xl p-2 transition hover:bg-white/20">
                 <X size={24} aria-hidden="true" />
@@ -335,7 +335,7 @@ export default function OverviewPage({ onQuickAction }: Props) {
               )}
             </div>
             <div className="flex justify-end border-t bg-gray-50 px-8 py-6">
-              <button type="button" onClick={() => setDetail(null)} className="rounded-2xl bg-brand px-8 py-3 font-black text-white transition hover:bg-brand-light">
+              <button type="button" onClick={() => setDetail(null)} className="rounded-2xl bg-[#7a0d0d] px-8 py-3 font-black text-white transition hover:bg-[#9a1212]">
                 {M.close}
               </button>
             </div>

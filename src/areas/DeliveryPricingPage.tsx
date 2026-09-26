@@ -40,17 +40,17 @@ export default function DeliveryPricingPage() {
   }
 
   return (
-    <div className="min-h-full bg-ivory p-4 font-['Tajawal'] md:p-6" dir="rtl">
+    <div className="min-h-full bg-[#fcf9f2] p-4 font-['Tajawal'] md:p-6" dir="rtl">
       <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
         <div className="max-w-2xl">
-          <h1 className="text-xl font-black text-brand">{M.pageTitle}</h1>
+          <h1 className="text-xl font-black text-[#7a0d0d]">{M.pageTitle}</h1>
           <p className="mt-1 text-xs font-bold text-gray-500">{M.subtitle}</p>
         </div>
         {q.selectedCity && q.areasStatus === 'ready' && (
           <button
             type="button"
             onClick={() => setDialog({ kind: 'add' })}
-            className="flex items-center gap-2 rounded-xl bg-brand px-3 py-2 text-xs font-black text-white"
+            className="flex items-center gap-2 rounded-xl bg-[#7a0d0d] px-3 py-2 text-xs font-black text-white"
           >
             <Plus size={14} aria-hidden="true" />
             {M.addArea}
@@ -128,7 +128,7 @@ export default function DeliveryPricingPage() {
                     <tr key={a.id} className="border-b border-gray-100 last:border-0">
                       <td className="px-4 py-3 text-sm font-bold text-gray-800">{a.name_ar}</td>
                       <td className="px-4 py-3 text-sm text-gray-600" dir="ltr">{a.name_en}</td>
-                      <td className="px-4 py-3 text-sm font-black text-brand">{M.fee(a.delivery_fee)}</td>
+                      <td className="px-4 py-3 text-sm font-black text-[#7a0d0d]">{M.fee(a.delivery_fee)}</td>
                       <td className="px-4 py-3">
                         <span
                           className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${
@@ -144,7 +144,7 @@ export default function DeliveryPricingPage() {
                             type="button"
                             onClick={() => setDialog({ kind: 'edit', area: a })}
                             aria-label={M.editLabel(a.name_ar)}
-                            className="flex items-center gap-1 rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs font-bold text-gray-600 hover:border-brand"
+                            className="flex items-center gap-1 rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs font-bold text-gray-600 hover:border-[#7a0d0d]"
                           >
                             <Pencil size={13} aria-hidden="true" />
                             {M.edit}
@@ -224,7 +224,7 @@ export default function DeliveryPricingPage() {
               onClick={() => void confirmToggle()}
               disabled={dialog.busy}
               aria-busy={dialog.busy}
-              className="flex-1 rounded-xl bg-brand py-2.5 text-sm font-black text-white disabled:opacity-50"
+              className="flex-1 rounded-xl bg-[#7a0d0d] py-2.5 text-sm font-black text-white disabled:opacity-50"
             >
               {M.confirm}
             </button>
@@ -239,7 +239,7 @@ function ErrorBox({ message, onRetry }: { message: string; onRetry: () => void }
   return (
     <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
       <p className="mb-3 text-sm text-red-700">{message}</p>
-      <button type="button" onClick={onRetry} className="rounded-xl bg-brand px-4 py-2 text-sm font-black text-white">
+      <button type="button" onClick={onRetry} className="rounded-xl bg-[#7a0d0d] px-4 py-2 text-sm font-black text-white">
         {M.retry}
       </button>
     </div>

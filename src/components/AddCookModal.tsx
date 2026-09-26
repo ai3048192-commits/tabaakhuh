@@ -130,7 +130,7 @@ export default function AddCookModal({ onClose, onCreated }: { onClose: () => vo
             id="ac-city"
             value={v.city_id}
             onChange={(e) => set('city_id')(e.target.value)}
-            className="rounded-2xl border border-line bg-white py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-brand/20"
+            className="rounded-2xl border border-[#e8dfc9] bg-white py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-[#7a0d0d]/20"
           >
             <option value="">—</option>
             {cities.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -148,7 +148,7 @@ export default function AddCookModal({ onClose, onCreated }: { onClose: () => vo
             value={p.bio}
             onChange={(e) => setProfile('bio')(e.target.value)}
             rows={3}
-            className="rounded-2xl border border-line bg-white py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-brand/20"
+            className="rounded-2xl border border-[#e8dfc9] bg-white py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-[#7a0d0d]/20"
           />
         </div>
         <Field label="العنوان التفصيلي" value={p.address_text} onChange={setProfile('address_text')} error={errors.address_text} icon={<MapPin size={18} />} />

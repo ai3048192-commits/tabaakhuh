@@ -38,7 +38,7 @@ function DocFailure({ url, M }: { url: string; M: ReviewMessages }) {
         href={safeUrl(url)}
         target="_blank"
         rel="noreferrer"
-        className="flex items-center gap-1.5 rounded-xl bg-brand px-4 py-2 text-xs font-black text-white hover:bg-brand-light"
+        className="flex items-center gap-1.5 rounded-xl bg-[#7a0d0d] px-4 py-2 text-xs font-black text-white hover:bg-[#9a1212]"
       >
         <ExternalLink size={14} aria-hidden="true" />
         {M.openInNewTab}

@@ -52,7 +52,7 @@ export default function RejectDialog({
         onChange={(e) => setReason(e.target.value)}
         aria-invalid={trimmedLen === 0 || Boolean(fieldError)}
         aria-describedby="reject-counter reject-required"
-        className="w-full resize-none rounded-xl border border-gray-200 p-3 text-sm focus-visible:outline-2 focus-visible:outline-brand"
+        className="w-full resize-none rounded-xl border border-gray-200 p-3 text-sm focus-visible:outline-2 focus-visible:outline-[#7a0d0d]"
       />
       <div className="mt-1 flex items-center justify-between">
         <p
@@ -80,7 +80,7 @@ export default function RejectDialog({
           onClick={() => onSubmit(reason)}
           disabled={busy || !valid}
           aria-busy={busy}
-          className="flex-1 rounded-xl bg-brand py-2.5 text-sm font-black text-white disabled:opacity-50"
+          className="flex-1 rounded-xl bg-[#7a0d0d] py-2.5 text-sm font-black text-white disabled:opacity-50"
         >
           {M.confirmReject}
         </button>
