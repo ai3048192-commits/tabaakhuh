@@ -30,7 +30,7 @@ export default function SearchBox({ value, onChange }: Props) {
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pr-9 pl-9 text-sm focus-visible:outline-2 focus-visible:outline-[#7a0d0d]"
+          className="w-full rounded-xl border border-gray-200 bg-white py-2.5 pr-9 pl-9 text-sm focus-visible:outline-2 focus-visible:outline-brand"
         />
         {value !== '' && (
           <button

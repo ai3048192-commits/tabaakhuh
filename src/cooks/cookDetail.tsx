@@ -37,7 +37,7 @@ export function DocTile({ doc, onOpen }: { doc: DocumentRef; onOpen: () => void 
       type="button"
       onClick={onOpen}
       aria-label={doc.label}
-      className="flex aspect-[4/3] items-center justify-center overflow-hidden rounded-lg border border-gray-200 bg-gray-50 text-[11px] text-gray-400 hover:border-[#7a0d0d]"
+      className="flex aspect-[4/3] items-center justify-center overflow-hidden rounded-lg border border-gray-200 bg-gray-50 text-[11px] text-gray-400 hover:border-brand"
     >
       {unavailable ? (
         <span>{M.docUnavailable}</span>

@@ -32,17 +32,17 @@ export default class ErrorBoundary extends Component<{ children: ReactNode }, St
       <div
         dir="rtl"
         role="alert"
-        className="flex min-h-screen items-center justify-center bg-[#f7f1e6] p-6"
+        className="flex min-h-screen items-center justify-center bg-papyrus p-6"
       >
-        <div className="w-full max-w-md rounded-3xl border border-[#e8dfc9] bg-white p-8 text-center">
-          <h1 className="mb-2 text-xl font-black text-[#7a0d0d]">حصل خطأ غير متوقع</h1>
+        <div className="w-full max-w-md rounded-3xl border border-line bg-white p-8 text-center">
+          <h1 className="mb-2 text-xl font-black text-brand">حصل خطأ غير متوقع</h1>
           <p className="mb-6 text-sm font-bold text-gray-500">
             في مشكلة منعت الصفحة من العمل. جرّب تحديث الصفحة، ولو المشكلة فضلت، بلّغ الدعم الفني.
           </p>
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="rounded-2xl bg-[#7a0d0d] px-6 py-3 text-sm font-black text-white"
+            className="rounded-2xl bg-brand px-6 py-3 text-sm font-black text-white"
           >
             تحديث الصفحة
           </button>

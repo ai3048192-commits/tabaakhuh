@@ -32,7 +32,7 @@ export default function StatusFilter({
             aria-pressed={active}
             onClick={() => onChange(o.value)}
             className={`rounded-lg px-3 py-1.5 text-xs font-bold ${
-              active ? 'bg-[#7a0d0d] text-white' : 'text-gray-600 hover:bg-gray-50'
+              active ? 'bg-brand text-white' : 'text-gray-600 hover:bg-gray-50'
             }`}
           >
             {o.label}

@@ -65,10 +65,10 @@ export default function QuickModalShell({
         aria-modal="true"
         aria-label={title}
         dir="rtl"
-        className={`my-8 w-full ${maxWidth} rounded-[2rem] border border-[#e8dfc9] bg-[#fcf9f2] p-6 font-['Tajawal'] shadow-2xl md:p-8`}
+        className={`my-8 w-full ${maxWidth} rounded-[2rem] border border-line bg-ivory p-6 font-['Tajawal'] shadow-2xl md:p-8`}
       >
         <div className="mb-6 flex items-start justify-between">
-          <h2 className="text-2xl font-black text-[#7a0d0d]">{title}</h2>
+          <h2 className="text-2xl font-black text-brand">{title}</h2>
           <button
             type="button"
             onClick={onClose}

@@ -43,7 +43,7 @@ export default function CookApplicationRow({ entry, cityName, onOpen }: Props) {
         onClick={onOpen}
         aria-label={M.review}
         title={M.review}
-        className="shrink-0 rounded-xl border border-gray-200 bg-white p-2.5 text-gray-500 hover:border-[#7a0d0d] hover:text-[#7a0d0d]"
+        className="shrink-0 rounded-xl border border-gray-200 bg-white p-2.5 text-gray-500 hover:border-brand hover:text-brand"
       >
         <Eye size={18} aria-hidden="true" />
       </button>

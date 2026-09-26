@@ -66,7 +66,7 @@ export default function ImageField({
     <div className="flex flex-col gap-1">
       <span className="pr-1 text-[11px] font-bold text-gray-500">{label}</span>
       <div className="flex items-center gap-3">
-        <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[#e8dfc9] bg-white">
+        <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-line bg-white">
           {hasImage ? (
             <img src={value} alt={label} className="h-full w-full object-cover" />
           ) : (
@@ -78,7 +78,7 @@ export default function ImageField({
           onClick={() => inputRef.current?.click()}
           disabled={busy || !cloudinaryConfigured}
           aria-describedby={shown ? errId : undefined}
-          className="inline-flex items-center gap-1.5 rounded-xl border border-[#e8dfc9] bg-white px-3 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50 disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 rounded-xl border border-line bg-white px-3 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50 disabled:opacity-50"
         >
           {busy ? (
             <Loader2 size={14} className="animate-spin" aria-hidden="true" />
@@ -91,7 +91,7 @@ export default function ImageField({
           <button
             type="button"
             onClick={() => { setErr(null); onChange('') }}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-[#e8dfc9] bg-white px-3 py-2 text-xs font-bold text-red-600 transition hover:bg-red-50"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-line bg-white px-3 py-2 text-xs font-bold text-red-600 transition hover:bg-red-50"
           >
             <Trash2 size={14} aria-hidden="true" /> حذف
           </button>

@@ -45,7 +45,7 @@ export default function IncidentsTable({
               <td className={`${td} font-bold text-gray-900`} dir="ltr">{it.id}</td>
               <td className={td}>
                 <span className="inline-flex items-center gap-1">
-                  <AlertTriangle size={13} className="text-[#7a0d0d]" aria-hidden="true" />
+                  <AlertTriangle size={13} className="text-brand" aria-hidden="true" />
                   {it.user?.name ?? `#${it.user_id}`}
                 </span>
               </td>
@@ -56,7 +56,7 @@ export default function IncidentsTable({
                 <button
                   type="button"
                   onClick={() => onOpen(it.id)}
-                  className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-bold text-[#7a0d0d]"
+                  className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-bold text-brand"
                 >
                   <Eye size={13} aria-hidden="true" />
                   {M.open}

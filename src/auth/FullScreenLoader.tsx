@@ -9,11 +9,11 @@ export default function FullScreenLoader() {
       dir="rtl"
       role="status"
       aria-live="polite"
-      className="flex min-h-screen items-center justify-center bg-[#f7f1e6]"
+      className="flex min-h-screen items-center justify-center bg-papyrus"
     >
       <div className="flex flex-col items-center gap-4">
         <div
-          className="h-10 w-10 animate-spin rounded-full border-4 border-[#e8dfc9] border-t-[#7a0d0d]"
+          className="h-10 w-10 animate-spin rounded-full border-4 border-line border-t-brand"
           aria-hidden="true"
         />
         <p className="text-sm font-bold text-gray-500">جارٍ التحميل…</p>

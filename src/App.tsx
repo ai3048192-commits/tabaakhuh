@@ -49,7 +49,7 @@ function PageLoader() {
   return (
     <div className="flex min-h-[60vh] items-center justify-center" role="status" aria-live="polite">
       <div
-        className="h-10 w-10 animate-spin rounded-full border-4 border-[#e8dfc9] border-t-[#7a0d0d]"
+        className="h-10 w-10 animate-spin rounded-full border-4 border-line border-t-brand"
         aria-hidden="true"
       />
       <span className="sr-only">جارٍ التحميل…</span>
@@ -63,7 +63,7 @@ function AdminLayout() {
   const navigate = useNavigate();
 
   return (
-    <div className="fixed inset-0 flex bg-[#f7f1e6] overflow-hidden" dir="rtl">
+    <div className="fixed inset-0 flex bg-papyrus overflow-hidden" dir="rtl">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       {/* Block scroll container (not a flex column): the sticky Header + each
           page's `min-h-full` root flow normally, so the page background always

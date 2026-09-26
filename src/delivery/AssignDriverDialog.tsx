@@ -61,7 +61,7 @@ export default function AssignDriverDialog({
           onClick={() => driverId !== '' && onConfirm(driverId)}
           disabled={busy || driverId === ''}
           aria-busy={busy}
-          className="flex-1 rounded-xl bg-[#7a0d0d] py-2.5 text-sm font-black text-white disabled:opacity-50"
+          className="flex-1 rounded-xl bg-brand py-2.5 text-sm font-black text-white disabled:opacity-50"
         >
           {M.confirm}
         </button>

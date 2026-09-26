@@ -31,7 +31,7 @@ export default function Field({
     <div className="flex flex-col gap-1">
       <label htmlFor={id} className="pr-1 text-[11px] font-bold text-gray-500">{label}</label>
       <div className="relative flex items-center">
-        {icon && <span className="absolute right-3 text-[#7a0d0d]/50">{icon}</span>}
+        {icon && <span className="absolute right-3 text-brand/50">{icon}</span>}
         <input
           id={id}
           type={type}
@@ -45,7 +45,7 @@ export default function Field({
           aria-describedby={error ? `${id}-err` : undefined}
           className={`w-full rounded-2xl border bg-white py-3 pl-4 text-sm outline-none transition ${
             icon ? 'pr-10' : 'pr-4'
-          } ${error ? 'border-red-300 focus:ring-2 focus:ring-red-200' : 'border-[#e8dfc9] focus:ring-2 focus:ring-[#7a0d0d]/20'}`}
+          } ${error ? 'border-red-300 focus:ring-2 focus:ring-red-200' : 'border-line focus:ring-2 focus:ring-brand/20'}`}
         />
       </div>
       {error && (

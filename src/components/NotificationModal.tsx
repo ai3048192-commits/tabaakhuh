@@ -54,7 +54,7 @@ export default function NotificationModal({ onClose }: { onClose: () => void }) 
             autoFocus
             onChange={(e) => { setTitle(e.target.value); setErrors((x) => { const { title: _d, ...r } = x; return r }) }}
             aria-invalid={errors.title ? true : undefined}
-            className={`rounded-2xl border bg-white p-4 text-sm outline-none ${errors.title ? 'border-red-300' : 'border-[#e8dfc9] focus:ring-2 focus:ring-[#7a0d0d]/20'}`}
+            className={`rounded-2xl border bg-white p-4 text-sm outline-none ${errors.title ? 'border-red-300' : 'border-line focus:ring-2 focus:ring-brand/20'}`}
             placeholder="اكتب العنوان هنا…"
           />
           {errors.title && <p className="pr-1 text-xs text-red-600">{errors.title}</p>}
@@ -68,7 +68,7 @@ export default function NotificationModal({ onClose }: { onClose: () => void }) 
             rows={4}
             onChange={(e) => { setBody(e.target.value); setErrors((x) => { const { body: _d, ...r } = x; return r }) }}
             aria-invalid={errors.body ? true : undefined}
-            className={`rounded-2xl border bg-white p-4 text-sm outline-none ${errors.body ? 'border-red-300' : 'border-[#e8dfc9] focus:ring-2 focus:ring-[#7a0d0d]/20'}`}
+            className={`rounded-2xl border bg-white p-4 text-sm outline-none ${errors.body ? 'border-red-300' : 'border-line focus:ring-2 focus:ring-brand/20'}`}
             placeholder="اكتب تفاصيل الإشعار…"
           />
           <div className="flex justify-between pr-1 text-[10px] text-gray-400">
@@ -87,7 +87,7 @@ export default function NotificationModal({ onClose }: { onClose: () => void }) 
                 aria-pressed={audience === a.value}
                 onClick={() => setAudience(a.value)}
                 className={`rounded-xl border-2 py-3 text-xs font-black transition ${
-                  audience === a.value ? 'border-[#7a0d0d] bg-white text-[#7a0d0d]' : 'border-transparent bg-[#e8dfc9]/30 text-gray-500'
+                  audience === a.value ? 'border-brand bg-white text-brand' : 'border-transparent bg-line/30 text-gray-500'
                 }`}
               >
                 {a.label}

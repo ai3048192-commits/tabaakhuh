@@ -79,7 +79,7 @@ export default function AreaFormDialog({ title, area, onSubmit, onDone, onCancel
         onChange={set(k)}
         aria-invalid={errors[k] ? true : undefined}
         aria-describedby={k === 'delivery_fee' ? ids.hint : undefined}
-        className="w-full rounded-xl border border-gray-200 p-2.5 text-sm focus-visible:outline-2 focus-visible:outline-[#7a0d0d]"
+        className="w-full rounded-xl border border-gray-200 p-2.5 text-sm focus-visible:outline-2 focus-visible:outline-brand"
       />
       {errors[k] && <p className="mt-1 text-xs text-red-600">{errors[k]}</p>}
     </div>
@@ -113,7 +113,7 @@ export default function AreaFormDialog({ title, area, onSubmit, onDone, onCancel
             type="submit"
             disabled={busy}
             aria-busy={busy}
-            className="flex-1 rounded-xl bg-[#7a0d0d] py-2.5 text-sm font-black text-white disabled:opacity-50"
+            className="flex-1 rounded-xl bg-brand py-2.5 text-sm font-black text-white disabled:opacity-50"
           >
             {busy ? M.saving : M.save}
           </button>

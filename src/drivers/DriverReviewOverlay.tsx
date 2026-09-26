@@ -112,7 +112,7 @@ export default function DriverReviewOverlay({
             onClick={onReject}
             disabled={busy}
             aria-busy={busy}
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#7a0d0d] py-2.5 text-sm font-black text-white disabled:opacity-50"
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand py-2.5 text-sm font-black text-white disabled:opacity-50"
           >
             <X size={16} aria-hidden="true" />
             {M.reject}

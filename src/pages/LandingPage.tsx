@@ -82,14 +82,14 @@ function SectionHeading({
 }) {
   return (
     <div className="mx-auto mb-12 max-w-2xl text-center">
-      <span className="inline-flex items-center gap-2 rounded-full border border-[#b68614]/25 bg-[#b68614]/10 px-4 py-1.5 text-xs font-black tracking-wide text-[#8f680d]">
-        <span className="h-1.5 w-1.5 rounded-full bg-[#b68614]" />
+      <span className="inline-flex items-center gap-2 rounded-full border border-gold/25 bg-gold/10 px-4 py-1.5 text-xs font-black tracking-wide text-[#8f680d]">
+        <span className="h-1.5 w-1.5 rounded-full bg-gold" />
         {kicker}
       </span>
-      <h2 className="mt-4 text-3xl font-black leading-tight tracking-tight text-[#7a0d0d] md:text-[2.6rem]">
+      <h2 className="mt-4 text-3xl font-black leading-tight tracking-tight text-brand md:text-[2.6rem]">
         {title}
       </h2>
-      {subtitle && <p className="mt-3 leading-relaxed text-[#6b4f3a]">{subtitle}</p>}
+      {subtitle && <p className="mt-3 leading-relaxed text-umber">{subtitle}</p>}
     </div>
   );
 }
@@ -110,9 +110,9 @@ function PhoneMockup() {
     <div className="relative flex origin-center scale-[0.82] justify-center sm:scale-90 lg:scale-100 lg:pl-16 xl:pl-24">
       {/* glow blobs */}
       <div className="pointer-events-none absolute -inset-16 -z-10">
-        <div className="lp-glow absolute right-6 top-1/3 h-48 w-48 rounded-full bg-[#b68614] opacity-25 blur-3xl" />
+        <div className="lp-glow absolute right-6 top-1/3 h-48 w-48 rounded-full bg-gold opacity-25 blur-3xl" />
         <div className="lp-glow absolute bottom-10 left-0 h-56 w-56 rounded-full bg-[#8f3410] opacity-25 blur-3xl" />
-        <div className="absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#e0a52e] opacity-10 blur-[90px]" />
+        <div className="absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold-light opacity-10 blur-[90px]" />
       </div>
 
       <div className="lp-phone-tilt relative">
@@ -124,14 +124,14 @@ function PhoneMockup() {
           <div className="absolute -right-[3px] top-40 h-24 w-[3px] rounded-r bg-[#3a3a3a]" />
 
           {/* screen */}
-          <div className="relative h-full w-full overflow-hidden rounded-[2.3rem] bg-[#f7f1e6]">
+          <div className="relative h-full w-full overflow-hidden rounded-[2.3rem] bg-papyrus">
             {/* dynamic island */}
             <div className="absolute left-1/2 top-3 z-30 h-7 w-28 -translate-x-1/2 rounded-full bg-black" />
             {/* screen sheen */}
             <div className="pointer-events-none absolute inset-0 z-20 bg-gradient-to-tr from-transparent via-white/0 to-white/10" />
 
             {/* status bar */}
-            <div className="flex items-center justify-between px-6 pt-3.5 text-[11px] font-black text-[#7a0d0d]">
+            <div className="flex items-center justify-between px-6 pt-3.5 text-[11px] font-black text-brand">
               <span>٩:٤١</span>
               <div className="flex items-center gap-1">
                 <Signal size={13} /> <Wifi size={13} /> <BatteryFull size={15} />
@@ -139,7 +139,7 @@ function PhoneMockup() {
             </div>
 
             {/* app header */}
-            <div className="mx-3 mt-1.5 rounded-[1.6rem] bg-gradient-to-br from-[#7a0d0d] to-[#9a1212] px-4 pb-5 pt-4 text-white shadow-lg">
+            <div className="mx-3 mt-1.5 rounded-[1.6rem] bg-gradient-to-br from-brand to-brand-light px-4 pb-5 pt-4 text-white shadow-lg">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <img src={logoIcon} alt="" className="h-7 w-7 object-contain" />
@@ -164,8 +164,8 @@ function PhoneMockup() {
                   key={c}
                   className={`shrink-0 rounded-full px-3 py-1 text-[10px] font-black ${
                     i === 0
-                      ? "bg-[#b68614] text-white"
-                      : "border border-[#efe6d2] bg-white text-[#7a0d0d]"
+                      ? "bg-gold text-white"
+                      : "border border-papyrus bg-white text-brand"
                   }`}
                 >
                   {c}
@@ -175,10 +175,10 @@ function PhoneMockup() {
 
             {/* section title */}
             <div className="flex items-center justify-between px-4 pb-2 pt-4">
-              <span className="text-[12px] font-black text-[#7a0d0d]">
+              <span className="text-[12px] font-black text-brand">
                 الأكثر طلباً
               </span>
-              <span className="text-[10px] font-bold text-[#b68614]">
+              <span className="text-[10px] font-bold text-gold">
                 شوف الكل
               </span>
             </div>
@@ -188,7 +188,7 @@ function PhoneMockup() {
               {dishes.map((d) => (
                 <div
                   key={d.name}
-                  className="rounded-2xl border border-[#efe6d2] bg-white p-2 shadow-sm"
+                  className="rounded-2xl border border-papyrus bg-white p-2 shadow-sm"
                 >
                   <div className="h-14 overflow-hidden rounded-xl">
                     <img
@@ -201,10 +201,10 @@ function PhoneMockup() {
                     {d.name}
                   </p>
                   <div className="mt-0.5 flex items-center justify-between">
-                    <span className="flex items-center gap-0.5 text-[9px] font-bold text-[#b68614]">
-                      <Star size={9} className="fill-[#b68614]" /> {d.rate}
+                    <span className="flex items-center gap-0.5 text-[9px] font-bold text-gold">
+                      <Star size={9} className="fill-gold" /> {d.rate}
                     </span>
-                    <span className="text-[11px] font-black text-[#7a0d0d]">
+                    <span className="text-[11px] font-black text-brand">
                       {d.price}
                     </span>
                   </div>
@@ -213,18 +213,18 @@ function PhoneMockup() {
             </div>
 
             {/* promo */}
-            <div className="mx-3 mt-3 flex items-center gap-2 rounded-2xl bg-[#7a0d0d]/10 px-3 py-2 text-[10px] font-black text-[#7a0d0d]">
-              <Sparkles size={13} className="text-[#b68614]" /> خصم ٢٠٪ على أول
+            <div className="mx-3 mt-3 flex items-center gap-2 rounded-2xl bg-brand/10 px-3 py-2 text-[10px] font-black text-brand">
+              <Sparkles size={13} className="text-gold" /> خصم ٢٠٪ على أول
               أوردر
             </div>
 
             {/* bottom nav */}
-            <div className="absolute inset-x-0 bottom-0 flex items-center justify-around border-t border-[#efe6d2] bg-white/95 px-6 py-3 backdrop-blur">
-              <Home size={20} className="text-[#7a0d0d]" />
+            <div className="absolute inset-x-0 bottom-0 flex items-center justify-around border-t border-papyrus bg-white/95 px-6 py-3 backdrop-blur">
+              <Home size={20} className="text-brand" />
               <Search size={20} className="text-gray-400" />
               <div className="relative">
                 <ShoppingBag size={20} className="text-gray-400" />
-                <span className="absolute -right-1 -top-1 grid h-3 w-3 place-items-center rounded-full bg-[#b68614] text-[7px] font-black text-white">
+                <span className="absolute -right-1 -top-1 grid h-3 w-3 place-items-center rounded-full bg-gold text-[7px] font-black text-white">
                   ٢
                 </span>
               </div>
@@ -236,8 +236,8 @@ function PhoneMockup() {
         {/* floating card: rating */}
         <div className="lp-float-soft absolute -right-12 top-36 rounded-2xl bg-white px-4 py-3 shadow-2xl ring-1 ring-black/5">
           <div className="flex items-center gap-2">
-            <div className="grid h-9 w-9 place-items-center rounded-xl bg-[#b68614]/15 text-[#b68614]">
-              <Star size={18} className="fill-[#b68614]" />
+            <div className="grid h-9 w-9 place-items-center rounded-xl bg-gold/15 text-gold">
+              <Star size={18} className="fill-gold" />
             </div>
             <div>
               <p className="text-sm font-black text-gray-800">٤.٩ من ٥</p>
@@ -262,7 +262,7 @@ function PhoneMockup() {
         </div>
 
         {/* floating chip: delivery time */}
-        <div className="lp-float-soft absolute -left-10 top-16 flex items-center gap-1.5 rounded-full bg-[#7a0d0d] px-3 py-1.5 text-[11px] font-black text-white shadow-xl ring-1 ring-white/10">
+        <div className="lp-float-soft absolute -left-10 top-16 flex items-center gap-1.5 rounded-full bg-brand px-3 py-1.5 text-[11px] font-black text-white shadow-xl ring-1 ring-white/10">
           <Clock size={13} className="text-yellow-400" /> يوصل في ٣٠ دقيقة
         </div>
       </div>
@@ -336,7 +336,7 @@ export default function LandingPage() {
   return (
     <div
       dir="rtl"
-      className="min-h-screen overflow-x-hidden bg-[#faf3e7] text-[#3a2a1a]"
+      className="min-h-screen overflow-x-hidden bg-ivory text-[#3a2a1a]"
     >
       {/* ============ HERO (nav lives inside it) ============ */}
       <section
@@ -397,7 +397,7 @@ export default function LandingPage() {
                 ))}
                 <Link
                   to="/login"
-                  className="mt-2 flex items-center justify-center gap-2 rounded-full bg-[#b68614] px-5 py-2.5 text-center text-sm font-black text-white"
+                  className="mt-2 flex items-center justify-center gap-2 rounded-full bg-gold px-5 py-2.5 text-center text-sm font-black text-white"
                 >
                   <LogIn size={16} />
                   تسجيل دخول
@@ -408,20 +408,20 @@ export default function LandingPage() {
         </header>
 
         <div className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:radial-gradient(circle,#fff_1.5px,transparent_1.5px)] [background-size:30px_30px]" />
-        <div className="lp-glow pointer-events-none absolute -left-24 top-24 h-72 w-72 rounded-full bg-[#f4c752]/25 blur-3xl" />
-        <div className="lp-glow pointer-events-none absolute right-1/4 top-1/3 h-64 w-64 rounded-full bg-[#e0a52e]/12 blur-3xl" />
+        <div className="lp-glow pointer-events-none absolute -left-24 top-24 h-72 w-72 rounded-full bg-gold-soft/25 blur-3xl" />
+        <div className="lp-glow pointer-events-none absolute right-1/4 top-1/3 h-64 w-64 rounded-full bg-gold-light/12 blur-3xl" />
 
         <div className="relative mx-auto grid max-w-6xl items-center gap-6 px-5 pb-24 pt-28 md:grid-cols-2 md:gap-4 md:pb-32 md:pt-32">
           {/* copy */}
           <div className="text-center md:text-right">
             <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-black text-white/85 backdrop-blur">
-              <Sparkles size={13} className="text-[#f4c752]" />
+              <Sparkles size={13} className="text-gold-soft" />
               منصة أكل بيتي رقم ١ في مصر
             </span>
             <h1 className="mt-5 text-[2.9rem] font-black leading-[1.05] tracking-tight text-white md:text-[4rem]">
               أكل بيتي،
               <br />
-              <span className="bg-gradient-to-l from-[#f8d778] to-[#e0a52e] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-l from-[#f8d778] to-gold-light bg-clip-text text-transparent">
                 من إيدين أمينة
               </span>
             </h1>
@@ -432,7 +432,7 @@ export default function LandingPage() {
             <div className="mt-8 flex flex-wrap justify-center gap-3 md:justify-start">
               <a
                 href="#app"
-                className="rounded-full bg-[#e0a52e] px-8 py-3.5 text-sm font-black text-[#4a1500] shadow-xl shadow-black/20 transition hover:-translate-y-0.5 hover:bg-[#d0971f]"
+                className="rounded-full bg-gold-light px-8 py-3.5 text-sm font-black text-[#4a1500] shadow-xl shadow-black/20 transition hover:-translate-y-0.5 hover:bg-[#d0971f]"
               >
                 اطلب دلوقتي
               </a>
@@ -445,20 +445,20 @@ export default function LandingPage() {
             </div>
             <div className="mt-9 flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-xs font-bold text-white/70 md:justify-start">
               <span className="flex items-center gap-1.5">
-                <span className="grid h-7 w-7 place-items-center rounded-full bg-white/10 text-[#f4c752]">
+                <span className="grid h-7 w-7 place-items-center rounded-full bg-white/10 text-gold-soft">
                   <ChefHat size={14} />
                 </span>
                 +٥٠٠ طباخة موثّقة
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="grid h-7 w-7 place-items-center rounded-full bg-white/10 text-[#f4c752]">
+                <span className="grid h-7 w-7 place-items-center rounded-full bg-white/10 text-gold-soft">
                   <PackageCheck size={14} />
                 </span>
                 +٢٠ ألف طلب ناجح
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="grid h-7 w-7 place-items-center rounded-full bg-white/10 text-[#f4c752]">
-                  <Star size={14} className="fill-[#f4c752]" />
+                <span className="grid h-7 w-7 place-items-center rounded-full bg-white/10 text-gold-soft">
+                  <Star size={14} className="fill-gold-soft" />
                 </span>
                 ٤.٩ تقييم العملاء
               </span>
@@ -467,7 +467,7 @@ export default function LandingPage() {
 
           {/* hero image */}
           <div className="relative mx-auto w-full max-w-md">
-            <div className="lp-glow absolute inset-6 -z-10 rounded-full bg-[#f4c752]/25 blur-3xl" />
+            <div className="lp-glow absolute inset-6 -z-10 rounded-full bg-gold-soft/25 blur-3xl" />
             {/* swap this <img> for a transparent-PNG food shot when you have one */}
             <img
               src={heroFood}
@@ -486,34 +486,34 @@ export default function LandingPage() {
             <span className="lp-float-delay absolute bottom-2 right-10 text-2xl drop-shadow-lg">
               🌿
             </span>
-            <div className="lp-float-soft absolute -bottom-3 right-1/2 flex translate-x-1/2 items-center gap-1.5 rounded-full bg-white px-3.5 py-2 text-[11px] font-black text-[#7a0d0d] shadow-xl ring-1 ring-black/5">
-              <Clock size={13} className="text-[#e0a52e]" /> يوصل في ٣٠ دقيقة
+            <div className="lp-float-soft absolute -bottom-3 right-1/2 flex translate-x-1/2 items-center gap-1.5 rounded-full bg-white px-3.5 py-2 text-[11px] font-black text-brand shadow-xl ring-1 ring-black/5">
+              <Clock size={13} className="text-gold-light" /> يوصل في ٣٠ دقيقة
             </div>
           </div>
         </div>
 
-        <Wave color="#f1dcc0" />
+        <Wave color="#E8DFC9" />
       </section>
 
       {/* ============ WHY (peach) ============ */}
-      <section id="why" className="bg-[#f1dcc0]">
+      <section id="why" className="bg-line">
         <div className="mx-auto max-w-6xl px-5 py-14 md:py-20">
           <div className="grid gap-10 md:grid-cols-2 md:items-center">
             <div className="text-center md:text-right">
-              <span className="inline-grid h-12 w-12 place-items-center rounded-2xl bg-[#7a0d0d] text-[#f4c752] shadow-lg shadow-[#7a0d0d]/25">
+              <span className="inline-grid h-12 w-12 place-items-center rounded-2xl bg-brand text-gold-soft shadow-lg shadow-brand/25">
                 <Leaf size={24} />
               </span>
-              <h2 className="mt-5 text-3xl font-black leading-tight tracking-tight text-[#7a0d0d] md:text-[2.5rem]">
+              <h2 className="mt-5 text-3xl font-black leading-tight tracking-tight text-brand md:text-[2.5rem]">
                 أكل صحي وطازة، بضمير
               </h2>
-              <p className="mx-auto mt-4 max-w-md leading-relaxed text-[#6b4f3a] md:mx-0">
+              <p className="mx-auto mt-4 max-w-md leading-relaxed text-umber md:mx-0">
                 كل الأصناف بتتحضّر يوم الطلب من مكوّنات طازة، من غير مواد حافظة
                 ولا تلوين.
               </p>
-              <p className="mx-auto mt-3 flex max-w-md items-start gap-2 leading-relaxed text-[#6b4f3a] md:mx-0">
+              <p className="mx-auto mt-3 flex max-w-md items-start gap-2 leading-relaxed text-umber md:mx-0">
                 <HeartHandshake
                   size={18}
-                  className="mt-1 shrink-0 text-[#b68614]"
+                  className="mt-1 shrink-0 text-gold"
                 />
                 وكل طلب بيوصل دخل لأسرة مصرية، وبيدّي فرصة لستّ بيت شاطرة إنها
                 تكسب من شغل إيدها.
@@ -540,8 +540,8 @@ export default function LandingPage() {
                     <p className="text-[11px] font-black text-gray-800">
                       {d.name}
                     </p>
-                    <p className="mt-0.5 flex items-center justify-center gap-0.5 text-[10px] font-bold text-[#b68614]">
-                      <Star size={9} className="fill-[#b68614]" /> {d.rate}
+                    <p className="mt-0.5 flex items-center justify-center gap-0.5 text-[10px] font-bold text-gold">
+                      <Star size={9} className="fill-gold" /> {d.rate}
                     </p>
                   </div>
                 </div>
@@ -550,13 +550,13 @@ export default function LandingPage() {
           </div>
         </div>
 
-        <Wave color="#faf3e7" />
+        <Wave color="#FDF6E3" />
       </section>
 
       {/* ============ FEATURES (cream + ornament) ============ */}
-      <section className="relative bg-[#faf3e7]">
+      <section className="relative bg-ivory">
         <svg
-          className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[#7a0d0d] opacity-[0.06]"
+          className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-brand opacity-[0.06]"
           width="360"
           height="480"
           viewBox="0 0 360 480"
@@ -581,55 +581,55 @@ export default function LandingPage() {
         <div className="relative mx-auto max-w-5xl px-5 py-16 md:py-24">
           <div className="grid gap-12 sm:grid-cols-2 md:gap-16">
             <div className="text-center sm:text-right">
-              <span className="inline-grid h-12 w-12 place-items-center rounded-2xl bg-[#7a0d0d]/[0.08] text-[#7a0d0d]">
+              <span className="inline-grid h-12 w-12 place-items-center rounded-2xl bg-brand/[0.08] text-brand">
                 <ShieldCheck size={24} />
               </span>
-              <h3 className="mt-4 text-2xl font-black tracking-tight text-[#7a0d0d]">
+              <h3 className="mt-4 text-2xl font-black tracking-tight text-brand">
                 طباخات موثّقة
               </h3>
-              <p className="mt-2 leading-relaxed text-[#6b4f3a]">
+              <p className="mt-2 leading-relaxed text-umber">
                 بنراجع بيانات ومطبخ كل طباخة قبل التفعيل، عشان تطمّني على مصدر
                 أكلك وجودته.
               </p>
             </div>
             <div className="text-center sm:text-right">
-              <span className="inline-grid h-12 w-12 place-items-center rounded-2xl bg-[#7a0d0d]/[0.08] text-[#7a0d0d]">
+              <span className="inline-grid h-12 w-12 place-items-center rounded-2xl bg-brand/[0.08] text-brand">
                 <Sparkles size={24} />
               </span>
-              <h3 className="mt-4 text-2xl font-black tracking-tight text-[#7a0d0d]">
+              <h3 className="mt-4 text-2xl font-black tracking-tight text-brand">
                 نقاط ومكافآت
               </h3>
-              <p className="mt-2 leading-relaxed text-[#6b4f3a]">
+              <p className="mt-2 leading-relaxed text-umber">
                 اكسبي نقاط مع كل أوردر واستبدليها خصومات على طلباتك الجاية.
               </p>
               <a
                 href="#app"
-                className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#7a0d0d] px-6 py-3 text-sm font-black text-white shadow-lg shadow-[#7a0d0d]/25 transition hover:-translate-y-0.5 hover:bg-[#5a0909]"
+                className="mt-5 inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-black text-white shadow-lg shadow-brand/25 transition hover:-translate-y-0.5 hover:bg-brand-dark"
               >
                 اعرف أكتر <ArrowLeft size={16} />
               </a>
             </div>
           </div>
 
-          <div className="mx-auto mt-14 flex max-w-3xl flex-wrap items-center justify-center gap-x-10 gap-y-4 rounded-[1.75rem] bg-white/70 px-6 py-5 text-sm font-bold text-[#6b4f3a] ring-1 ring-black/[0.04]">
+          <div className="mx-auto mt-14 flex max-w-3xl flex-wrap items-center justify-center gap-x-10 gap-y-4 rounded-[1.75rem] bg-white/70 px-6 py-5 text-sm font-bold text-umber ring-1 ring-black/[0.04]">
             <span className="flex items-center gap-2">
-              <Clock size={16} className="text-[#b68614]" /> توصيل ٣٠ – ٤٥ دقيقة
+              <Clock size={16} className="text-gold" /> توصيل ٣٠ – ٤٥ دقيقة
             </span>
             <span className="flex items-center gap-2">
-              <ChefHat size={16} className="text-[#b68614]" /> +٥٠٠ طباخة
+              <ChefHat size={16} className="text-gold" /> +٥٠٠ طباخة
             </span>
             <span className="flex items-center gap-2">
-              <PackageCheck size={16} className="text-[#b68614]" /> +٢٠ ألف طلب
+              <PackageCheck size={16} className="text-gold" /> +٢٠ ألف طلب
             </span>
             <span className="flex items-center gap-2">
-              <Star size={16} className="fill-[#b68614] text-[#b68614]" /> ٤.٩ تقييم
+              <Star size={16} className="fill-gold text-gold" /> ٤.٩ تقييم
             </span>
           </div>
         </div>
       </section>
 
       {/* ============ HOW (cream) ============ */}
-      <section id="how" className="bg-[#faf3e7] pb-8">
+      <section id="how" className="bg-ivory pb-8">
         <div className="mx-auto max-w-6xl px-5 pt-6 pb-16">
           <SectionHeading kicker="بتشتغل إزاي؟" title="٤ خطوات وبس" />
 
@@ -639,8 +639,8 @@ export default function LandingPage() {
                 onClick={() => setTab("client")}
                 className={`rounded-full px-7 py-2.5 text-sm font-black transition ${
                   tab === "client"
-                    ? "bg-[#7a0d0d] text-white shadow-lg shadow-[#7a0d0d]/25"
-                    : "text-gray-500 hover:text-[#7a0d0d]"
+                    ? "bg-brand text-white shadow-lg shadow-brand/25"
+                    : "text-gray-500 hover:text-brand"
                 }`}
               >
                 كعميل
@@ -649,8 +649,8 @@ export default function LandingPage() {
                 onClick={() => setTab("cook")}
                 className={`rounded-full px-7 py-2.5 text-sm font-black transition ${
                   tab === "cook"
-                    ? "bg-[#7a0d0d] text-white shadow-lg shadow-[#7a0d0d]/25"
-                    : "text-gray-500 hover:text-[#7a0d0d]"
+                    ? "bg-brand text-white shadow-lg shadow-brand/25"
+                    : "text-gray-500 hover:text-brand"
                 }`}
               >
                 كطباخة
@@ -664,10 +664,10 @@ export default function LandingPage() {
                 key={s.title}
                 className="group relative rounded-[1.5rem] bg-white p-6 shadow-[0_16px_38px_-25px_rgba(122,13,13,0.35)] ring-1 ring-black/[0.04] transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_30px_55px_-25px_rgba(122,13,13,0.45)]"
               >
-                <span className="absolute -top-4 right-6 grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-[#e0a52e] to-[#b68614] text-sm font-black text-white shadow-lg ring-4 ring-[#faf3e7] transition group-hover:scale-110">
+                <span className="absolute -top-4 right-6 grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-gold-light to-gold text-sm font-black text-white shadow-lg ring-4 ring-ivory transition group-hover:scale-110">
                   {["١", "٢", "٣", "٤"][i]}
                 </span>
-                <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#7a0d0d]/10 text-[#7a0d0d] transition group-hover:bg-[#7a0d0d] group-hover:text-white">
+                <div className="grid h-12 w-12 place-items-center rounded-2xl bg-brand/10 text-brand transition group-hover:bg-brand group-hover:text-white">
                   <s.icon size={24} />
                 </div>
                 <h4 className="mt-4 font-black text-gray-800">{s.title}</h4>
@@ -681,7 +681,7 @@ export default function LandingPage() {
       </section>
 
       {/* ============ BECOME A COOK (cream) ============ */}
-      <section className="bg-[#faf3e7]">
+      <section className="bg-ivory">
         <div className="mx-auto max-w-6xl px-5 pb-20 pt-8">
           <SectionHeading
             kicker="اشتغلي معانا"
@@ -710,11 +710,11 @@ export default function LandingPage() {
                 key={c.t}
                 className="group rounded-[1.5rem] bg-white p-7 text-center shadow-[0_18px_40px_-25px_rgba(122,13,13,0.3)] ring-1 ring-black/[0.04] transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_30px_55px_-25px_rgba(122,13,13,0.4)]"
               >
-                <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-[#7a0d0d] to-[#9a1212] text-white shadow-lg shadow-[#7a0d0d]/25 transition group-hover:scale-110">
+                <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-brand to-brand-light text-white shadow-lg shadow-brand/25 transition group-hover:scale-110">
                   <c.icon size={26} />
                 </div>
-                <h4 className="mt-4 text-lg font-black text-[#7a0d0d]">{c.t}</h4>
-                <p className="mt-2 text-sm text-[#6b4f3a]">{c.d}</p>
+                <h4 className="mt-4 text-lg font-black text-brand">{c.t}</h4>
+                <p className="mt-2 text-sm text-umber">{c.d}</p>
               </div>
             ))}
           </div>
@@ -729,8 +729,8 @@ export default function LandingPage() {
         className="relative overflow-hidden bg-[radial-gradient(130%_120%_at_50%_100%,#571212_0%,#3d0a0a_55%,#320808_100%)]"
       >
         <div className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:radial-gradient(circle,#fff_1.5px,transparent_1.5px)] [background-size:26px_26px]" />
-        <div className="lp-glow pointer-events-none absolute -left-24 bottom-1/4 h-72 w-72 rounded-full bg-[#e0a52e]/12 blur-3xl" />
-        <div className="lp-glow pointer-events-none absolute -right-20 top-1/2 h-64 w-64 rounded-full bg-[#9a1212]/25 blur-3xl" />
+        <div className="lp-glow pointer-events-none absolute -left-24 bottom-1/4 h-72 w-72 rounded-full bg-gold-light/12 blur-3xl" />
+        <div className="lp-glow pointer-events-none absolute -right-20 top-1/2 h-64 w-64 rounded-full bg-brand-light/25 blur-3xl" />
 
         <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-20 md:grid-cols-2 md:py-24">
           <div className="text-center md:text-right">
@@ -747,7 +747,7 @@ export default function LandingPage() {
                 href="#"
                 className="flex items-center gap-3 rounded-2xl bg-black px-5 py-3 text-white ring-1 ring-white/15 transition hover:-translate-y-0.5 hover:bg-black/80"
               >
-                <Play size={26} className="text-[#e0a52e]" />
+                <Play size={26} className="text-gold-light" />
                 <span className="text-right leading-tight">
                   <span className="block text-[10px] font-bold text-white/60">
                     متاح على
@@ -771,11 +771,11 @@ export default function LandingPage() {
 
             <div className="mt-8 flex items-center justify-center gap-6 text-white/70 md:justify-start">
               <span className="flex items-center gap-2 text-sm font-bold">
-                <Star size={16} className="fill-[#e0a52e] text-[#e0a52e]" /> ٤.٩
+                <Star size={16} className="fill-gold-light text-gold-light" /> ٤.٩
                 تقييم المتجر
               </span>
               <span className="flex items-center gap-2 text-sm font-bold">
-                <PackageCheck size={16} className="text-[#e0a52e]" /> +٢٠ ألف
+                <PackageCheck size={16} className="text-gold-light" /> +٢٠ ألف
                 تحميل
               </span>
             </div>
@@ -785,12 +785,12 @@ export default function LandingPage() {
           <PhoneMockup />
         </div>
 
-        <Wave color="#faf3e7" />
+        <Wave color="#FDF6E3" />
       </section>
 
       {/* ============ CTA BANNER ============ */}
       <section className="mx-auto max-w-6xl px-5 py-16">
-        <div className="relative flex flex-col items-center justify-between gap-6 overflow-hidden rounded-[2.25rem] bg-gradient-to-l from-[#e0a52e] to-[#b68614] px-8 py-11 text-center shadow-[0_35px_70px_-30px_rgba(182,134,20,0.6)] ring-1 ring-white/10 md:flex-row md:text-right">
+        <div className="relative flex flex-col items-center justify-between gap-6 overflow-hidden rounded-[2.25rem] bg-gradient-to-l from-gold-light to-gold px-8 py-11 text-center shadow-[0_35px_70px_-30px_rgba(182,134,20,0.6)] ring-1 ring-white/10 md:flex-row md:text-right">
           <div className="pointer-events-none absolute inset-0 opacity-[0.12] [background-image:radial-gradient(circle,#fff_1.4px,transparent_1.4px)] [background-size:24px_24px]" />
           <div className="relative">
             <h3 className="text-2xl font-black text-white md:text-3xl">
@@ -802,7 +802,7 @@ export default function LandingPage() {
           </div>
           <a
             href="#app"
-            className="relative shrink-0 rounded-full bg-[#7a0d0d] px-9 py-4 text-sm font-black text-white shadow-xl shadow-[#7a0d0d]/30 transition hover:-translate-y-0.5 hover:bg-[#5a0909]"
+            className="relative shrink-0 rounded-full bg-brand px-9 py-4 text-sm font-black text-white shadow-xl shadow-brand/30 transition hover:-translate-y-0.5 hover:bg-brand-dark"
           >
             حمّل التطبيق دلوقتي
           </a>
@@ -811,7 +811,7 @@ export default function LandingPage() {
 
       {/* ============ FOOTER ============ */}
       <footer id="contact" className="bg-[#3f0707] text-white/70">
-        <div className="h-1 w-full bg-gradient-to-l from-[#b68614] via-[#ffd27a] to-[#b68614]" />
+        <div className="h-1 w-full bg-gradient-to-l from-gold via-[#ffd27a] to-gold" />
         <div className="mx-auto grid max-w-6xl gap-x-14 gap-y-12 px-5 py-16 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <div className="flex items-center gap-2.5 text-white">
@@ -830,7 +830,7 @@ export default function LandingPage() {
                 <a
                   key={i}
                   href="#"
-                  className="grid h-9 w-9 place-items-center rounded-full bg-white/10 text-white transition hover:-translate-y-0.5 hover:bg-[#b68614]"
+                  className="grid h-9 w-9 place-items-center rounded-full bg-white/10 text-white transition hover:-translate-y-0.5 hover:bg-gold"
                 >
                   <Icon size={16} />
                 </a>
@@ -870,13 +870,13 @@ export default function LandingPage() {
             <h5 className="mb-4 font-black text-white">تواصل معنا</h5>
             <ul className="space-y-3 text-sm">
               <li className="flex items-center gap-2">
-                <Phone size={15} className="text-[#b68614]" />
+                <Phone size={15} className="text-gold" />
                 <a href="tel:+201555641619" dir="ltr" className="transition hover:text-white">
                   01555641619
                 </a>
               </li>
               <li className="flex items-center gap-2">
-                <Mail size={15} className="text-[#b68614]" />
+                <Mail size={15} className="text-gold" />
                 <a
                   href="mailto:tabbakha.info@gmail.com"
                   className="transition hover:text-white"
@@ -885,7 +885,7 @@ export default function LandingPage() {
                 </a>
               </li>
               <li className="flex items-center gap-2">
-                <MapPin size={15} className="text-[#b68614]" /> القاهرة، مصر
+                <MapPin size={15} className="text-gold" /> القاهرة، مصر
               </li>
             </ul>
           </div>

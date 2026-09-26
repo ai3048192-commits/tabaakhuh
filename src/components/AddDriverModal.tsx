@@ -142,7 +142,7 @@ export default function AddDriverModal({
             id="ad-city"
             value={p.city_id}
             onChange={(e) => setProfile('city_id')(e.target.value)}
-            className="rounded-2xl border border-[#e8dfc9] bg-white py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-[#7a0d0d]/20"
+            className="rounded-2xl border border-line bg-white py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-brand/20"
           >
             <option value="">—</option>
             {cities.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -159,7 +159,7 @@ export default function AddDriverModal({
             id="ad-vtype"
             value={p.vehicle_type}
             onChange={(e) => setProfile('vehicle_type')(e.target.value)}
-            className="rounded-2xl border border-[#e8dfc9] bg-white py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-[#7a0d0d]/20"
+            className="rounded-2xl border border-line bg-white py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-brand/20"
           >
             <option value="">—</option>
             {VEHICLE_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}

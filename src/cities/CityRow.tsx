@@ -41,7 +41,7 @@ export default function CityRow({ city, state, onEdit, onToggle }: Props) {
             onClick={() => onEdit(city)}
             disabled={busy}
             aria-label={M.editLabel(city.name_ar)}
-            className="flex items-center gap-1 rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs font-bold text-gray-600 hover:border-[#7a0d0d] disabled:opacity-50"
+            className="flex items-center gap-1 rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs font-bold text-gray-600 hover:border-brand disabled:opacity-50"
           >
             <Pencil size={13} aria-hidden="true" />
             {M.editCity}

@@ -73,7 +73,7 @@ export default function AddUserModal({ onClose, onCreated }: { onClose: () => vo
             value={v.role}
             onChange={(e) => set('role')(e.target.value)}
             aria-invalid={errors.role ? true : undefined}
-            className={`rounded-2xl border bg-white py-3 px-4 text-sm outline-none ${errors.role ? 'border-red-300' : 'border-[#e8dfc9] focus:ring-2 focus:ring-[#7a0d0d]/20'}`}
+            className={`rounded-2xl border bg-white py-3 px-4 text-sm outline-none ${errors.role ? 'border-red-300' : 'border-line focus:ring-2 focus:ring-brand/20'}`}
           >
             {ROLES.map((r) => <option key={r.value} value={r.value}>{r.label}</option>)}
           </select>

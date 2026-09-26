@@ -127,7 +127,7 @@ export default function OrdersFilters({
       <button
         type="button"
         onClick={onApply}
-        className="rounded-lg bg-[#7a0d0d] px-4 py-2 text-sm font-black text-white"
+        className="rounded-lg bg-brand px-4 py-2 text-sm font-black text-white"
       >
         {M.apply}
       </button>

@@ -88,7 +88,7 @@ export default function GovernoratePickerDrawer({
   return (
     <DrawerShell label={M.pickerTitle} onDismiss={onCancel} side="left" width="md">
       {/* Header */}
-      <div className="relative shrink-0 overflow-hidden bg-gradient-to-l from-[#7a0d0d] to-[#9a1212] px-5 py-4 text-white">
+      <div className="relative shrink-0 overflow-hidden bg-gradient-to-l from-brand to-brand-light px-5 py-4 text-white">
         <div className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:radial-gradient(circle,#fff_1.5px,transparent_1.5px)] [background-size:20px_20px]" />
         <div className="relative flex items-start justify-between gap-3">
           <div className="flex items-center gap-2.5">
@@ -115,7 +115,7 @@ export default function GovernoratePickerDrawer({
       </div>
 
       {/* Search */}
-      <div className="shrink-0 border-b border-[#f0e9db] bg-[#fcf9f2] px-5 py-3">
+      <div className="shrink-0 border-b border-[#f0e9db] bg-ivory px-5 py-3">
         <p className="mb-2 text-[11px] font-bold text-gray-500">{M.pickerSubtitle}</p>
         <div className="relative">
           <Search
@@ -130,7 +130,7 @@ export default function GovernoratePickerDrawer({
             onChange={(e) => setSearch(e.target.value)}
             aria-label={M.pickerSearch}
             placeholder={M.pickerSearch}
-            className="w-full rounded-xl border border-[#e8dfc9] bg-white py-2 pr-9 pl-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#7a0d0d]/20"
+            className="w-full rounded-xl border border-line bg-white py-2 pr-9 pl-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand/20"
           />
         </div>
       </div>
@@ -149,8 +149,8 @@ export default function GovernoratePickerDrawer({
                   <label
                     className={[
                       'flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 transition',
-                      hint ? 'bg-[#fcf9f2]' : 'hover:bg-gray-50',
-                      row.key === focusKey ? 'ring-1 ring-[#7a0d0d]/30' : '',
+                      hint ? 'bg-ivory' : 'hover:bg-gray-50',
+                      row.key === focusKey ? 'ring-1 ring-brand/30' : '',
                       busy ? 'cursor-not-allowed opacity-60' : '',
                     ].join(' ')}
                   >
@@ -168,7 +168,7 @@ export default function GovernoratePickerDrawer({
                       className={[
                         'flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition',
                         checked
-                          ? 'border-[#7a0d0d] bg-[#7a0d0d] text-white'
+                          ? 'border-brand bg-brand text-white'
                           : 'border-[#ddd3bd] bg-white',
                       ].join(' ')}
                     >
@@ -220,7 +220,7 @@ export default function GovernoratePickerDrawer({
             type="button"
             onClick={onCancel}
             disabled={busy}
-            className="rounded-xl border border-[#e8dfc9] bg-white px-4 py-2.5 text-sm font-bold text-gray-600 transition hover:bg-gray-100 disabled:opacity-50"
+            className="rounded-xl border border-line bg-white px-4 py-2.5 text-sm font-bold text-gray-600 transition hover:bg-gray-100 disabled:opacity-50"
           >
             {M.cancel}
           </button>
@@ -233,7 +233,7 @@ export default function GovernoratePickerDrawer({
               'rounded-xl px-4 py-2.5 text-sm font-black transition disabled:cursor-not-allowed',
               plan.length === 0
                 ? 'bg-gray-200 text-gray-400'
-                : 'bg-[#7a0d0d] text-white shadow-lg shadow-[#7a0d0d]/25 hover:bg-[#9a1212]',
+                : 'bg-brand text-white shadow-lg shadow-brand/25 hover:bg-brand-light',
             ].join(' ')}
           >
             {busy && progress ? M.pickerApplying(progress.done, progress.total) : M.pickerApply}

@@ -14,9 +14,9 @@ export default function IncidentsPage() {
   const field = 'rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm'
 
   return (
-    <div className="min-h-full bg-[#fcf9f2] p-4 font-['Tajawal'] md:p-6" dir="rtl">
+    <div className="min-h-full bg-ivory p-4 font-['Tajawal'] md:p-6" dir="rtl">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-xl font-black text-[#7a0d0d]">{M.pageTitle}</h1>
+        <h1 className="text-xl font-black text-brand">{M.pageTitle}</h1>
         {q.status === 'ready' && (
           <button type="button" onClick={q.refresh} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-gray-600">
             <RefreshCw size={14} aria-hidden="true" />
@@ -43,7 +43,7 @@ export default function IncidentsPage() {
       {q.status === 'error' && (
         <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
           <p className="mb-3 text-sm text-red-700">{M.listError}</p>
-          <button type="button" onClick={q.refresh} className="rounded-xl bg-[#7a0d0d] px-4 py-2 text-sm font-black text-white">{M.retry}</button>
+          <button type="button" onClick={q.refresh} className="rounded-xl bg-brand px-4 py-2 text-sm font-black text-white">{M.retry}</button>
         </div>
       )}
 

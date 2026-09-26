@@ -51,7 +51,7 @@ export default function StatusToggleDialog({
           onClick={onConfirm}
           disabled={busy}
           aria-busy={busy}
-          className="flex-1 rounded-xl bg-[#7a0d0d] py-2.5 text-sm font-black text-white disabled:opacity-50"
+          className="flex-1 rounded-xl bg-brand py-2.5 text-sm font-black text-white disabled:opacity-50"
         >
           {M.confirmToggle}
         </button>

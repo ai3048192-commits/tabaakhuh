@@ -36,8 +36,8 @@ export default function Sidebar({ isOpen, onClose }: { isOpen: boolean, onClose:
       {/* طبقة التعتيم للموبايل */}
       {isOpen && <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden" onClick={onClose}></div>}
 
-      <aside className={`fixed top-0 right-0 flex h-screen w-72 flex-col bg-[#7a0d0d] text-white z-50 shadow-2xl transform transition-transform duration-500 ease-in-out lg:translate-x-0 lg:static ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-        <div className="h-1 w-full shrink-0 bg-[#b68614]"></div>
+      <aside className={`fixed top-0 right-0 flex h-screen w-72 flex-col bg-brand text-white z-50 shadow-2xl transform transition-transform duration-500 ease-in-out lg:translate-x-0 lg:static ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div className="h-1 w-full shrink-0 bg-gold"></div>
 
         {/* الشعار وزر الإغلاق */}
         <div className="flex shrink-0 items-center justify-between px-8 pb-8 pt-8">
@@ -47,7 +47,7 @@ export default function Sidebar({ isOpen, onClose }: { isOpen: boolean, onClose:
           </div>
           <button
             onClick={onClose}
-            className="lg:hidden p-2 bg-[#9a1212] rounded-xl hover:bg-[#b68614] transition-all"
+            className="lg:hidden p-2 bg-brand-light rounded-xl hover:bg-gold transition-all"
           >
             <X size={24} />
           </button>
@@ -66,8 +66,8 @@ export default function Sidebar({ isOpen, onClose }: { isOpen: boolean, onClose:
                   onClick={onClose}
                   className={`relative flex items-center gap-4 p-4 rounded-xl transition-all duration-300 font-bold text-sm ${
                     isActive 
-                      ? 'bg-[#9a1212] text-white border-r-4 border-[#b68614] shadow-lg' 
-                      : 'text-red-200 hover:text-white hover:bg-[#8b1a1a]'
+                      ? 'bg-brand-light text-white border-r-4 border-gold shadow-lg' 
+                      : 'text-red-200 hover:text-white hover:bg-brand'
                   }`}
                 >
                   <Icon size={20} className={isActive ? "text-yellow-400" : "text-red-300"} />
@@ -78,7 +78,7 @@ export default function Sidebar({ isOpen, onClose }: { isOpen: boolean, onClose:
             })}
         </nav>
 
-        <div className="shrink-0 border-t border-[#9a1212] px-8 py-6">
+        <div className="shrink-0 border-t border-brand-light px-8 py-6">
           <button
             type="button"
             onClick={() => { onClose(); void signOut(); }}

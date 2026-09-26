@@ -98,7 +98,7 @@ export default function CookReviewOverlay({
             </div>
           </section>
 
-          <div className="rounded-lg bg-[#fcf8f0] p-3 text-xs">
+          <div className="rounded-lg bg-ivory p-3 text-xs">
             {entry.contract ? (
               <div className="flex items-center justify-between gap-2">
                 <span className="text-gray-600">
@@ -110,7 +110,7 @@ export default function CookReviewOverlay({
                 <button
                   type="button"
                   onClick={() => onView(docs, docs.length - 1)}
-                  className="flex items-center gap-1 font-bold text-[#7a0d0d]"
+                  className="flex items-center gap-1 font-bold text-brand"
                 >
                   <FileText size={14} aria-hidden="true" />
                   {M.openContract}
@@ -138,7 +138,7 @@ export default function CookReviewOverlay({
             onClick={onReject}
             disabled={busy}
             aria-busy={busy}
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#7a0d0d] py-2.5 text-sm font-black text-white disabled:opacity-50"
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand py-2.5 text-sm font-black text-white disabled:opacity-50"
           >
             <X size={16} aria-hidden="true" />
             {M.reject}
