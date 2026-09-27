@@ -1,0 +1,20 @@
+/** Arabic, RTL-first. */
+export const warningMessages = {
+  issue: 'إصدار إنذار',
+  dialogTitle: (name: string) => `إصدار إنذار لـ ${name}`,
+  intro: 'هيتفتح الإنذار في نافذة جديدة تقدر تطبعه منها أو تحفظه PDF باسم الشخص.',
+  levelLegend: 'درجة الإنذار',
+  violationLabel: 'نوع المخالفة',
+  violationPlaceholder: 'اختر المخالفة…',
+  otherViolation: 'مخالفة أخرى (اكتبها في التفاصيل)',
+  otherViolationInLetter: 'مخالفة أخرى',
+  detailsLabel: 'تفاصيل المخالفة',
+  detailsOptional: '(اختياري)',
+  detailsPlaceholder: 'مثال: تأخير أكثر من ساعة في طلب رقم 1234 بتاريخ …',
+  violationRequired: 'اختر نوع المخالفة.',
+  detailsRequired: 'اكتب تفاصيل المخالفة.',
+  generate: 'إصدار وطباعة',
+  cancel: 'إلغاء',
+  popupBlocked: 'المتصفح منع فتح نافذة الإنذار. اسمح بالنوافذ المنبثقة لهذا الموقع وحاول تاني.',
+  issuedToast: (name: string) => `تم إصدار الإنذار لـ ${name}.`,
+} as const

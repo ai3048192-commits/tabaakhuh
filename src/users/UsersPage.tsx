@@ -1,5 +1,11 @@
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { RefreshCw, ChevronRight, ChevronLeft } from 'lucide-react'
 import { useAuth } from '../auth/AuthContext'
+import { displayName } from '../auth/types'
+import IssueWarningDialog from '../warnings/IssueWarningDialog'
+import { warningMessages as WM } from '../warnings/messages'
+import { fullName } from '../warnings/warningDocument'
+import type { AdminUser } from './types'
 import { useUsers } from './useUsers'
 import UsersFilters from './UsersFilters'
 import UsersTable from './UsersTable'
@@ -13,6 +19,19 @@ export default function UsersPage() {
   const { account } = useAuth()
   const filtered = q.filters.role !== 'all' || q.filters.status !== 'all' || q.filters.q.trim() !== ''
   const items = q.page?.items ?? []
+
+  // Warnings are generated entirely client-side (no backend record), so their
+  // dialog and toast live here rather than in `useUsers`.
+  const [warning, setWarning] = useState<AdminUser | null>(null)
+  const [warnToast, setWarnToast] = useState<string | null>(null)
+  const toastTimer = useRef<number | undefined>(undefined)
+  const flash = useCallback((msg: string) => {
+    setWarnToast(msg)
+    window.clearTimeout(toastTimer.current)
+    toastTimer.current = window.setTimeout(() => setWarnToast(null), 6000)
+  }, [])
+  useEffect(() => () => window.clearTimeout(toastTimer.current), [])
+  const toast = warnToast ?? q.toast
 
   return (
     <div className="min-h-full bg-[#fcf9f2] p-4 font-['Tajawal'] md:p-6" dir="rtl">
@@ -45,7 +64,7 @@ export default function UsersPage() {
 
       {q.status === 'ready' && items.length > 0 && q.page && (
         <>
-          <UsersTable items={items} busyId={q.busyId} currentUserId={account?.id ?? null} onView={q.openDetail} onStatus={q.askStatus} />
+          <UsersTable items={items} busyId={q.busyId} currentUserId={account?.id ?? null} onView={q.openDetail} onStatus={q.askStatus} onWarn={setWarning} />
           <nav className="mt-4 flex items-center justify-between gap-3" aria-label={`صفحة ${q.page.page} من ${q.totalPages}`}>
             <p className="text-xs font-bold text-gray-500" dir="rtl">
               صفحة {q.page.page} من {q.totalPages} · {q.page.total} مستخدم
@@ -62,13 +81,25 @@ export default function UsersPage() {
         </>
       )}
 
-      <div aria-live="polite" role="status" className="sr-only">{q.toast}</div>
-      {q.toast && (
+      <div aria-live="polite" role="status" className="sr-only">{toast}</div>
+      {toast && (
         <div className="fixed bottom-6 left-1/2 z-[80] -translate-x-1/2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm text-white shadow-lg">
-          {q.toast}
+          {toast}
         </div>
       )}
 
+      {warning && (warning.role === 'cook' || warning.role === 'driver') && (
+        <IssueWarningDialog
+          user={{ ...warning, role: warning.role }}
+          issuerName={account ? displayName(account) : ''}
+          onIssued={() => {
+            flash(WM.issuedToast(fullName(warning)))
+            setWarning(null)
+          }}
+          onBlocked={() => flash(WM.popupBlocked)}
+          onCancel={() => setWarning(null)}
+        />
+      )}
       {q.detail && <UserDetailDialog user={q.detail} onClose={q.closeDetail} />}
       {q.confirming && (
         <StatusChangeDialog

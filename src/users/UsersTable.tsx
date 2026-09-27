@@ -1,4 +1,5 @@
-import { Eye, Ban, ShieldCheck, UserCheck } from 'lucide-react'
+import { Eye, Ban, ShieldCheck, UserCheck, FileWarning } from 'lucide-react'
+import { warningMessages as WM } from '../warnings/messages'
 import { userMessages as M } from './messages'
 import type { AdminUser, UserStatus } from './types'
 
@@ -22,6 +23,7 @@ export default function UsersTable({
   currentUserId,
   onView,
   onStatus,
+  onWarn,
 }: {
   items: AdminUser[]
   busyId: number | null
@@ -29,6 +31,8 @@ export default function UsersTable({
   currentUserId: number | null
   onView: (u: AdminUser) => void
   onStatus: (u: AdminUser, next: UserStatus) => void
+  /** Only cooks and drivers can receive a warning letter. */
+  onWarn: (u: AdminUser) => void
 }) {
   const th = 'px-3 py-2 text-right text-xs font-black text-gray-500'
   const td = 'px-3 py-3 align-middle text-sm text-gray-700'
@@ -80,6 +84,17 @@ export default function UsersTable({
                     ) : (
                       <button type="button" className={`${iconBtn} text-red-500`} disabled={busy} aria-label={M.suspend} onClick={() => onStatus(u, 'suspended')}>
                         <Ban size={15} aria-hidden="true" />
+                      </button>
+                    )}
+                    {!isSelf && (u.role === 'cook' || u.role === 'driver') && (
+                      <button
+                        type="button"
+                        className={`${iconBtn} text-amber-600`}
+                        aria-label={`${WM.issue}: ${`${u.first_name} ${u.last_name}`.trim()}`}
+                        title={WM.issue}
+                        onClick={() => onWarn(u)}
+                      >
+                        <FileWarning size={15} aria-hidden="true" />
                       </button>
                     )}
                   </div>
