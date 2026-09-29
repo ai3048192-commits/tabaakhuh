@@ -854,15 +854,19 @@ export default function LandingPage() {
           <div>
             <h5 className="mb-4 font-black text-white">الشركة</h5>
             <ul className="space-y-2 text-sm">
-              {["عن طباخه", "الشروط والأحكام", "سياسة الخصوصية", "الوظائف"].map(
-                (t) => (
-                  <li key={t}>
-                    <a href="#" className="transition hover:text-white">
-                      {t}
-                    </a>
-                  </li>
-                ),
-              )}
+              {[
+                { label: "عن طباخه", href: "#" },
+                // Static pages served next to this SPA from the backend repo's site/
+                { label: "الشروط والأحكام", href: "/terms/" },
+                { label: "سياسة الخصوصية", href: "/privacy/" },
+                { label: "الوظائف", href: "#" },
+              ].map(({ label, href }) => (
+                <li key={label}>
+                  <a href={href} className="transition hover:text-white">
+                    {label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
