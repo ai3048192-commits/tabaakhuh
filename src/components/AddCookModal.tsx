@@ -39,8 +39,8 @@ const str = (s: string): string | undefined => (s.trim() !== '' ? s.trim() : und
 /**
  * Quick action: create a cook — `POST /admin/cooks`. Collects the full
  * application profile (store details, geo, verification documents); on success
- * the parent routes to `/cooks`, where the review queue reloads and the new
- * pending entry appears.
+ * the parent routes to `/cooks`. The backend approves an admin-created cook on
+ * creation, so it lands in the approved list rather than the review queue.
  */
 export default function AddCookModal({ onClose, onCreated }: { onClose: () => void; onCreated?: () => void }) {
   const [v, setV] = useState<CookValues>(EMPTY)
@@ -100,7 +100,7 @@ export default function AddCookModal({ onClose, onCreated }: { onClose: () => vo
         ...(str(p.national_id_front_url) ? { national_id_front_url: str(p.national_id_front_url) } : {}),
         ...(str(p.national_id_back_url) ? { national_id_back_url: str(p.national_id_back_url) } : {}),
       })
-      setBanner({ tone: 'ok', text: 'تمت إضافة الطباخة — ستظهر في طابور مراجعة الطباخات.' })
+      setBanner({ tone: 'ok', text: 'تمت إضافة الطباخة وتفعيل حسابها — تقدر تشتغل على طول.' })
       onCreated?.()
       window.setTimeout(onClose, 900)
     } catch (err) {

@@ -47,8 +47,8 @@ const str = (s: string): string | undefined => (s.trim() !== '' ? s.trim() : und
 /**
  * Quick action: create a driver — `POST /admin/drivers`. Collects the account
  * plus the full application (vehicle profile + verification documents); on
- * success the parent routes to `/drivers`, where the review queue reloads and
- * the new pending entry appears.
+ * success the parent routes to `/drivers`. The backend approves an
+ * admin-created driver on creation, so it skips the review queue.
  */
 export default function AddDriverModal({
   onClose,
@@ -113,7 +113,7 @@ export default function AddDriverModal({
         ...(str(p.national_id_back_url) ? { national_id_back_url: str(p.national_id_back_url) } : {}),
         ...(str(p.license_url) ? { license_url: str(p.license_url) } : {}),
       })
-      setBanner({ tone: 'ok', text: 'تم إنشاء الطلب — سيظهر في طابور مراجعة السائقين.' })
+      setBanner({ tone: 'ok', text: 'تم إنشاء حساب السائق وتفعيله — يقدر يشتغل على طول.' })
       onCreated?.()
       window.setTimeout(onClose, 900)
     } catch (err) {

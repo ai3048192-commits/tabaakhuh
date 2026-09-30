@@ -81,7 +81,7 @@ describe('Quick action — AddCookModal → POST /admin/cooks', () => {
       phone: '+201001234567', password: 'secret12', store_name: 'مطبخ أحمد',
     })
     expect(
-      (await screen.findAllByText('تمت إضافة الطباخة — ستظهر في طابور مراجعة الطباخات.')).length,
+      (await screen.findAllByText('تمت إضافة الطباخة وتفعيل حسابها — تقدر تشتغل على طول.')).length,
     ).toBeGreaterThan(0)
     await vi.advanceTimersByTimeAsync(1000)
     expect(onClose).toHaveBeenCalled()
