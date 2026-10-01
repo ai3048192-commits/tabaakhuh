@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { driverMessages as M } from './messages'
 import type { DocumentRef, DriverApplication } from './types'
 
@@ -51,7 +51,7 @@ export function DocTile({ doc, onOpen }: { doc: DocumentRef; onOpen: () => void 
   )
 }
 
-function Field({ label, value, layout }: { label: string; value: string; layout: DetailLayout }) {
+function Field({ label, value, layout }: { label: string; value: ReactNode; layout: DetailLayout }) {
   if (layout === 'inline') {
     return (
       <div className="flex gap-1.5">
@@ -90,6 +90,8 @@ export function DriverDetails({
       : 'grid grid-cols-2 gap-x-4 gap-y-2 text-xs text-gray-600 md:grid-cols-3'
   return (
     <dl className={cls}>
+      <Field label={M.fieldPhone} layout={layout} value={<bdi dir="ltr">{val(entry.phone)}</bdi>} />
+      <Field label={M.fieldEmail} layout={layout} value={val(entry.email)} />
       <Field
         label={M.fieldVehicle}
         layout={layout}

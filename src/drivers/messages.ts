@@ -25,6 +25,8 @@ export const driverMessages = {
   fieldName: 'الاسم',
   fieldVehicle: 'المركبة',
   fieldPlate: 'رقم اللوحة',
+  fieldPhone: 'رقم الهاتف',
+  fieldEmail: 'البريد الإلكتروني',
   fieldCity: 'المدينة',
   fieldBirthDate: 'تاريخ الميلاد',
   fieldSubmittedAt: 'تاريخ التقديم',

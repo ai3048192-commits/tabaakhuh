@@ -4,7 +4,15 @@ import type { CookApplication, PendingCookEntry, RawPendingCook } from './types'
 /** `GET /admin/cooks/pending` → entries (unsorted; caller sorts). */
 export async function listPendingCooks(signal?: AbortSignal): Promise<PendingCookEntry[]> {
   const raw = await authedRequest<RawPendingCook[]>('/admin/cooks/pending', { signal })
-  return raw.map((r) => ({ profile: r.cook_profile, contract: r.contract }))
+  return raw.map((r) => ({
+    profile: {
+      ...r.cook_profile,
+      name: r.applicant?.name ?? r.cook_profile.name,
+      phone: r.applicant?.phone ?? null,
+      email: r.applicant?.email ?? null,
+    },
+    contract: r.contract,
+  }))
 }
 
 /** `POST /admin/cooks/{id}/approve` — no body. Propagates `ApiError`. */

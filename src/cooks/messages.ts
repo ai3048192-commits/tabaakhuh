@@ -31,6 +31,8 @@ export const cookMessages = {
 
   fieldName: 'اسم الطاهية',
   fieldStore: 'اسم المتجر',
+  fieldPhone: 'رقم الهاتف',
+  fieldEmail: 'البريد الإلكتروني',
   fieldCity: 'المدينة',
   fieldArea: 'المنطقة',
   fieldAddress: 'العنوان',

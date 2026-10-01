@@ -1,3 +1,5 @@
+import type { Applicant } from '../review/types'
+
 /**
  * Driver-review shapes. Field names mirror `admin-dashboard-api.md` Phase 3.
  * Unlike the cook queue, `GET /admin/drivers/pending` returns a flat array of
@@ -12,6 +14,11 @@ export interface DriverApplication {
    * starts sending it, the review UI shows it in place of the `#id` label.
    */
   name?: string | null
+  /** From `applicant` — the driver's contact details. */
+  phone?: string | null
+  email?: string | null
+  /** The account behind the application (absent on older API builds). */
+  applicant?: Applicant | null
   vehicle_type: string
   vehicle_model: string
   vehicle_year: number

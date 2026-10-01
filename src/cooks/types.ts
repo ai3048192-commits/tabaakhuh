@@ -1,3 +1,5 @@
+import type { Applicant } from '../review/types'
+
 /**
  * Cook-review shapes. Field names mirror `admin-dashboard-api.md` Phase 2.
  */
@@ -12,6 +14,9 @@ export interface CookApplication {
    * review UI shows it alongside the store name.
    */
   name?: string | null
+  /** From the row's `applicant` — the cook's contact details. */
+  phone?: string | null
+  email?: string | null
   bio: string
   avatar_url: string | null
   national_id_front_url: string | null
@@ -41,6 +46,8 @@ export interface SignedContract {
 export interface RawPendingCook {
   cook_profile: CookApplication
   contract: SignedContract | null
+  /** The account behind the application (absent on older API builds). */
+  applicant?: Applicant | null
 }
 
 export interface PendingCookEntry {

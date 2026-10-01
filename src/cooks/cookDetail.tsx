@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
+import { resolveMedia } from '../review/documentMedia'
 import { cookMessages as M } from './messages'
 import type { DocumentRef, PendingCookEntry } from './types'
 
@@ -41,6 +42,13 @@ export function DocTile({ doc, onOpen }: { doc: DocumentRef; onOpen: () => void 
     >
       {unavailable ? (
         <span>{M.docUnavailable}</span>
+      ) : resolveMedia(doc) === 'pdf' || resolveMedia(doc) === 'unknown' ? (
+        // A PDF contract can't render in an <img> — it used to fall to
+        // "unavailable" here even though the viewer opens it fine.
+        <span className="flex flex-col items-center gap-1 font-bold text-[#7a0d0d]">
+          <span className="text-2xl">📄</span>
+          <span>PDF</span>
+        </span>
       ) : (
         <img
           src={doc.url ?? undefined}
@@ -64,7 +72,7 @@ function Field({
   wide = false,
 }: {
   label: string
-  value: string
+  value: ReactNode
   layout: DetailLayout
   wide?: boolean
 }) {
@@ -105,6 +113,8 @@ export function CookDetails({
       : 'grid grid-cols-2 gap-x-4 gap-y-2 text-xs text-gray-600 md:grid-cols-3'
   return (
     <dl className={cls}>
+      <Field label={M.fieldPhone} layout={layout} value={<bdi dir="ltr">{val(p.phone)}</bdi>} />
+      <Field label={M.fieldEmail} layout={layout} value={val(p.email)} />
       <Field label={M.fieldCity} layout={layout} value={cityName} />
       <Field label={M.fieldArea} layout={layout} value={val(p.area)} />
       <Field label={M.fieldAddress} layout={layout} value={val(p.address_text)} />
