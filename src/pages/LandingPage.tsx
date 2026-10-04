@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import heroFood from "../assets/egyptian-home-food.webp";
 import logoIcon from "../assets/logo_icon_trim.png";
@@ -49,8 +49,15 @@ const BUNDLED_DISH_IMAGES = [kosharyImg, kronbImg, chickenImg];
 const dishImage = (d: DishItem, i: number) =>
   safeHref(d.image) ?? BUNDLED_DISH_IMAGES[i % BUNDLED_DISH_IMAGES.length];
 
-/** Opens off-site links in a new tab; page anchors and site paths stay in place. */
-function linkProps(href: string | undefined) {
+/**
+ * Opens off-site links in a new tab; page anchors and site paths stay in place.
+ * "تواصل معنا" lives on its own page, so `#contact` (the old in-page anchor,
+ * possibly still in saved content) goes to `/contact`; and on that page the
+ * home-page anchors (`#app`, `#faq`…) point back to `/`.
+ */
+function linkProps(href: string | undefined, onContactPage = false) {
+  if (href === "#contact") href = "/contact";
+  else if (onContactPage && href?.startsWith("#")) href = `/${href}`;
   const external = !!href && /^https?:/i.test(href);
   return external
     ? { href, target: "_blank", rel: "noopener noreferrer" }
@@ -431,8 +438,19 @@ function ContactForm({ c }: { c: LandingContent["contact"] }) {
 /*  Page                                                               */
 /* ------------------------------------------------------------------ */
 
-export default function LandingPage() {
+export default function LandingPage({ view = "home" }: { view?: "home" | "contact" }) {
   const { content: c, ready } = useLandingContent();
+  const isContact = view === "contact";
+  const lp = (href: string | undefined) => linkProps(href, isContact);
+
+  // The page renders only once its content is in, so the browser's own jump
+  // to a `/#app`-style anchor (e.g. a link from the contact page) happens
+  // before the target exists — do it here instead.
+  useEffect(() => {
+    if (!ready) return;
+    const id = decodeURIComponent(window.location.hash.slice(1));
+    if (id) document.getElementById(id)?.scrollIntoView();
+  }, [ready]);
   const [menuOpen, setMenuOpen] = useState(false);
   const [tab, setTab] = useState<"client" | "cook">("client");
   const steps = tab === "client" ? c.how.clientSteps : c.how.cookSteps;
@@ -454,7 +472,7 @@ export default function LandingPage() {
       {/* ============ HEADER ============ */}
       <header className="fixed inset-x-0 top-0 z-50 px-4 pt-6 sm:px-8" dir="rtl">
         <div className="mx-auto flex max-w-7xl items-center justify-between rounded-full bg-[#2a0407]/80 px-7 py-4 shadow-[0_25px_60px_rgba(0,0,0,0.8)] ring-1 ring-white/10 backdrop-blur-3xl transition-all duration-300">
-          <a href="#home" className="group flex cursor-pointer items-center">
+          <a href={isContact ? "/" : "#home"} className="group flex cursor-pointer items-center">
             <div className="relative rounded-full p-1.5 transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110">
               <img src={logo} alt={c.brand.name} className="h-10 w-auto object-contain drop-shadow-md md:h-11" />
             </div>
@@ -464,7 +482,7 @@ export default function LandingPage() {
             {c.brand.navLinks.map((l) => (
               <a
                 key={l.id}
-                {...linkProps(safeHref(l.href))}
+                {...lp(safeHref(l.href))}
                 className="rounded-full px-5 py-2 text-sm font-extrabold text-white/90 transition-all duration-300 hover:-translate-x-1 hover:bg-white/15 hover:text-[#ffd27a]"
               >
                 {l.label}
@@ -522,7 +540,7 @@ export default function LandingPage() {
                 {c.brand.navLinks.map((l) => (
                   <a
                     key={l.id}
-                    {...linkProps(safeHref(l.href))}
+                    {...lp(safeHref(l.href))}
                     onClick={() => setMenuOpen(false)}
                     className="group flex items-center justify-between rounded-2xl bg-white/5 px-4 py-3 text-sm font-bold text-white transition-all duration-300 hover:bg-gradient-to-r hover:from-[#b68614] hover:to-[#ffd27a] hover:text-[#180204]"
                   >
@@ -551,6 +569,8 @@ export default function LandingPage() {
         )}
       </header>
 
+      {!isContact && (
+        <>
       {/* ============ HERO ============ */}
       <section
         id="home"
@@ -585,7 +605,7 @@ export default function LandingPage() {
               <div className="mt-9 flex flex-wrap justify-center gap-4 md:justify-start">
                 {c.hero.primaryCta.label && (
                   <a
-                    {...linkProps(safeHref(c.hero.primaryCta.href))}
+                    {...lp(safeHref(c.hero.primaryCta.href))}
                     className="rounded-full bg-gradient-to-r from-[#ffd27a] via-[#f4c752] to-[#d89c1e] px-10 py-4 text-sm font-black text-[#1c0204] shadow-[0_15px_35px_rgba(240,165,46,0.4)] transition-all duration-300 hover:-translate-y-1 hover:brightness-110"
                   >
                     {c.hero.primaryCta.label}
@@ -593,7 +613,7 @@ export default function LandingPage() {
                 )}
                 {c.hero.secondaryCta.label && (
                   <a
-                    {...linkProps(safeHref(c.hero.secondaryCta.href))}
+                    {...lp(safeHref(c.hero.secondaryCta.href))}
                     className="rounded-full bg-white/10 px-10 py-4 text-sm font-black text-white shadow-xl backdrop-blur-2xl transition-all duration-300 hover:-translate-y-1 hover:bg-white/20"
                   >
                     {c.hero.secondaryCta.label}
@@ -749,7 +769,7 @@ export default function LandingPage() {
                       {f.ctaLabel && (
                         <div className="mt-8 flex justify-center sm:justify-start">
                           <a
-                            {...linkProps(safeHref(f.ctaHref))}
+                            {...lp(safeHref(f.ctaHref))}
                             className="inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-[#7a0d0d] to-[#5a0909] px-8 py-3.5 text-sm font-black text-white shadow-xl shadow-[#7a0d0d]/20 transition-all duration-300 hover:-translate-y-1 hover:brightness-110"
                           >
                             <span>{f.ctaLabel}</span>
@@ -882,7 +902,7 @@ export default function LandingPage() {
             {c.joinCook.ctaLabel && (
               <div className="mt-12 text-center">
                 <a
-                  {...linkProps(safeHref(c.joinCook.ctaHref))}
+                  {...lp(safeHref(c.joinCook.ctaHref))}
                   className="inline-flex items-center gap-2 rounded-full bg-[#7a0d0d] px-8 py-4 text-sm font-black text-white shadow-xl shadow-[#7a0d0d]/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#5a0909] hover:shadow-2xl"
                 >
                   <span>{c.joinCook.ctaLabel}</span>
@@ -1023,7 +1043,7 @@ export default function LandingPage() {
                   <p className="mb-8 text-sm font-medium text-white/80 sm:text-base">{c.faq.supportText}</p>
                   {c.faq.supportCtaLabel && (
                     <a
-                      {...linkProps(safeHref(c.faq.supportCtaHref))}
+                      {...lp(safeHref(c.faq.supportCtaHref))}
                       className="inline-flex items-center gap-3 rounded-2xl bg-gradient-to-r from-[#e0a52e] to-[#b68614] px-8 py-4 text-sm font-black text-gray-950 shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 sm:text-base"
                     >
                       <span>{c.faq.supportCtaLabel}</span>
@@ -1060,7 +1080,7 @@ export default function LandingPage() {
             {c.cta.buttonLabel && (
               <div className="relative z-10 shrink-0">
                 <a
-                  {...linkProps(safeHref(c.cta.buttonHref))}
+                  {...lp(safeHref(c.cta.buttonHref))}
                   className="group relative inline-flex items-center gap-3.5 overflow-hidden rounded-2xl bg-gradient-to-r from-[#e0a52e] to-[#b68614] px-8 py-4 text-sm font-black text-gray-950 shadow-2xl shadow-[#e0a52e]/20 transition-all duration-300 hover:-translate-y-1.5 hover:brightness-110 active:translate-y-0 sm:px-10 sm:text-base"
                 >
                   <span>{c.cta.buttonLabel}</span>
@@ -1086,7 +1106,7 @@ export default function LandingPage() {
                 return (
                   <a
                     key={s.id}
-                    {...linkProps(safeHref(s.url))}
+                    {...lp(safeHref(s.url))}
                     className="group flex min-w-0 items-center gap-3 rounded-2xl bg-white px-4 py-4 sm:min-w-[10.5rem] sm:px-5 shadow-[0_15px_35px_-20px_rgba(122,13,13,0.35)] ring-1 ring-black/[0.04] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_25px_45px_-20px_rgba(122,13,13,0.45)]"
                   >
                     <span
@@ -1109,44 +1129,65 @@ export default function LandingPage() {
         </section>
       )}
 
-      {/* ============ CONTACT ============ */}
-      {c.contact.enabled && (
-        <section id="contact" className="relative overflow-hidden bg-[#faf3e7] py-16 sm:py-24">
-          <div className="absolute inset-0 opacity-[0.03] [background-image:radial-gradient(circle,#7a0d0d_1.5px,transparent_1.5px)] [background-size:28px_28px]" />
-          <div className="relative mx-auto max-w-7xl px-5">
-            <SectionHeading kicker={c.contact.kicker} title={c.contact.title} subtitle={c.contact.subtitle} />
+        </>
+      )}
 
-            <div className={`grid gap-8 ${c.contact.showForm ? "lg:grid-cols-5" : ""}`}>
-              <div className={`grid gap-4 sm:grid-cols-2 ${c.contact.showForm ? "lg:col-span-2 lg:grid-cols-1" : "lg:grid-cols-4"}`}>
-                {c.contact.phone && (
-                  <ContactCard icon={Phone} title="اتصل بينا" value={c.contact.phone} href={`tel:${toInternationalPhone(c.contact.phone)}`} ltr />
-                )}
-                {c.contact.whatsapp && (
-                  <ContactCard
-                    icon={MessageCircle}
-                    title="واتساب"
-                    value={c.contact.whatsapp}
-                    href={`https://wa.me/${toInternationalPhone(c.contact.whatsapp).replace("+", "")}`}
-                    ltr
-                    accent="#1fa855"
-                  />
-                )}
-                {c.contact.email && (
-                  <ContactCard icon={Mail} title="الإيميل" value={c.contact.email} href={`mailto:${c.contact.email}`} ltr />
-                )}
-                {c.contact.address && (
-                  <ContactCard icon={MapPin} title="العنوان" value={c.contact.address} href={safeHref(c.contact.mapUrl)} />
-                )}
-                {c.contact.hours && <ContactCard icon={Clock} title="مواعيد العمل" value={c.contact.hours} />}
-              </div>
-              {c.contact.showForm && (
-                <div className="lg:col-span-3">
-                  <ContactForm c={c.contact} />
-                </div>
+      {/* ============ CONTACT PAGE ============ */}
+      {isContact && (
+        <>
+          <section className="relative overflow-hidden bg-[#180204] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#4a080f] via-[#210205] to-[#120102]">
+            <div className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:radial-gradient(circle,#fff_1.5px,transparent_1.5px)] [background-size:32px_32px]" />
+            <div className="lp-glow pointer-events-none absolute -left-32 top-10 h-[28rem] w-[28rem] rounded-full bg-[#f4c752]/15 blur-[150px]" />
+            <div className="relative mx-auto max-w-3xl px-6 pb-16 pt-40 text-center md:pb-20 md:pt-44">
+              {c.contact.kicker && (
+                <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-2 text-xs font-black text-[#ffd27a] backdrop-blur-2xl">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#ffd27a]" />
+                  {c.contact.kicker}
+                </span>
+              )}
+              <h1 className="mt-5 text-4xl font-black leading-tight tracking-tight text-white sm:text-5xl md:text-6xl">{c.contact.title}</h1>
+              {c.contact.subtitle && (
+                <p className="mx-auto mt-5 max-w-xl text-base font-medium leading-[1.8] text-white/80 sm:text-lg">{c.contact.subtitle}</p>
               )}
             </div>
-          </div>
-        </section>
+            <Wave color="#faf3e7" />
+          </section>
+
+          <section id="contact" className="relative overflow-hidden bg-[#faf3e7] pb-20 pt-6 sm:pb-28">
+            <div className="absolute inset-0 opacity-[0.03] [background-image:radial-gradient(circle,#7a0d0d_1.5px,transparent_1.5px)] [background-size:28px_28px]" />
+            <div className="relative mx-auto max-w-7xl px-5">
+              <div className={`grid gap-8 ${c.contact.showForm ? "lg:grid-cols-5" : ""}`}>
+                <div className={`grid content-start gap-4 sm:grid-cols-2 ${c.contact.showForm ? "lg:col-span-2 lg:grid-cols-1" : "lg:grid-cols-3"}`}>
+                  {c.contact.phone && (
+                    <ContactCard icon={Phone} title="اتصل بينا" value={c.contact.phone} href={`tel:${toInternationalPhone(c.contact.phone)}`} ltr />
+                  )}
+                  {c.contact.whatsapp && (
+                    <ContactCard
+                      icon={MessageCircle}
+                      title="واتساب"
+                      value={c.contact.whatsapp}
+                      href={`https://wa.me/${toInternationalPhone(c.contact.whatsapp).replace("+", "")}`}
+                      ltr
+                      accent="#1fa855"
+                    />
+                  )}
+                  {c.contact.email && (
+                    <ContactCard icon={Mail} title="الإيميل" value={c.contact.email} href={`mailto:${c.contact.email}`} ltr />
+                  )}
+                  {c.contact.address && (
+                    <ContactCard icon={MapPin} title="العنوان" value={c.contact.address} href={safeHref(c.contact.mapUrl)} />
+                  )}
+                  {c.contact.hours && <ContactCard icon={Clock} title="مواعيد العمل" value={c.contact.hours} />}
+                </div>
+                {c.contact.showForm && (
+                  <div className="lg:col-span-3">
+                    <ContactForm c={c.contact} />
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+        </>
       )}
 
       {/* ============ FOOTER ============ */}
@@ -1172,7 +1213,7 @@ export default function LandingPage() {
                   return (
                     <a
                       key={s.id}
-                      {...linkProps(safeHref(s.url))}
+                      {...lp(safeHref(s.url))}
                       aria-label={s.label || p.name}
                       className="group/icon relative grid h-11 w-11 place-items-center overflow-hidden rounded-2xl border border-white/10 bg-white/5 text-white transition-all duration-500 hover:-translate-y-2 hover:scale-110 hover:border-[#ffd27a] hover:shadow-[0_10px_20px_rgba(182,134,20,0.4)]"
                     >
@@ -1185,8 +1226,8 @@ export default function LandingPage() {
             )}
           </div>
 
-          <FooterColumn title={c.footer.quickLinksTitle} links={c.brand.navLinks} />
-          <FooterColumn title={c.footer.companyTitle} links={c.footer.companyLinks} />
+          <FooterColumn title={c.footer.quickLinksTitle} links={c.brand.navLinks} onContactPage={isContact} />
+          <FooterColumn title={c.footer.companyTitle} links={c.footer.companyLinks} onContactPage={isContact} />
 
           <div className="space-y-5">
             <h5 className="flex items-center gap-2 text-base font-black tracking-wide text-white">
@@ -1263,7 +1304,15 @@ function ContactCard({
   );
 }
 
-function FooterColumn({ title, links }: { title: string; links: { id: string; label: string; href: string }[] }) {
+function FooterColumn({
+  title,
+  links,
+  onContactPage,
+}: {
+  title: string;
+  links: { id: string; label: string; href: string }[];
+  onContactPage: boolean;
+}) {
   if (links.length === 0) return null;
   return (
     <div className="space-y-5">
@@ -1275,7 +1324,7 @@ function FooterColumn({ title, links }: { title: string; links: { id: string; la
         {links.map((l) => (
           <li key={l.id}>
             <a
-              {...linkProps(safeHref(l.href))}
+              {...linkProps(safeHref(l.href), onContactPage)}
               className="inline-block font-medium text-white/70 transition-all duration-300 hover:-translate-x-2 hover:text-[#ffd27a]"
             >
               {l.label}

@@ -27,7 +27,7 @@ interface SectionDef {
 
 const BUNDLED_DISHES = [kosharyImg, kronbImg, chickenImg]
 
-const HREF_HINT = 'قسم في الصفحة (#app، #contact، #faq…) أو رابط كامل يبدأ بـ https://'
+const HREF_HINT = 'قسم في الصفحة (#app، #faq…)، أو /contact لصفحة التواصل، أو رابط كامل يبدأ بـ https://'
 
 /* ---------- sections ---------- */
 
@@ -431,10 +431,10 @@ export const SECTIONS: SectionDef[] = [
   },
   {
     key: 'contact',
-    title: 'تواصل معانا',
-    description: 'التليفون، الواتساب، الإيميل، العنوان، والفورم',
+    title: 'صفحة تواصل معانا',
+    description: 'صفحة لوحدها (tabbakha.app/contact) بتفتح من «تواصل معنا» في القائمة',
     icon: MessageCircle,
-    toggleable: true,
+    toggleable: false,
     render: (c, set) => {
       const x = c.contact
       const up = (p: Partial<typeof x>) => set('contact', { ...x, ...p })

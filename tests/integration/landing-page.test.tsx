@@ -15,10 +15,10 @@ afterEach(() => {
   localStorage.clear()
 })
 
-const renderLanding = () =>
+const renderLanding = (view: 'home' | 'contact' = 'home') =>
   render(
     <MemoryRouter>
-      <LandingPage />
+      <LandingPage view={view} />
     </MemoryRouter>,
   )
 
@@ -53,7 +53,33 @@ describe('Landing page content', () => {
     fm.reply('GET /landing-content', { networkError: true })
     renderLanding()
     expect(await screen.findByText(D.hero.titleHighlight)).toBeInTheDocument()
-    expect(screen.getByText(D.contact.title)).toBeInTheDocument()
+  })
+
+  it('keeps contact details off the home page and links «تواصل معنا» to /contact', async () => {
+    fm.reply('GET /landing-content', { json: ok({ content: null, updated_at: null }) })
+    renderLanding()
+    await screen.findByText(D.hero.titleHighlight)
+    expect(screen.queryByText(D.contact.title)).toBeNull()
+    expect(screen.queryByText(D.contact.formTitle)).toBeNull()
+    for (const a of screen.getAllByRole('link', { name: 'تواصل معنا' })) expect(a).toHaveAttribute('href', '/contact')
+  })
+
+  it('an old saved #contact link still goes to the contact page', async () => {
+    const navLinks = D.brand.navLinks.map((l) => (l.id === 'n5' ? { ...l, href: '#contact' } : l))
+    fm.reply('GET /landing-content', { json: ok({ content: { ...D, brand: { ...D.brand, navLinks } }, updated_at: null }) })
+    renderLanding()
+    await screen.findByText(D.hero.titleHighlight)
+    expect(screen.getAllByRole('link', { name: 'تواصل معنا' })[0]).toHaveAttribute('href', '/contact')
+  })
+
+  it('the contact page shows the details and form, with menu anchors pointing back home', async () => {
+    fm.reply('GET /landing-content', { json: ok({ content: null, updated_at: null }) })
+    renderLanding('contact')
+    expect(await screen.findByRole('heading', { level: 1, name: D.contact.title })).toBeInTheDocument()
+    expect(screen.getByText(D.contact.formTitle)).toBeInTheDocument()
+    expect(screen.getByText(D.contact.email, { selector: 'span' })).toBeInTheDocument()
+    expect(screen.queryByText(D.hero.titleHighlight)).toBeNull()
+    expect(screen.getAllByRole('link', { name: 'حمّل التطبيق' })[0]).toHaveAttribute('href', '/#app')
   })
 
   it('drops unsafe admin links', async () => {

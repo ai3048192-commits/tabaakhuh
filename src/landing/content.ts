@@ -119,6 +119,7 @@ export interface LandingContent {
     subtitle: string
     links: SocialItem[]
   }
+  /** Its own page, `/contact` — linked from the menu as «تواصل معنا». */
   contact: Section & {
     kicker: string
     title: string
@@ -165,7 +166,7 @@ export const DEFAULT_LANDING_CONTENT: LandingContent = {
       { id: 'n2', label: 'ليه طباخه؟', href: '#why' },
       { id: 'n3', label: 'بتشتغل إزاي؟', href: '#how' },
       { id: 'n4', label: 'حمّل التطبيق', href: '#app' },
-      { id: 'n5', label: 'تواصل معنا', href: '#contact' },
+      { id: 'n5', label: 'تواصل معنا', href: '/contact' },
     ],
   },
   hero: {
@@ -283,7 +284,7 @@ export const DEFAULT_LANDING_CONTENT: LandingContent = {
     supportTitle: 'عندك سؤال تاني لسه ماجاوبناش عليه؟ 💡',
     supportText: 'فريق الدعم الفني معاك لحظة بلحظة جوه التطبيق لأي استفسار أو طلب خاص.',
     supportCtaLabel: 'تواصل مع خدمة العملاء',
-    supportCtaHref: '#contact',
+    supportCtaHref: '/contact',
   },
   cta: {
     enabled: true,

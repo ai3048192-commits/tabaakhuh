@@ -132,6 +132,7 @@ function App() {
           <Suspense fallback={<FullScreenLoader />}>
             <Routes>
               <Route path="/" element={<LandingPage />} />
+              <Route path="/contact" element={<LandingPage view="contact" />} />
               <Route path="/login" element={<LoginRoute />} />
               <Route
                 path="/*"
