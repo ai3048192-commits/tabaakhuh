@@ -24,16 +24,16 @@ export default function AssignDriverDialog({
 
   return (
     <DialogShell label={M.assignTitle(delivery.order_number)} onDismiss={onCancel}>
-      <h2 className="mb-3 text-base font-black text-gray-800">
+      <h2 className="mb-4 text-lg font-black text-[#7a0d0d]">
         {M.assignTitle(delivery.order_number)}
       </h2>
-      <label htmlFor="assign-driver" className="mb-1 block text-xs font-bold text-gray-500">
+      <label htmlFor="assign-driver" className="mb-1.5 block text-xs font-black text-[#6b4f3a]">
         {M.pickDriver}
       </label>
       <select
         ref={selectRef}
         id="assign-driver"
-        className="mb-5 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm"
+        className="mb-5 w-full rounded-xl border border-[#e8dcc4] bg-white px-3.5 py-2.5 text-sm shadow-sm outline-none focus:border-[#7a0d0d] focus:ring-4 focus:ring-[#7a0d0d]/10"
         value={driverId}
         onChange={(e) => setDriverId(Number(e.target.value) || '')}
       >
@@ -52,7 +52,7 @@ export default function AssignDriverDialog({
           type="button"
           onClick={onCancel}
           disabled={busy}
-          className="flex-1 rounded-xl border border-gray-200 py-2.5 text-sm font-bold text-gray-600 disabled:opacity-50"
+          className="flex-1 rounded-xl border border-[#e8dcc4] py-2.5 text-sm font-bold text-gray-600 transition hover:bg-[#faf3e7] disabled:opacity-50"
         >
           {M.cancel}
         </button>
@@ -61,7 +61,7 @@ export default function AssignDriverDialog({
           onClick={() => driverId !== '' && onConfirm(driverId)}
           disabled={busy || driverId === ''}
           aria-busy={busy}
-          className="flex-1 rounded-xl bg-[#7a0d0d] py-2.5 text-sm font-black text-white disabled:opacity-50"
+          className="flex-1 rounded-xl bg-[#7a0d0d] py-2.5 text-sm font-black text-white shadow-md transition hover:bg-[#5a0909] disabled:opacity-50"
         >
           {M.confirm}
         </button>

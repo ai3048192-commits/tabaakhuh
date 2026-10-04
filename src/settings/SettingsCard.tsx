@@ -14,11 +14,10 @@ export default function SettingsCard({
   children: ReactNode
 }) {
   return (
-    <section className="relative overflow-hidden rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
-      <div className="absolute right-0 top-0 h-1 w-full bg-gradient-to-l from-[#7a0d0d] to-orange-300" />
-      <div className="mb-5 flex items-center justify-between gap-3">
+    <section className="relative overflow-hidden rounded-3xl bg-white p-6 shadow-[0_20px_45px_-30px_rgba(122,13,13,0.35)] ring-1 ring-[#efe3cc]">
+      <div className="mb-5 flex items-center justify-between gap-3 border-b border-[#f3ead9] pb-4">
         <div className="flex items-center gap-3">
-          <span className="rounded-xl bg-orange-50 p-2 text-[#7a0d0d]">{icon}</span>
+          <span className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-[#7a0d0d] to-[#9a1212] text-[#ffd27a] shadow-md shadow-[#7a0d0d]/20">{icon}</span>
           <h2 className="text-lg font-black text-[#7a0d0d]">{title}</h2>
         </div>
         {pending && (

@@ -8,6 +8,13 @@ export const deliveryMessages = {
   listError: 'حدث خطأ ما. حاول مرة أخرى.',
   retry: 'إعادة المحاولة',
 
+  subtitle: 'تابع التوصيلات الجارية ووزّع الطلبات على السائقين.',
+  statActive: 'توصيلات جارية',
+  statWaiting: 'بانتظار سائق',
+  statFree: 'سائقون متاحون',
+  statBusy: 'سائقون في مشوار',
+  rating: 'التقييم',
+
   activeTitle: 'التوصيلات الجارية',
   driversTitle: 'السائقون',
   addDriver: 'إضافة سائق جديد',

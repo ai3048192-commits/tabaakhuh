@@ -3,6 +3,8 @@ import type { ComplaintStatus, ComplaintType } from './types'
 /** Arabic, RTL-first. Provisional copy. */
 export const complaintMessages = {
   pageTitle: 'الشكاوى والاقتراحات',
+  subtitle: 'رسائل العملاء: ردّ عليهم وتابع حلّ كل شكوى.',
+  totalCount: (n: number) => `الإجمالي: ${n}`,
   refresh: 'تحديث',
   loading: 'جارٍ التحميل…',
   listError: 'حدث خطأ ما. حاول مرة أخرى.',

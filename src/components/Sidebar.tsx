@@ -1,30 +1,8 @@
-import {
-  LayoutGrid, Users, ShoppingBag, ChefHat,
-  TrendingUp, MessageSquareWarning, Settings, LogOut, X,
-  Bike, MapPin, Wallet, AlertTriangle, Truck
-} from 'lucide-react';
+import { LogOut, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-
-// مصفوفة الروابط المحدثة
-const menuItems = [
-  { name: 'لوحة التحكم', icon: LayoutGrid, path: '/dashboard' },
-  { name: 'إدارة المستخدمين', icon: Users, path: '/users' },
-  { name: 'مراقبة الطلبات', icon: ShoppingBag, path: '/orders' },
-  { name: 'إدارة الطباخات', icon: ChefHat, path: '/cooks' },
-  { name: 'طلبات السائقين', icon: Bike, path: '/drivers' },
-  { name: 'إدارة الدليفري', icon: Bike, path: '/delivery' },
-  { name: 'طلبات السحب', icon: Wallet, path: '/withdrawals' },
-  { name: 'التقارير المالية', icon: TrendingUp, path: '/reports' },
-  { name: 'الشكاوى والاقتراحات', icon: MessageSquareWarning, path: '/complaints' },
-  { name: 'بلاغات الحوادث', icon: AlertTriangle, path: '/incidents' },
-  { name: 'إدارة المدن', icon: MapPin, path: '/cities' },
-  { name: 'أسعار التوصيل', icon: Truck, path: '/delivery-pricing' },
-  { name: 'إعدادات النظام', icon: Settings, path: '/settings' },
-];
-
-
-
+import logoIcon from '../assets/logo_icon_trim.png';
+import { isActivePath, menuGroups } from './navItems';
 
 
 export default function Sidebar({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) {
@@ -34,57 +12,80 @@ export default function Sidebar({ isOpen, onClose }: { isOpen: boolean, onClose:
   return (
     <>
       {/* طبقة التعتيم للموبايل */}
-      {isOpen && <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden" onClick={onClose}></div>}
+      {isOpen && <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden" onClick={onClose}></div>}
 
-      <aside className={`fixed top-0 right-0 flex h-screen w-72 flex-col bg-[#7a0d0d] text-white z-50 shadow-2xl transform transition-transform duration-500 ease-in-out lg:translate-x-0 lg:static ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-        <div className="h-1 w-full shrink-0 bg-[#b68614]"></div>
+      <aside
+        className={`fixed right-0 top-0 z-50 flex h-screen w-72 transform flex-col overflow-hidden bg-gradient-to-b from-[#6e0b0b] via-[#560808] to-[#2e0404] text-white shadow-2xl transition-transform duration-500 ease-in-out lg:static lg:translate-x-0 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+      >
+        <div className="pointer-events-none absolute inset-0 opacity-[0.05] [background-image:radial-gradient(circle,#fff_1.5px,transparent_1.5px)] [background-size:20px_20px]" aria-hidden="true" />
+        <div className="pointer-events-none absolute -left-16 top-1/3 h-48 w-48 rounded-full bg-[#e0a52e]/15 blur-3xl" aria-hidden="true" />
 
         {/* الشعار وزر الإغلاق */}
-        <div className="flex shrink-0 items-center justify-between px-8 pb-8 pt-8">
+        <div className="relative flex shrink-0 items-center justify-between px-6 pb-6 pt-7">
           <div className="flex items-center gap-3">
-             <ChefHat className="text-yellow-400" size={32} />
-             <h1 className="text-2xl font-black tracking-widest">طباخة</h1>
+            <span className="grid h-12 w-12 place-items-center rounded-2xl bg-white/10 ring-1 ring-white/15">
+              <img src={logoIcon} alt="" className="h-8 w-8 object-contain" />
+            </span>
+            <div>
+              <h1 className="text-xl font-black tracking-wide">طباخة</h1>
+              <p className="text-[11px] font-bold text-[#ffd27a]/80">لوحة الإدارة</p>
+            </div>
           </div>
           <button
             onClick={onClose}
-            className="lg:hidden p-2 bg-[#9a1212] rounded-xl hover:bg-[#b68614] transition-all"
+            aria-label="إغلاق القائمة"
+            className="rounded-xl bg-white/10 p-2 transition-all hover:bg-white/20 lg:hidden"
           >
-            <X size={24} />
+            <X size={22} aria-hidden="true" />
           </button>
         </div>
 
-        {/* القائمة المحدثة */}
-        <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto px-8 pb-4">
-          {menuItems.map((item, index) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.path;
-              
-              return (
-                <Link 
-                  key={index} 
-                  to={item.path} 
-                  onClick={onClose}
-                  className={`relative flex items-center gap-4 p-4 rounded-xl transition-all duration-300 font-bold text-sm ${
-                    isActive 
-                      ? 'bg-[#9a1212] text-white border-r-4 border-[#b68614] shadow-lg' 
-                      : 'text-red-200 hover:text-white hover:bg-[#8b1a1a]'
-                  }`}
-                >
-                  <Icon size={20} className={isActive ? "text-yellow-400" : "text-red-300"} />
-                  {item.name}
-                  {isActive && <div className="absolute left-4 w-2 h-2 bg-yellow-400 rounded-full shadow-[0_0_8px_#facc15]"></div>}
-                </Link>
-              );
-            })}
+        <nav className="relative min-h-0 flex-1 space-y-5 overflow-y-auto px-4 pb-4">
+          {menuGroups.map((group) => (
+            <div key={group.title}>
+              <p className="mb-1.5 px-3 text-[10px] font-black tracking-wider text-white/35">{group.title}</p>
+              <div className="space-y-0.5">
+                {group.items.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = isActivePath(item.path, location.pathname, location.search);
+                  return (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      onClick={onClose}
+                      aria-current={isActive ? 'page' : undefined}
+                      className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold transition-all duration-200 ${
+                        isActive
+                          ? 'bg-white text-[#7a0d0d] shadow-lg shadow-black/20'
+                          : 'text-white/70 hover:bg-white/10 hover:text-white'
+                      }`}
+                    >
+                      <span
+                        className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg transition ${
+                          isActive ? 'bg-[#7a0d0d] text-[#ffd27a]' : 'bg-white/5 text-white/60 group-hover:text-[#ffd27a]'
+                        }`}
+                      >
+                        <Icon size={16} aria-hidden="true" />
+                      </span>
+                      {item.name}
+                      {isActive && <span className="absolute left-3 h-1.5 w-1.5 rounded-full bg-[#b68614]" aria-hidden="true" />}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
-        <div className="shrink-0 border-t border-[#9a1212] px-8 py-6">
+        <div className="relative shrink-0 border-t border-white/10 p-4">
           <button
             type="button"
             onClick={() => { onClose(); void signOut(); }}
-            className="flex items-center gap-4 text-red-200 hover:text-white transition-all font-bold"
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold text-white/70 transition-all hover:bg-white/10 hover:text-white"
           >
-            <LogOut size={20} aria-hidden="true" />
+            <span className="grid h-8 w-8 place-items-center rounded-lg bg-white/5">
+              <LogOut size={16} aria-hidden="true" />
+            </span>
             تسجيل الخروج
           </button>
         </div>

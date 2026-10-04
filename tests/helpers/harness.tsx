@@ -142,9 +142,9 @@ export function renderAtDrivers(
  */
 export function renderAtSettings(
   fm: FetchMock,
-  opts: { seedMe?: boolean; admin?: boolean } = {},
+  opts: { seedMe?: boolean; admin?: boolean; path?: string } = {},
 ) {
-  const { seedMe = true, admin = true } = opts
+  const { seedMe = true, admin = true, path = '/settings' } = opts
   const who = admin ? adminUser : { ...adminUser, role: 'customer' as const }
   __resetCityDirectory()
   localStorage.setItem(STORAGE_KEYS.token, 'tok-admin')
@@ -155,7 +155,7 @@ export function renderAtSettings(
   // fetch rejects and the card falls back to an empty state (tolerated).
 
   return render(
-    <MemoryRouter initialEntries={['/settings']}>
+    <MemoryRouter initialEntries={[path]}>
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<div>صفحة تسجيل الدخول</div>} />
