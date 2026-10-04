@@ -40,7 +40,7 @@ export default function Sidebar({ isOpen, onClose }: { isOpen: boolean, onClose:
           </button>
         </div>
 
-        <nav className="relative min-h-0 flex-1 space-y-5 overflow-y-auto px-4 pb-4">
+        <nav className="sidebar-scroll relative min-h-0 flex-1 space-y-5 overflow-y-auto px-4 pb-4">
           {menuGroups.map((group) => (
             <div key={group.title}>
               <p className="mb-1.5 px-3 text-[10px] font-black tracking-wider text-white/35">{group.title}</p>
