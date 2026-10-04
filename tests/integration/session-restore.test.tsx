@@ -33,7 +33,7 @@ describe('US2 — session restoration on startup', () => {
   it('AC3: with no stored token the sign-in screen shows immediately and no /auth/me is called', async () => {
     renderApp(['/dashboard'])
 
-    expect(await screen.findByRole('button', { name: 'دخول' })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'تسجيل الدخول' })).toBeInTheDocument()
     expect(fm.count('GET /auth/me')).toBe(0)
   })
 
@@ -43,7 +43,7 @@ describe('US2 — session restoration on startup', () => {
 
     renderApp(['/dashboard'])
 
-    expect(await screen.findByRole('button', { name: 'دخول' })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'تسجيل الدخول' })).toBeInTheDocument()
     expect(localStorage.getItem(STORAGE_KEYS.token)).toBeNull()
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
@@ -54,7 +54,7 @@ describe('US2 — session restoration on startup', () => {
 
     renderApp(['/dashboard'])
 
-    expect(await screen.findByRole('button', { name: 'دخول' })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'تسجيل الدخول' })).toBeInTheDocument()
     expect(localStorage.getItem(STORAGE_KEYS.token)).toBe('tok-keep')
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
@@ -65,7 +65,7 @@ describe('US2 — session restoration on startup', () => {
 
     renderApp(['/dashboard'])
 
-    expect(await screen.findByRole('button', { name: 'دخول' })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'تسجيل الدخول' })).toBeInTheDocument()
     expect(localStorage.getItem(STORAGE_KEYS.token)).toBe('tok-keep2')
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
@@ -92,7 +92,7 @@ describe('US2 — session restoration on startup', () => {
     fm.reply('GET /admin/orders', { status: 401, json: fail('Unauthenticated.') })
     await apiRequest('/admin/orders', { token: 'tok-live' }).catch(() => {})
 
-    expect(await screen.findByRole('button', { name: 'دخول' })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'تسجيل الدخول' })).toBeInTheDocument()
     expect(localStorage.getItem(STORAGE_KEYS.token)).toBeNull()
   })
 
@@ -103,7 +103,7 @@ describe('US2 — session restoration on startup', () => {
     renderApp(['/dashboard'])
 
     expect(screen.getByRole('status')).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'دخول' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'تسجيل الدخول' })).not.toBeInTheDocument()
     expect(screen.queryByText('لوحة التحكم — الرئيسية')).not.toBeInTheDocument()
 
     expect(await screen.findByText('لوحة التحكم — الرئيسية')).toBeInTheDocument()

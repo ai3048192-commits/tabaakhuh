@@ -30,7 +30,7 @@ describe('US3 — administrator sign-out', () => {
 
     await userEvent.setup().click(screen.getByRole('button', { name: 'تسجيل الخروج' }))
 
-    expect(await screen.findByRole('button', { name: 'دخول' })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'تسجيل الدخول' })).toBeInTheDocument()
     expect(localStorage.getItem(STORAGE_KEYS.token)).toBeNull()
     expect(localStorage.getItem(STORAGE_KEYS.profile)).toBeNull()
     await waitFor(() => expect(fm.count('POST /auth/logout')).toBe(1))
@@ -43,7 +43,7 @@ describe('US3 — administrator sign-out', () => {
 
     await userEvent.setup().click(screen.getByRole('button', { name: 'تسجيل الخروج' }))
 
-    expect(await screen.findByRole('button', { name: 'دخول' })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'تسجيل الدخول' })).toBeInTheDocument()
     expect(localStorage.getItem(STORAGE_KEYS.token)).toBeNull()
   })
 
@@ -53,7 +53,7 @@ describe('US3 — administrator sign-out', () => {
 
     await userEvent.setup().click(screen.getByRole('button', { name: 'تسجيل الخروج' }))
 
-    expect(await screen.findByRole('button', { name: 'دخول' })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'تسجيل الدخول' })).toBeInTheDocument()
     expect(localStorage.getItem(STORAGE_KEYS.token)).toBeNull()
   })
 
@@ -65,7 +65,7 @@ describe('US3 — administrator sign-out', () => {
 
     // Even while the logout request is still in flight, storage is already empty
     // and the sign-in screen is shown.
-    expect(await screen.findByRole('button', { name: 'دخول' })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'تسجيل الدخول' })).toBeInTheDocument()
     expect(localStorage.getItem(STORAGE_KEYS.token)).toBeNull()
   })
 
@@ -73,12 +73,12 @@ describe('US3 — administrator sign-out', () => {
     await renderSignedIn()
     fm.reply('POST /auth/logout', { json: ok(null) })
     await userEvent.setup().click(screen.getByRole('button', { name: 'تسجيل الخروج' }))
-    await screen.findByRole('button', { name: 'دخول' })
+    await screen.findByRole('button', { name: 'تسجيل الدخول' })
 
     // Simulate navigating back to a dashboard URL: storage is empty, so the guard
     // redirects and no authenticated content is shown.
     renderApp(['/dashboard'])
-    expect(await screen.findAllByRole('button', { name: 'دخول' })).not.toHaveLength(0)
+    expect(await screen.findAllByRole('button', { name: 'تسجيل الدخول' })).not.toHaveLength(0)
     expect(screen.queryByText('لوحة التحكم — الرئيسية')).not.toBeInTheDocument()
   })
 })

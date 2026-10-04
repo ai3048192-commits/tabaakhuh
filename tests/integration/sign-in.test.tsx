@@ -21,7 +21,7 @@ async function fillAndSubmit(identifier = 'admin@tabbakha.com', password = 'secr
   const user = userEvent.setup()
   await user.type(screen.getByLabelText('البريد الإلكتروني أو رقم الهاتف'), identifier)
   await user.type(screen.getByLabelText('كلمة المرور'), password)
-  await user.click(screen.getByRole('button', { name: 'دخول' }))
+  await user.click(screen.getByRole('button', { name: 'تسجيل الدخول' }))
 }
 
 describe('US1 — administrator sign-in', () => {
@@ -66,7 +66,7 @@ describe('US1 — administrator sign-in', () => {
     renderApp()
     const user = userEvent.setup()
 
-    await user.click(screen.getByRole('button', { name: 'دخول' }))
+    await user.click(screen.getByRole('button', { name: 'تسجيل الدخول' }))
 
     expect(await screen.findByText(messages.identifierRequired)).toBeInTheDocument()
     expect(screen.getByText(messages.passwordRequired)).toBeInTheDocument()
@@ -92,7 +92,7 @@ describe('US1 — administrator sign-in', () => {
     await user.type(screen.getByLabelText('البريد الإلكتروني أو رقم الهاتف'), 'admin@tabbakha.com')
     await user.type(screen.getByLabelText('كلمة المرور'), 'secret123')
 
-    const submit = screen.getByRole('button', { name: 'دخول' })
+    const submit = screen.getByRole('button', { name: 'تسجيل الدخول' })
     fireEvent.click(submit)
     fireEvent.click(submit)
     fireEvent.click(submit)
@@ -109,9 +109,9 @@ describe('US1 — administrator sign-in', () => {
     await user.type(screen.getByLabelText('البريد الإلكتروني أو رقم الهاتف'), 'admin@tabbakha.com')
     await user.type(screen.getByLabelText('كلمة المرور'), 'secret123')
 
-    fireEvent.click(screen.getByRole('button', { name: /دخول|جاري الدخول/ }))
+    fireEvent.click(screen.getByRole('button', { name: /تسجيل الدخول|جاري التحقق/ }))
     await waitFor(() =>
-      expect(screen.getByRole('button', { name: /دخول|جاري الدخول/ })).toBeDisabled(),
+      expect(screen.getByRole('button', { name: /تسجيل الدخول|جاري التحقق/ })).toBeDisabled(),
     )
   })
 

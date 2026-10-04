@@ -26,7 +26,7 @@ describe('US1 — sign-in screen accessibility (WCAG 2.1 AA, SC-009)', () => {
   it('validation-error state has no axe violations', async () => {
     const { container } = renderApp()
     const user = userEvent.setup()
-    await user.click(screen.getByRole('button', { name: 'دخول' }))
+    await user.click(screen.getByRole('button', { name: 'تسجيل الدخول' }))
     await screen.findByText(messages.identifierRequired)
     expect(await axe(container)).toHaveNoViolations()
   })
@@ -37,7 +37,7 @@ describe('US1 — sign-in screen accessibility (WCAG 2.1 AA, SC-009)', () => {
     const user = userEvent.setup()
     await user.type(screen.getByLabelText('البريد الإلكتروني أو رقم الهاتف'), 'admin@tabbakha.com')
     await user.type(screen.getByLabelText('كلمة المرور'), 'secret123')
-    await user.click(screen.getByRole('button', { name: 'دخول' }))
+    await user.click(screen.getByRole('button', { name: 'تسجيل الدخول' }))
     await screen.findByRole('alert')
     expect(await axe(container)).toHaveNoViolations()
   })
@@ -48,10 +48,10 @@ describe('US1 — sign-in screen accessibility (WCAG 2.1 AA, SC-009)', () => {
     const user = userEvent.setup()
     await user.type(screen.getByLabelText('البريد الإلكتروني أو رقم الهاتف'), 'admin@tabbakha.com')
     await user.type(screen.getByLabelText('كلمة المرور'), 'secret123')
-    fireEvent.click(screen.getByRole('button', { name: /دخول|جاري الدخول/ }))
+    fireEvent.click(screen.getByRole('button', { name: /تسجيل الدخول|جاري التحقق/ }))
 
-    const form = await screen.findByRole('button', { name: /جاري الدخول/ }).then((b) => b.closest('form')!)
-    await waitFor(() => expect(screen.getByRole('button', { name: /جاري الدخول/ })).toBeDisabled())
+    const form = await screen.findByRole('button', { name: /جاري التحقق/ }).then((b) => b.closest('form')!)
+    await waitFor(() => expect(screen.getByRole('button', { name: /جاري التحقق/ })).toBeDisabled())
     expect(await axe(form)).toHaveNoViolations()
   })
 

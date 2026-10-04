@@ -32,7 +32,7 @@ describe('US2 — cross-tab credential changes (FR-026)', () => {
     localStorage.removeItem(STORAGE_KEYS.token)
     fireStorage(STORAGE_KEYS.token, null)
 
-    expect(await screen.findByRole('button', { name: 'دخول' })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'تسجيل الدخول' })).toBeInTheDocument()
   })
 
   it('a full storage.clear() in another tab (key === null) also drops to sign-in', async () => {
@@ -44,7 +44,7 @@ describe('US2 — cross-tab credential changes (FR-026)', () => {
     localStorage.clear()
     fireStorage(null, null)
 
-    expect(await screen.findByRole('button', { name: 'دخول' })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'تسجيل الدخول' })).toBeInTheDocument()
   })
 
   it('a token replaced with a new value re-verifies the session', async () => {
