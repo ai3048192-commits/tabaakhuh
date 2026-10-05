@@ -4,22 +4,33 @@ import type {
   ComplaintsFilters,
   ComplaintsPage,
   ComplaintStatus,
+  SendersPage,
 } from './types'
 
-/**
- * ⚠️ PROVISIONAL — endpoints per `backend-requirements.md` §ب. Update the paths
- * here if the finalised backend spec differs.
- */
+function pageParam(page: number): string {
+  return String(Math.max(1, Math.trunc(page) || 1))
+}
 
-/** `GET /admin/complaints?type=&status=&page=` → paginated list. */
-export function listComplaints(
+/** `GET /admin/complaints/senders?type=&status=&role=&page=` → one row per sender. */
+export function listSenders(
   { filters, page }: { filters: ComplaintsFilters; page: number },
   signal?: AbortSignal,
-): Promise<ComplaintsPage> {
+): Promise<SendersPage> {
   const sp = new URLSearchParams()
   if (filters.type !== 'all') sp.set('type', filters.type)
   if (filters.status !== 'all') sp.set('status', filters.status)
-  sp.set('page', String(Math.max(1, Math.trunc(page) || 1)))
+  if (filters.role !== 'all') sp.set('role', filters.role)
+  sp.set('page', pageParam(page))
+  return authedRequest<SendersPage>(`/admin/complaints/senders?${sp.toString()}`, { signal })
+}
+
+/** `GET /admin/complaints?user_id=&page=` → everything one person sent, newest first. */
+export function listSenderComplaints(
+  userId: number,
+  page: number,
+  signal?: AbortSignal,
+): Promise<ComplaintsPage> {
+  const sp = new URLSearchParams({ user_id: String(userId), page: pageParam(page) })
   return authedRequest<ComplaintsPage>(`/admin/complaints?${sp.toString()}`, { signal })
 }
 
@@ -45,4 +56,9 @@ export function setComplaintStatus(
     method: 'PATCH',
     body: { status },
   })
+}
+
+/** `DELETE /admin/complaints/{id}` — removes it and its thread for good. */
+export function deleteComplaint(id: number): Promise<unknown> {
+  return authedRequest<unknown>(`/admin/complaints/${id}`, { method: 'DELETE' })
 }

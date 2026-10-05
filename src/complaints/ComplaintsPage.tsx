@@ -1,8 +1,8 @@
 import { useId } from 'react'
 import { RefreshCw, ChevronRight, ChevronLeft, Filter, Inbox } from 'lucide-react'
 import { useComplaints } from './useComplaints'
-import ComplaintsTable from './ComplaintsTable'
-import ComplaintDetailDialog from './ComplaintDetailDialog'
+import SendersList from './SendersList'
+import SenderDrawer from './SenderDrawer'
 import { complaintMessages as M } from './messages'
 import type { ComplaintsFilters } from './types'
 import PageHeader from '../shared/PageHeader'
@@ -12,7 +12,7 @@ export default function ComplaintsPage() {
   const q = useComplaints()
   const uid = useId()
   const items = q.page?.items ?? []
-  const filtered = q.filters.type !== 'all' || q.filters.status !== 'all'
+  const filtered = q.filters.type !== 'all' || q.filters.status !== 'all' || q.filters.role !== 'all'
   const field =
     'min-w-[10rem] rounded-xl border border-[#e8dcc4] bg-white px-3.5 py-2.5 text-sm font-bold text-gray-700 shadow-sm outline-none focus:border-[#7a0d0d] focus:ring-4 focus:ring-[#7a0d0d]/10'
 
@@ -51,6 +51,15 @@ export default function ComplaintsPage() {
               <option value="resolved">{M.statusLabels.resolved}</option>
             </select>
           </div>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor={`${uid}-role`} className="text-xs font-black text-[#6b4f3a]">{M.filterRole}</label>
+            <select id={`${uid}-role`} className={field} value={q.filters.role} onChange={(e) => q.setRole(e.target.value as ComplaintsFilters['role'])}>
+              <option value="all">{M.allRoles}</option>
+              <option value="customer">{M.roleLabels.customer}</option>
+              <option value="cook">{M.roleLabels.cook}</option>
+              <option value="driver">{M.roleLabels.driver}</option>
+            </select>
+          </div>
         </div>
         {q.status === 'ready' && q.page && (
           <p className="rounded-xl bg-[#faf3e7] px-3.5 py-2 text-xs font-black text-[#8f680d]">{M.totalCount(q.page.total)}</p>
@@ -84,7 +93,7 @@ export default function ComplaintsPage() {
 
       {q.status === 'ready' && items.length > 0 && q.page && (
         <>
-          <ComplaintsTable items={items} onOpen={q.openDetail} />
+          <SendersList items={items} onOpen={q.openSender} />
           <nav className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-white p-3 ring-1 ring-[#efe3cc]" aria-label={`صفحة ${q.page.page} من ${q.totalPages}`}>
             <p className="px-2 text-xs font-bold text-gray-500" dir="rtl">صفحة {q.page.page} من {q.totalPages} · {q.page.total}</p>
             <div className="flex items-center gap-2">
@@ -104,14 +113,13 @@ export default function ComplaintsPage() {
         <div className="fixed bottom-6 left-1/2 z-[80] -translate-x-1/2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm text-white shadow-lg">{q.toast}</div>
       )}
 
-      {(q.detail || q.detailStatus !== 'idle') && (
-        <ComplaintDetailDialog
-          detail={q.detail}
-          detailStatus={q.detailStatus}
-          busy={q.busy}
-          onClose={q.closeDetail}
-          onReply={(b) => void q.reply(b)}
-          onChangeStatus={(n) => void q.changeStatus(n)}
+      {q.selected && (
+        <SenderDrawer
+          key={q.selected.user_id}
+          sender={q.selected}
+          onClose={q.closeSender}
+          onChanged={q.refresh}
+          showToast={q.showToast}
         />
       )}
     </div>

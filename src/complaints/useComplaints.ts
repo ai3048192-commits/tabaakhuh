@@ -1,52 +1,42 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { ApiError } from '../api/envelope'
-import {
-  getComplaint,
-  listComplaints,
-  replyToComplaint,
-  setComplaintStatus,
-} from './complaintsApi'
+import { listSenders } from './complaintsApi'
+import { complaintMessages as M } from './messages'
 import type {
-  ComplaintDetail,
+  ComplaintSender,
   ComplaintsFilters,
-  ComplaintsPage,
   ComplaintsScreenStatus,
-  ComplaintStatus,
+  SendersPage,
 } from './types'
 
-const EMPTY_FILTERS: ComplaintsFilters = { type: 'all', status: 'all' }
+const EMPTY_FILTERS: ComplaintsFilters = { type: 'all', status: 'all', role: 'all' }
 
 export interface UseComplaints {
   status: ComplaintsScreenStatus
-  page: ComplaintsPage | null
+  page: SendersPage | null
   filters: ComplaintsFilters
-  pageNum: number
   totalPages: number
   toast: string | null
-  detail: ComplaintDetail | null
-  detailStatus: 'idle' | 'loading' | 'error'
-  busy: boolean
+  /** The sender whose messages are open in the side panel. */
+  selected: ComplaintSender | null
 
   setType: (t: ComplaintsFilters['type']) => void
   setStatusFilter: (s: ComplaintsFilters['status']) => void
+  setRole: (r: ComplaintsFilters['role']) => void
   setPage: (n: number) => void
   refresh: () => void
-  openDetail: (id: number) => void
-  closeDetail: () => void
-  reply: (body: string) => Promise<boolean>
-  changeStatus: (next: ComplaintStatus) => Promise<boolean>
+  openSender: (s: ComplaintSender) => void
+  closeSender: () => void
+  showToast: (msg: string) => void
 }
 
-/** Owns the complaints list + the open-thread detail (reply / resolve). Provisional contract. */
+/** Owns the by-sender list (filters + paging), the open sender and the toast. */
 export function useComplaints(): UseComplaints {
   const [filters, setFilters] = useState<ComplaintsFilters>(EMPTY_FILTERS)
   const [pageNum, setPageNum] = useState(1)
-  const [pageData, setPageData] = useState<ComplaintsPage | null>(null)
+  const [pageData, setPageData] = useState<SendersPage | null>(null)
   const [status, setStatus] = useState<ComplaintsScreenStatus>('loading')
   const [toast, setToast] = useState<string | null>(null)
-  const [detail, setDetail] = useState<ComplaintDetail | null>(null)
-  const [detailStatus, setDetailStatus] = useState<'idle' | 'loading' | 'error'>('idle')
-  const [busy, setBusy] = useState(false)
+  const [selected, setSelected] = useState<ComplaintSender | null>(null)
 
   const hasPageRef = useRef(false)
   useEffect(() => {
@@ -61,13 +51,13 @@ export function useComplaints(): UseComplaints {
   const load = useCallback(async () => {
     if (!hasPageRef.current) setStatus('loading')
     try {
-      const data = await listComplaints({ filters, page: pageNum })
+      const data = await listSenders({ filters, page: pageNum })
       setPageData(data)
       setStatus('ready')
     } catch {
       if (hasPageRef.current) {
         setStatus('ready')
-        showToast('تعذّر التحديث. حاول مرة أخرى.')
+        showToast(M.refreshFailedToast)
       } else {
         setStatus('error')
       }
@@ -88,83 +78,20 @@ export function useComplaints(): UseComplaints {
     setPageNum(1)
   }
 
-  const openDetail = useCallback(async (id: number) => {
-    setDetail(null)
-    setDetailStatus('loading')
-    try {
-      setDetail(await getComplaint(id))
-      setDetailStatus('idle')
-    } catch {
-      setDetailStatus('error')
-    }
-  }, [])
-
-  const reply = useCallback(
-    async (body: string): Promise<boolean> => {
-      if (!detail || body.trim() === '') return false
-      setBusy(true)
-      try {
-        setDetail(await replyToComplaint(detail.id, body.trim()))
-        showToast('تم إرسال الرد.')
-        void load()
-        return true
-      } catch (err) {
-        showToast(
-          err instanceof ApiError && err.status === 404
-            ? 'تعذّر العثور على الرسالة.'
-            : 'تعذّر إتمام العملية. حاول مرة أخرى.',
-        )
-        return false
-      } finally {
-        setBusy(false)
-      }
-    },
-    [detail, load, showToast],
-  )
-
-  const changeStatus = useCallback(
-    async (next: ComplaintStatus): Promise<boolean> => {
-      if (!detail) return false
-      setBusy(true)
-      try {
-        setDetail(await setComplaintStatus(detail.id, next))
-        showToast('تم تحديث حالة الرسالة.')
-        void load()
-        return true
-      } catch (err) {
-        showToast(
-          err instanceof ApiError && err.status === 404
-            ? 'تعذّر العثور على الرسالة.'
-            : 'تعذّر إتمام العملية. حاول مرة أخرى.',
-        )
-        return false
-      } finally {
-        setBusy(false)
-      }
-    },
-    [detail, load, showToast],
-  )
-
   return {
     status,
     page: pageData,
     filters,
-    pageNum,
     totalPages,
     toast,
-    detail,
-    detailStatus,
-    busy,
+    selected,
     setType: (t) => patch({ type: t }),
     setStatusFilter: (s) => patch({ status: s }),
+    setRole: (r) => patch({ role: r }),
     setPage: (n) => setPageNum(Math.max(1, Math.min(n, Math.max(1, totalPages)))),
     refresh: () => void load(),
-    openDetail: (id) => void openDetail(id),
-    closeDetail: () => {
-      setDetail(null)
-      setDetailStatus('idle')
-    },
-    reply,
-    changeStatus,
+    openSender: setSelected,
+    closeSender: () => setSelected(null),
+    showToast,
   }
 }

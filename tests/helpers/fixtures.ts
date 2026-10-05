@@ -7,7 +7,7 @@ import type { RawOverview } from '../../src/overview/types'
 import type { Order, OrderItem } from '../../src/orders/types'
 import type { Withdrawal } from '../../src/withdrawals/types'
 import type { AdminUser } from '../../src/users/types'
-import type { Complaint, ComplaintDetail } from '../../src/complaints/types'
+import type { Complaint, ComplaintDetail, ComplaintSender } from '../../src/complaints/types'
 import type { FinancialReport } from '../../src/reports/types'
 import type { RawActiveDelivery, RawDeliveryDriver } from '../../src/delivery/types'
 import type { OrdersDailyPoint, RecentCook } from '../../src/overview/homeApi'
@@ -434,9 +434,25 @@ export function complaint(overrides: Partial<Complaint> = {}): Complaint {
     subject: `موضوع ${id}`,
     body: 'نص الرسالة',
     customer_id: 55,
+    sender: { id: 55, name: 'أم أحمد', role: 'cook', avatar_url: null },
     order_id: null,
     status: 'open',
     created_at: '2026-09-01T10:00:00+00:00',
+    ...overrides,
+  }
+}
+
+export function complaintSender(overrides: Partial<ComplaintSender> = {}): ComplaintSender {
+  return {
+    user_id: 55,
+    name: 'أم أحمد',
+    role: 'cook',
+    avatar_url: null,
+    total: 2,
+    open_count: 1,
+    complaints_count: 1,
+    suggestions_count: 1,
+    last_at: '2026-09-01T10:00:00+00:00',
     ...overrides,
   }
 }
@@ -447,7 +463,7 @@ export function complaintDetail(overrides: Partial<ComplaintDetail> = {}): Compl
 }
 
 export function complaintsPage(
-  items: Complaint[],
+  items: Complaint[] | ComplaintSender[],
   meta: { page?: number; per_page?: number; total?: number } = {},
 ) {
   return ok({

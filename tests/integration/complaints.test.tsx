@@ -3,7 +3,7 @@ import { screen, within, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderAtComplaints } from '../helpers/harness'
 import { installFetchMock, type FetchMock } from '../helpers/fetchMock'
-import { ok, fail, complaint, complaintDetail, complaintsPage } from '../helpers/fixtures'
+import { ok, fail, complaint, complaintDetail, complaintSender, complaintsPage } from '../helpers/fixtures'
 import { complaintMessages as M } from '../../src/complaints/messages'
 
 let fm: FetchMock
@@ -15,87 +15,120 @@ afterEach(() => {
   localStorage.clear()
 })
 
-const LIST = 'GET /admin/complaints?page=1'
+const SENDERS = 'GET /admin/complaints/senders?page=1'
+const OF_55 = 'GET /admin/complaints?user_id=55&page=1'
 
-describe('Complaints & Suggestions (provisional /admin/complaints*)', () => {
-  it('loads the list and filters by type + status into the query', async () => {
+/** Render the senders list and open أم أحمد's panel. */
+async function openSender55(user: ReturnType<typeof userEvent.setup>) {
+  renderAtComplaints(fm)
+  await screen.findByText('أم أحمد')
+  await user.click(screen.getByRole('button', { name: `${M.viewMessages} — أم أحمد` }))
+  return screen.findByRole('dialog')
+}
+
+describe('Complaints & Suggestions — grouped by sender', () => {
+  it('lists senders with their role and counts, and filters by type + status + role', async () => {
     const user = userEvent.setup()
-    fm.reply(LIST, { json: complaintsPage([complaint({ id: 700, subject: 'تأخير' })], { total: 4 }) })
-    fm.reply('GET /admin/complaints?type=suggestion&status=open&page=1', {
-      json: complaintsPage([complaint({ id: 701, type: 'suggestion', subject: 'فكرة' })], { total: 1 }),
+    fm.reply(SENDERS, { json: complaintsPage([complaintSender({ total: 3, open_count: 2 })]) })
+    fm.reply('GET /admin/complaints/senders?type=suggestion&status=open&role=cook&page=1', {
+      json: complaintsPage([complaintSender({ user_id: 77, name: 'سعاد' })]),
     })
     renderAtComplaints(fm)
-    await screen.findByText('تأخير')
+
+    const card = (await screen.findByText('أم أحمد')).closest('li')!
+    expect(within(card).getByText(M.roleLabels.cook)).toBeInTheDocument()
+    expect(within(card).getByText(M.messagesCount(3))).toBeInTheDocument()
+    expect(within(card).getByText(M.openCount(2))).toBeInTheDocument()
 
     await user.selectOptions(screen.getByLabelText(M.filterType), 'suggestion')
     await user.selectOptions(screen.getByLabelText(M.filterStatus), 'open')
-    await screen.findByText('فكرة')
-    expect(fm.count('GET /admin/complaints?type=suggestion&status=open&page=1')).toBe(1)
+    await user.selectOptions(screen.getByLabelText(M.filterRole), 'cook')
+    await screen.findByText('سعاد')
+    expect(fm.count('GET /admin/complaints/senders?type=suggestion&status=open&role=cook&page=1')).toBe(1)
   })
 
-  it('opening a row fetches the thread; sending a reply POSTs the body and re-fetches', async () => {
+  it("opening a sender lists all their messages; expanding one shows the thread and a reply POSTs", async () => {
     const user = userEvent.setup()
-    fm.reply(LIST, { json: complaintsPage([complaint({ id: 700, subject: 'تأخير' })], { total: 1 }) })
+    fm.reply(SENDERS, { json: complaintsPage([complaintSender()]) })
+    fm.reply(OF_55, {
+      json: complaintsPage([
+        complaint({ id: 700, body: 'الطلب اتأخر' }),
+        complaint({ id: 701, type: 'suggestion', body: 'زودوا أصناف' }),
+      ]),
+    })
     fm.reply('GET /admin/complaints/700', {
-      json: ok(complaintDetail({ id: 700, subject: 'تأخير', body: 'الطلب اتأخر', thread: [] })),
+      json: ok(complaintDetail({ id: 700, body: 'الطلب اتأخر', thread: [] })),
     })
     fm.reply('POST /admin/complaints/700/reply', {
-      json: ok(
-        complaintDetail({
-          id: 700,
-          subject: 'تأخير',
-          thread: [{ id: 1, author: 'admin', body: 'نعتذر', created_at: '2026-09-02T09:00:00+00:00' }],
-        }),
-      ),
+      json: ok(complaintDetail({
+        id: 700,
+        thread: [{ id: 1, author: 'admin', body: 'نعتذر', created_at: '2026-09-02T09:00:00+00:00' }],
+      })),
     })
-    renderAtComplaints(fm)
-    await screen.findByText('تأخير')
 
-    await user.click(screen.getByRole('button', { name: M.open }))
-    const dialog = await screen.findByRole('dialog')
-    expect(within(dialog).getByText('الطلب اتأخر')).toBeInTheDocument()
+    const drawer = await openSender55(user)
+    expect(await within(drawer).findByText('الطلب اتأخر')).toBeInTheDocument()
+    expect(within(drawer).getByText('زودوا أصناف')).toBeInTheDocument()
 
-    await user.type(within(dialog).getByLabelText(M.replyLabel), 'نعتذر')
-    await user.click(within(dialog).getByRole('button', { name: M.send }))
+    await user.click(within(drawer).getByRole('button', { name: `${M.expand} #700` }))
+    await user.type(await within(drawer).findByLabelText(M.replyLabel), 'نعتذر')
+    await user.click(within(drawer).getByRole('button', { name: M.send }))
 
     await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent(M.replySentToast))
     expect(fm.lastCall('POST /admin/complaints/700/reply')?.body).toEqual({ body: 'نعتذر' })
-    await within(dialog).findByText('نعتذر')
+    await within(drawer).findByText('نعتذر')
+    expect(fm.count(SENDERS)).toBe(2)
   })
 
-  it('mark-resolved PATCHes the status and re-fetches the list', async () => {
+  it('mark-resolved PATCHes the status', async () => {
     const user = userEvent.setup()
-    fm.reply(
-      LIST,
-      { json: complaintsPage([complaint({ id: 700, status: 'open' })], { total: 1 }) },
-      { json: complaintsPage([complaint({ id: 700, status: 'resolved' })], { total: 1 }) },
-    )
+    fm.reply(SENDERS, { json: complaintsPage([complaintSender()]) })
+    fm.reply(OF_55, { json: complaintsPage([complaint({ id: 700, status: 'open' })]) })
     fm.reply('GET /admin/complaints/700', { json: ok(complaintDetail({ id: 700, status: 'open', thread: [] })) })
     fm.reply('PATCH /admin/complaints/700/status', {
       json: ok(complaintDetail({ id: 700, status: 'resolved', thread: [] })),
     })
-    renderAtComplaints(fm)
-    await screen.findByText('موضوع 700')
-    await user.click(screen.getByRole('button', { name: M.open }))
-    await screen.findByRole('dialog')
 
-    await user.click(screen.getByRole('button', { name: M.markResolved }))
+    const drawer = await openSender55(user)
+    await user.click(await within(drawer).findByRole('button', { name: `${M.expand} #700` }))
+    await user.click(await within(drawer).findByRole('button', { name: M.markResolved }))
+
     await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent(M.statusDoneToast))
     expect(fm.lastCall('PATCH /admin/complaints/700/status')?.body).toEqual({ status: 'resolved' })
-    expect(fm.count(LIST)).toBe(2)
   })
 
-  it('an offline first load shows a screen error + Retry; a non-admin is redirected', async () => {
+  it('delete asks to confirm, then DELETEs and drops the message from the panel', async () => {
     const user = userEvent.setup()
-    fm.reply(LIST, { networkError: true }, { json: complaintsPage([complaint({ id: 1 })], { total: 1 }) })
+    fm.reply(SENDERS, { json: complaintsPage([complaintSender()]) })
+    fm.reply(OF_55, {
+      json: complaintsPage([complaint({ id: 700, body: 'رسالة هتتمسح' }), complaint({ id: 701, body: 'تفضل' })]),
+    })
+    fm.reply('GET /admin/complaints/700', { json: ok(complaintDetail({ id: 700, thread: [] })) })
+    fm.reply('DELETE /admin/complaints/700', { json: ok(null) })
+
+    const drawer = await openSender55(user)
+    await user.click(await within(drawer).findByRole('button', { name: `${M.expand} #700` }))
+    await user.click(await within(drawer).findByRole('button', { name: M.remove }))
+    expect(fm.count('DELETE /admin/complaints/700')).toBe(0)
+
+    await user.click(within(drawer).getByRole('button', { name: M.confirmRemoveYes }))
+    await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent(M.removedToast))
+    expect(fm.count('DELETE /admin/complaints/700')).toBe(1)
+    expect(within(drawer).queryByText('رسالة هتتمسح')).not.toBeInTheDocument()
+    expect(within(drawer).getByText('تفضل')).toBeInTheDocument()
+  })
+
+  it('an offline first load shows a screen error + Retry', async () => {
+    const user = userEvent.setup()
+    fm.reply(SENDERS, { networkError: true }, { json: complaintsPage([complaintSender()]) })
     renderAtComplaints(fm)
     expect(await screen.findByText(M.listError)).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: M.retry }))
-    expect(await screen.findByText('موضوع 1')).toBeInTheDocument()
+    expect(await screen.findByText('أم أحمد')).toBeInTheDocument()
   })
 
   it('a non-admin never reaches /complaints', async () => {
-    fm.reply(LIST, { status: 401, json: fail('Unauthenticated.') })
+    fm.reply(SENDERS, { status: 401, json: fail('Unauthenticated.') })
     renderAtComplaints(fm, { admin: false })
     expect(await screen.findByText('صفحة تسجيل الدخول')).toBeInTheDocument()
   })

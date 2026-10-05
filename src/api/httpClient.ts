@@ -42,7 +42,7 @@ export async function authedRequest<T>(
 }
 
 export interface HttpOptions {
-  method?: 'GET' | 'POST' | 'PUT' | 'PATCH'
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   body?: unknown
   /** When present, sent as `Authorization: Bearer <token>`. */
   token?: string | null
