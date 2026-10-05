@@ -44,14 +44,14 @@ export default function ConfirmDialog({
   const c = COPY[kind]
   return (
     <DialogShell label={c.title} onDismiss={onCancel}>
-      <h2 className="mb-2 text-base font-black text-gray-800">{c.title}</h2>
+      <h2 className="mb-3 text-lg font-black text-[#7a0d0d]">{c.title}</h2>
       <p className="mb-6 text-sm text-gray-600">{c.body}</p>
       <div className="flex gap-3">
         <button
           type="button"
           onClick={onCancel}
           disabled={busy}
-          className="flex-1 rounded-xl border border-gray-200 py-2.5 text-sm font-bold text-gray-600 disabled:opacity-50"
+          className="flex-1 rounded-xl border border-[#e8dcc4] py-2.5 text-sm font-bold text-gray-600 transition hover:bg-[#faf3e7] disabled:opacity-50"
         >
           {M.cancel}
         </button>

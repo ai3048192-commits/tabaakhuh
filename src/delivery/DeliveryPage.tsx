@@ -5,6 +5,8 @@ import { useDelivery } from './useDelivery'
 import AssignDriverDialog from './AssignDriverDialog'
 import AddDriverModal from '../components/AddDriverModal'
 import { deliveryMessages as M } from './messages'
+import PageHeader from '../shared/PageHeader'
+import { bannerBtnGold, bannerBtnLight } from '../shared/ui'
 
 export default function DeliveryPage() {
   const q = useDelivery()
@@ -53,32 +55,24 @@ export default function DeliveryPage() {
 
   return (
     <div className="min-h-full bg-[#f7f1e6] p-4 font-['Tajawal'] md:p-8" dir="rtl">
-      {/* Header */}
-      <div className="relative mb-6 overflow-hidden rounded-[2rem] bg-gradient-to-l from-[#7a0d0d] via-[#5e0a0a] to-[#2e0404] p-6 text-white shadow-[0_30px_60px_-30px_rgba(122,13,13,0.8)] md:p-8">
-        <div className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:radial-gradient(circle,#fff_1.5px,transparent_1.5px)] [background-size:22px_22px]" aria-hidden="true" />
-        <div className="relative flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-black md:text-3xl">{M.pageTitle}</h1>
-            <p className="mt-1.5 text-sm text-white/70">{M.subtitle}</p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => setAddDriverOpen(true)}
-              className="flex items-center gap-2 rounded-xl bg-[#e0a52e] px-4 py-2.5 text-xs font-black text-[#1c0204] shadow-lg transition hover:brightness-110"
-            >
+      <PageHeader
+        title={M.pageTitle}
+        subtitle={M.subtitle}
+        actions={
+          <>
+            <button type="button" onClick={() => setAddDriverOpen(true)} className={bannerBtnGold}>
               <UserPlus size={15} aria-hidden="true" />
               {M.addDriver}
             </button>
             {q.status === 'ready' && (
-              <button type="button" onClick={q.refresh} className="flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-xs font-black text-[#7a0d0d] shadow-lg transition hover:bg-[#fff7e6]">
+              <button type="button" onClick={q.refresh} className={bannerBtnLight}>
                 <RefreshCw size={14} aria-hidden="true" />
                 {M.refresh}
               </button>
             )}
-          </div>
-        </div>
-      </div>
+          </>
+        }
+      />
 
       <p className="mb-5 flex items-start gap-2 text-[11px] font-bold text-amber-700">
         <Info size={13} className="mt-0.5 shrink-0" aria-hidden="true" />

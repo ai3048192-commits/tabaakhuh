@@ -64,7 +64,7 @@ export default function ImageField({
 
   return (
     <div className="flex flex-col gap-1">
-      <span className="pr-1 text-[11px] font-bold text-gray-500">{label}</span>
+      <span className="pr-1 text-xs font-black text-[#6b4f3a]">{label}</span>
       <div className="flex items-center gap-3">
         <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[#e8dfc9] bg-white">
           {hasImage ? (

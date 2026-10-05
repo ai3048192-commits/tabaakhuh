@@ -36,12 +36,12 @@ export default function OrdersFilters({
 }) {
   const uid = useId()
   const rangeMsg = dateFieldError ? M.fromAfterTo : (serverFieldError.from ?? serverFieldError.to)
-  const field = 'rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm'
+  const field = 'rounded-xl border border-[#e8dcc4] bg-white px-3.5 py-2.5 text-sm text-gray-800 shadow-sm outline-none transition focus:border-[#7a0d0d] focus:ring-4 focus:ring-[#7a0d0d]/10 disabled:opacity-50'
 
   return (
-    <div className="mb-5 flex flex-wrap items-end gap-3 rounded-2xl border border-gray-100 bg-white p-4">
+    <div className="mb-5 flex flex-wrap items-end gap-3 rounded-3xl bg-white shadow-[0_18px_40px_-30px_rgba(122,13,13,0.45)] ring-1 ring-[#efe3cc] p-4">
       <div className="flex flex-col gap-1">
-        <label htmlFor={`${uid}-status`} className="text-xs font-bold text-gray-500">
+        <label htmlFor={`${uid}-status`} className="text-xs font-black text-[#6b4f3a]">
           {M.filterStatus}
         </label>
         <select
@@ -67,7 +67,7 @@ export default function OrdersFilters({
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor={`${uid}-city`} className="text-xs font-bold text-gray-500">
+        <label htmlFor={`${uid}-city`} className="text-xs font-black text-[#6b4f3a]">
           {M.filterCity}
         </label>
         <select
@@ -93,7 +93,7 @@ export default function OrdersFilters({
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor={`${uid}-from`} className="text-xs font-bold text-gray-500">
+        <label htmlFor={`${uid}-from`} className="text-xs font-black text-[#6b4f3a]">
           {M.filterFrom}
         </label>
         <input
@@ -109,7 +109,7 @@ export default function OrdersFilters({
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor={`${uid}-to`} className="text-xs font-bold text-gray-500">
+        <label htmlFor={`${uid}-to`} className="text-xs font-black text-[#6b4f3a]">
           {M.filterTo}
         </label>
         <input
@@ -127,14 +127,14 @@ export default function OrdersFilters({
       <button
         type="button"
         onClick={onApply}
-        className="rounded-lg bg-[#7a0d0d] px-4 py-2 text-sm font-black text-white"
+        className="rounded-xl bg-[#7a0d0d] px-4 py-2.5 text-sm font-black text-white shadow-sm transition hover:bg-[#5a0909] disabled:opacity-50"
       >
         {M.apply}
       </button>
       <button
         type="button"
         onClick={onReset}
-        className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-bold text-gray-600"
+        className="rounded-xl border border-[#e8dcc4] bg-white px-4 py-2.5 text-sm font-bold text-gray-700 transition hover:bg-[#faf3e7]"
       >
         {M.resetFilters}
       </button>

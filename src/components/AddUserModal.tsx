@@ -67,7 +67,7 @@ export default function AddUserModal({ onClose, onCreated }: { onClose: () => vo
         <Field label="البريد الإلكتروني" type="email" name="new-user-email" autoComplete="off" value={v.email} onChange={set('email')} error={errors.email} icon={<Mail size={18} />} />
         <Field label="كلمة المرور" type="password" name="new-user-secret" autoComplete="new-password" value={v.password} onChange={set('password')} error={errors.password} icon={<Lock size={18} />} placeholder="8 أحرف على الأقل" />
         <div className="flex flex-col gap-1">
-          <label htmlFor="au-role" className="pr-1 text-[11px] font-bold text-gray-500">الدور</label>
+          <label htmlFor="au-role" className="pr-1 text-xs font-black text-[#6b4f3a]">الدور</label>
           <select
             id="au-role"
             value={v.role}

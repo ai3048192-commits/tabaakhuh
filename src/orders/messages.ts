@@ -5,6 +5,7 @@
 export const orderMessages = {
   pageTitle: 'مراقبة الطلبات',
   refresh: 'تحديث',
+  subtitle: 'كل طلبات المنصة: تابع حالتها وفلترها بالمدينة والتاريخ.',
   autoRefresh: 'تحديث تلقائي',
 
   loading: 'جارٍ تحميل الطلبات…',

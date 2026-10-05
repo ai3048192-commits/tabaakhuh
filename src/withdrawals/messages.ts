@@ -3,6 +3,7 @@ import type { StatusFilter } from './types'
 /** Arabic, RTL-first. Provisional copy per spec Assumptions. */
 export const withdrawalMessages = {
   pageTitle: 'طلبات السحب',
+  subtitle: 'طلبات سحب الأرباح من الطباخات والسائقين: وافق أو ارفض أو علّم كمدفوع.',
   refresh: 'تحديث',
   loading: 'جارٍ تحميل الطلبات…',
   queueError: 'حدث خطأ ما. حاول مرة أخرى.',

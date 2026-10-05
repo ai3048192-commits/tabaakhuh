@@ -8,6 +8,8 @@ import StatusToggleDialog from './StatusToggleDialog'
 import { cityMessages as M } from './messages'
 import type { GovernorateAction } from './governorateSelection'
 import type { CityMutationOutcome } from './types'
+import PageHeader from '../shared/PageHeader'
+import { bannerBtnGold, bannerBtnLight } from '../shared/ui'
 
 /** `/cities` — the Cities Management screen (US1–US4). */
 export default function CitiesPage() {
@@ -38,7 +40,7 @@ export default function CitiesPage() {
     <button
       type="button"
       onClick={q.openPicker}
-      className="flex items-center gap-2 rounded-xl bg-[#7a0d0d] px-3 py-2 text-xs font-black text-white"
+      className={bannerBtnGold}
     >
       <Plus size={14} aria-hidden="true" />
       {M.addCity}
@@ -48,38 +50,30 @@ export default function CitiesPage() {
   const searchActive = q.status === 'ready' && q.search.trim() !== ''
 
   return (
-    <div className="min-h-full bg-[#fcf9f2] p-4 font-['Tajawal'] md:p-6" dir="rtl">
-      <div className="mb-6 flex items-center justify-between gap-3">
-        <div>
-          <h1 className="text-xl font-black text-[#7a0d0d]">{M.pageTitle}</h1>
-          {q.status === 'ready' && (
-            <p className="mt-1 text-xs font-bold text-gray-400">{M.subtitle(q.totalCount)}</p>
-          )}
-        </div>
-        {q.status === 'ready' && (
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={q.refresh}
-              className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-gray-600"
-            >
+    <div className="min-h-full bg-[#f7f1e6] p-4 font-['Tajawal'] md:p-8" dir="rtl">
+      <PageHeader
+        title={M.pageTitle}
+        subtitle={q.status === 'ready' ? M.subtitle(q.totalCount) : undefined}
+        actions={q.status === 'ready' && (
+          <>
+            {addButton}
+            <button type="button" onClick={q.refresh} className={bannerBtnLight}>
               <RefreshCw size={14} aria-hidden="true" />
               {M.refresh}
             </button>
-            {addButton}
-          </div>
+          </>
         )}
-      </div>
+      />
 
       {q.status === 'loading' && <p className="text-sm text-gray-500">{M.loading}</p>}
 
       {q.status === 'error' && (
-        <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
+        <div className="max-w-md rounded-3xl border border-red-100 bg-red-50 p-6 text-center">
           <p className="mb-3 text-sm text-red-700">{M.listError}</p>
           <button
             type="button"
             onClick={q.refresh}
-            className="rounded-xl bg-[#7a0d0d] px-4 py-2 text-sm font-black text-white"
+            className="rounded-xl bg-[#7a0d0d] px-4 py-2.5 text-sm font-black text-white shadow-sm transition hover:bg-[#5a0909]"
           >
             {M.retry}
           </button>
@@ -93,13 +87,13 @@ export default function CitiesPage() {
           </div>
 
           {q.noCities && (
-            <p className="rounded-2xl border border-gray-100 bg-white p-10 text-center text-sm text-gray-500">
+            <p className="rounded-3xl bg-white shadow-[0_18px_40px_-30px_rgba(122,13,13,0.45)] ring-1 ring-[#efe3cc] p-10 text-center text-sm font-bold text-gray-400">
               {M.emptyNoCities}
             </p>
           )}
 
           {q.noMatch && (
-            <p className="rounded-2xl border border-gray-100 bg-white p-10 text-center text-sm text-gray-500">
+            <p className="rounded-3xl bg-white shadow-[0_18px_40px_-30px_rgba(122,13,13,0.45)] ring-1 ring-[#efe3cc] p-10 text-center text-sm font-bold text-gray-400">
               {M.emptyNoMatch}
             </p>
           )}

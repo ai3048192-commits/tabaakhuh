@@ -13,13 +13,13 @@ export default function WithdrawalRow({
   state: RowStatus
   onAction: (kind: ActionKind) => void
 }) {
-  const td = 'px-3 py-3 align-middle text-sm text-gray-700'
+  const td = 'px-4 py-3.5 align-middle text-sm text-gray-700'
   const busy = state === 'submitting'
   const actBtn =
     'rounded-lg border px-2.5 py-1.5 text-xs font-bold disabled:opacity-50'
 
   return (
-    <tr className="border-b border-gray-100 last:border-0">
+    <tr className="border-t border-[#f3ead9] transition hover:bg-[#fffaf1]">
       <td className={`${td} font-bold text-gray-900`} dir="ltr">
         {item.id}
       </td>

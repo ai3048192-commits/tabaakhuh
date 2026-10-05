@@ -9,6 +9,8 @@ import ApproveDialog from './ApproveDialog'
 import RejectDialog from './RejectDialog'
 import { cookMessages as M } from './messages'
 import type { DecisionOutcome, DocumentRef } from './types'
+import PageHeader from '../shared/PageHeader'
+import { bannerBtnLight } from '../shared/ui'
 
 /** `/cooks` — the pending cook applications review screen (US1–US3). */
 export default function CookApplicationsPage() {
@@ -69,35 +71,27 @@ export default function CookApplicationsPage() {
   }
 
   return (
-    <div className="min-h-full bg-[#fcf9f2] p-4 font-['Tajawal'] md:p-6" dir="rtl">
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-black text-[#7a0d0d]">{M.pageTitle}</h1>
-          {q.status === 'ready' && (
-            <p className="mt-1 text-xs font-bold text-gray-400">{M.awaitingCount(q.count)}</p>
-          )}
-        </div>
-        {q.status === 'ready' && (
-          <button
-            type="button"
-            onClick={q.refresh}
-            className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-gray-600"
-          >
+    <div className="min-h-full bg-[#f7f1e6] p-4 font-['Tajawal'] md:p-8" dir="rtl">
+      <PageHeader
+        title={M.pageTitle}
+        subtitle={q.status === 'ready' ? M.awaitingCount(q.count) : M.subtitle}
+        actions={q.status === 'ready' && (
+          <button type="button" onClick={q.refresh} className={bannerBtnLight}>
             <RefreshCw size={14} aria-hidden="true" />
             {M.refresh}
           </button>
         )}
-      </div>
+      />
 
       {q.status === 'loading' && <p className="text-sm text-gray-500">{M.loading}</p>}
 
       {q.status === 'error' && (
-        <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
+        <div className="max-w-md rounded-3xl border border-red-100 bg-red-50 p-6 text-center">
           <p className="mb-3 text-sm text-red-700">{M.queueError}</p>
           <button
             type="button"
             onClick={q.refresh}
-            className="rounded-xl bg-[#7a0d0d] px-4 py-2 text-sm font-black text-white"
+            className="rounded-xl bg-[#7a0d0d] px-4 py-2.5 text-sm font-black text-white shadow-sm transition hover:bg-[#5a0909]"
           >
             {M.retry}
           </button>
@@ -105,7 +99,7 @@ export default function CookApplicationsPage() {
       )}
 
       {q.status === 'ready' && q.count === 0 && (
-        <p className="rounded-2xl border border-gray-100 bg-white p-10 text-center text-sm text-gray-500">
+        <p className="rounded-3xl bg-white shadow-[0_18px_40px_-30px_rgba(122,13,13,0.45)] ring-1 ring-[#efe3cc] p-10 text-center text-sm font-bold text-gray-400">
           {M.empty}
         </p>
       )}

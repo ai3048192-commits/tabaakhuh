@@ -13,6 +13,9 @@ import { formatCount, formatCurrency, formatTime } from './format'
 import { overviewMessages as M } from './messages'
 import type { ActiveDelivery } from '../delivery/types'
 import type { Order } from '../orders/types'
+import PageHeader from '../shared/PageHeader'
+import { bannerBtnLight } from '../shared/ui'
+import { pillCls, statusTone } from '../shared/statusTone'
 
 /** Chart.js is pulled in only when there is actually a chart to draw. */
 const OrdersBarChart = lazy(() => import('./OrdersBarChart'))
@@ -25,34 +28,26 @@ interface Props {
   onQuickAction?: (type: string) => void
 }
 
-/** Status → pill colours, grouped by where the order is in its lifecycle. */
-function statusTone(s: string): string {
-  if (['delivered', 'completed'].includes(s)) return 'bg-emerald-50 text-emerald-700 ring-emerald-200'
-  if (['cancelled'].includes(s)) return 'bg-red-50 text-red-700 ring-red-200'
-  if (['on_the_way', 'picked_up', 'assigned_to_driver'].includes(s)) return 'bg-sky-50 text-sky-700 ring-sky-200'
-  if (['ready_for_pickup'].includes(s)) return 'bg-violet-50 text-violet-700 ring-violet-200'
-  return 'bg-amber-50 text-amber-800 ring-amber-200'
-}
-
 function StatusPill({ status }: { status: string }) {
   return (
-    <span className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-black ring-1 ${statusTone(status)}`}>
+    <span className={`${pillCls} ${statusTone(status)}`}>
       <span className="h-1.5 w-1.5 rounded-full bg-current" aria-hidden="true" />
       {statusText(status)}
     </span>
   )
 }
 
+/** Same stat card as the Delivery screen: coloured icon chip, big number, label under it. */
 function Kpi({ label, value, icon: Icon, tone }: { label: string; value: string; icon: typeof Users; tone: string }) {
   return (
-    <div className="group relative flex items-center justify-between gap-4 overflow-hidden rounded-3xl bg-white p-5 shadow-[0_18px_40px_-28px_rgba(122,13,13,0.45)] ring-1 ring-[#efe3cc] transition hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-28px_rgba(122,13,13,0.55)]">
-      <div className="min-w-0">
-        <p className="mb-1.5 text-xs font-bold text-gray-500">{label}</p>
-        <h3 className="whitespace-nowrap text-2xl font-black tracking-tight text-gray-900" dir="ltr">{value}</h3>
-      </div>
+    <div className="flex items-center gap-4 rounded-3xl bg-white p-5 shadow-[0_18px_40px_-30px_rgba(122,13,13,0.45)] ring-1 ring-[#efe3cc]">
       <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl ${tone}`}>
-        <Icon size={22} aria-hidden="true" />
+        <Icon size={20} aria-hidden="true" />
       </span>
+      <div className="min-w-0">
+        <h3 className="whitespace-nowrap text-2xl font-black text-gray-900" dir="ltr">{value}</h3>
+        <p className="text-xs font-bold text-gray-500">{label}</p>
+      </div>
     </div>
   )
 }
@@ -156,35 +151,30 @@ export default function OverviewPage({ onQuickAction }: Props) {
 
   return (
     <div className="min-h-full bg-[#f7f1e6] p-4 font-['Tajawal'] md:p-8" dir="rtl">
-      {/* Welcome banner */}
-      <div className="relative mb-6 overflow-hidden rounded-[2rem] bg-gradient-to-l from-[#7a0d0d] via-[#5e0a0a] to-[#2e0404] p-6 text-white shadow-[0_30px_60px_-30px_rgba(122,13,13,0.8)] md:p-8">
-        <div className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:radial-gradient(circle,#fff_1.5px,transparent_1.5px)] [background-size:22px_22px]" aria-hidden="true" />
-        <div className="pointer-events-none absolute -left-16 -top-20 h-64 w-64 rounded-full bg-[#e0a52e]/15 blur-3xl" aria-hidden="true" />
-        <div className="relative flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-bold text-[#ffd27a] ring-1 ring-white/10">
-              <CalendarDays size={12} aria-hidden="true" /> {todayLabel()}
-            </p>
-            <h1 className="text-2xl font-black md:text-3xl">{M.pageTitle}</h1>
-            <p className="mt-1.5 text-sm text-white/70">{M.subtitle}</p>
+      <PageHeader
+        title={M.pageTitle}
+        eyebrow={<><CalendarDays size={12} aria-hidden="true" /> {todayLabel()}</>}
+        subtitle={
+          <>
+            {M.subtitle}
             {status === 'ready' && lastUpdated && (
-              <p className="mt-1 text-xs font-bold text-white/50">{M.lastUpdated(formatTime(lastUpdated))}</p>
+              <span className="mt-1 block text-xs font-bold text-white/50">{M.lastUpdated(formatTime(lastUpdated))}</span>
             )}
-          </div>
-          {status === 'ready' && (
-            <button
-              type="button"
-              onClick={() => { refresh(); extras.refresh() }}
-              disabled={refreshing}
-              aria-busy={refreshing}
-              className="flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-xs font-black text-[#7a0d0d] shadow-lg transition hover:bg-[#fff7e6] disabled:opacity-60"
-            >
-              <RefreshCw size={14} aria-hidden="true" className={refreshing ? 'animate-spin' : undefined} />
-              {refreshing ? M.refreshing : M.refresh}
-            </button>
-          )}
-        </div>
-      </div>
+          </>
+        }
+        actions={status === 'ready' && (
+          <button
+            type="button"
+            onClick={() => { refresh(); extras.refresh() }}
+            disabled={refreshing}
+            aria-busy={refreshing}
+            className={bannerBtnLight}
+          >
+            <RefreshCw size={14} aria-hidden="true" className={refreshing ? 'animate-spin' : undefined} />
+            {refreshing ? M.refreshing : M.refresh}
+          </button>
+        )}
+      />
 
       {status === 'ready' && refreshError && (
         <div className="mb-6 flex flex-wrap items-center gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">

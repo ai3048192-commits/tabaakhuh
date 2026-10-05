@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { RefreshCw } from 'lucide-react'
+import PageHeader from '../shared/PageHeader'
+import { bannerBtnLight, btnPrimary, btnSecondary, emptyCls, errorBoxCls, pageCls } from '../shared/ui'
 import { fetchCityDirectory } from '../cities/citiesApi'
 import { useOrdersOversight } from './useOrdersOversight'
 import OrdersFilters from './OrdersFilters'
@@ -35,28 +37,28 @@ export default function OrdersPage() {
   const total = q.page?.total ?? 0
 
   return (
-    <div className="min-h-full bg-[#fcf9f2] p-4 font-['Tajawal'] md:p-6" dir="rtl">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-xl font-black text-[#7a0d0d]">{M.pageTitle}</h1>
-        <div className="flex items-center gap-3">
-          <label className="flex items-center gap-2 text-xs font-bold text-gray-600">
-            <input
-              type="checkbox"
-              checked={q.autoRefreshOn}
-              onChange={(e) => q.setAutoRefresh(e.target.checked)}
-            />
-            {M.autoRefresh}
-          </label>
-          <button
-            type="button"
-            onClick={q.refresh}
-            className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-gray-600"
-          >
-            <RefreshCw size={14} aria-hidden="true" />
-            {M.refresh}
-          </button>
-        </div>
-      </div>
+    <div className={pageCls} dir="rtl">
+      <PageHeader
+        title={M.pageTitle}
+        subtitle={M.subtitle}
+        actions={
+          <>
+            <label className="flex cursor-pointer items-center gap-2 rounded-xl bg-white/10 px-3.5 py-2.5 text-xs font-bold text-white ring-1 ring-white/15">
+              <input
+                type="checkbox"
+                checked={q.autoRefreshOn}
+                onChange={(e) => q.setAutoRefresh(e.target.checked)}
+                className="h-4 w-4 accent-[#e0a52e]"
+              />
+              {M.autoRefresh}
+            </label>
+            <button type="button" onClick={q.refresh} className={bannerBtnLight}>
+              <RefreshCw size={14} aria-hidden="true" />
+              {M.refresh}
+            </button>
+          </>
+        }
+      />
 
       <OrdersFilters
         filters={q.filters}
@@ -73,15 +75,15 @@ export default function OrdersPage() {
         onReset={q.resetFilters}
       />
 
-      {q.status === 'loading' && <p className="text-sm text-gray-500">{M.loading}</p>}
+      {q.status === 'loading' && <p className={emptyCls}>{M.loading}</p>}
 
       {q.status === 'error' && (
-        <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
+        <div className={errorBoxCls}>
           <p className="mb-3 text-sm text-red-700">{M.listError}</p>
           <button
             type="button"
             onClick={q.refresh}
-            className="rounded-xl bg-[#7a0d0d] px-4 py-2 text-sm font-black text-white"
+            className={btnPrimary}
           >
             {M.retry}
           </button>
@@ -89,18 +91,18 @@ export default function OrdersPage() {
       )}
 
       {q.status === 'ready' && q.emptyKind === 'unfiltered' && (
-        <p className="rounded-2xl border border-gray-100 bg-white p-10 text-center text-sm text-gray-500">
+        <p className={emptyCls}>
           {M.emptyNoOrders}
         </p>
       )}
 
       {q.status === 'ready' && q.emptyKind === 'filtered' && (
-        <div className="rounded-2xl border border-gray-100 bg-white p-10 text-center">
-          <p className="mb-3 text-sm text-gray-500">{M.emptyNoMatch}</p>
+        <div className={emptyCls}>
+          <p className="mb-3">{M.emptyNoMatch}</p>
           <button
             type="button"
             onClick={q.resetFilters}
-            className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-bold text-gray-600"
+            className={btnSecondary}
           >
             {M.resetFilters}
           </button>
@@ -108,12 +110,12 @@ export default function OrdersPage() {
       )}
 
       {q.status === 'ready' && q.emptyKind === 'beyond-range' && (
-        <div className="rounded-2xl border border-gray-100 bg-white p-10 text-center">
-          <p className="mb-3 text-sm text-gray-500">{M.emptyBeyondRange}</p>
+        <div className={emptyCls}>
+          <p className="mb-3">{M.emptyBeyondRange}</p>
           <button
             type="button"
             onClick={q.firstPage}
-            className="rounded-xl bg-[#7a0d0d] px-4 py-2 text-sm font-black text-white"
+            className={btnPrimary}
           >
             {M.backToFirst}
           </button>

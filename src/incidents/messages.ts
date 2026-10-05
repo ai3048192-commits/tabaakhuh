@@ -3,6 +3,7 @@ import type { IncidentStatus } from './types'
 /** Arabic, RTL-first. */
 export const incidentMessages = {
   pageTitle: 'بلاغات الحوادث',
+  subtitle: 'البلاغات اللي بيرفعها السائقين أثناء التوصيل وحالة كل بلاغ.',
   refresh: 'تحديث',
   loading: 'جارٍ التحميل…',
   listError: 'حدث خطأ ما. حاول مرة أخرى.',

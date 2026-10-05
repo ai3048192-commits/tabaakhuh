@@ -16,7 +16,7 @@ export default function SearchBox({ value, onChange }: Props) {
   const id = useId()
   return (
     <div>
-      <label htmlFor={id} className="mb-1 block text-xs font-bold text-gray-500">
+      <label htmlFor={id} className="mb-1.5 block text-xs font-black text-[#6b4f3a]">
         {M.searchLabel}
       </label>
       <div className="relative">

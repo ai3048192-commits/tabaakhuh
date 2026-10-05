@@ -12,6 +12,8 @@ import UsersTable from './UsersTable'
 import UserDetailDialog from './UserDetailDialog'
 import StatusChangeDialog from './StatusChangeDialog'
 import { userMessages as M } from './messages'
+import PageHeader from '../shared/PageHeader'
+import { bannerBtnLight } from '../shared/ui'
 
 /** `/users` — user directory: filter by role/status, search, paginate, view, change status. */
 export default function UsersPage() {
@@ -34,30 +36,31 @@ export default function UsersPage() {
   const toast = warnToast ?? q.toast
 
   return (
-    <div className="min-h-full bg-[#fcf9f2] p-4 font-['Tajawal'] md:p-6" dir="rtl">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-xl font-black text-[#7a0d0d]">{M.pageTitle}</h1>
-        {q.status === 'ready' && (
-          <button type="button" onClick={q.refresh} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-gray-600">
+    <div className="min-h-full bg-[#f7f1e6] p-4 font-['Tajawal'] md:p-8" dir="rtl">
+      <PageHeader
+        title={M.pageTitle}
+        subtitle={M.subtitle}
+        actions={q.status === 'ready' && (
+          <button type="button" onClick={q.refresh} className={bannerBtnLight}>
             <RefreshCw size={14} aria-hidden="true" />
             {M.refresh}
           </button>
         )}
-      </div>
+      />
 
       <UsersFilters filters={q.filters} onRole={q.setRole} onStatus={q.setStatusFilter} onQuery={q.setQuery} />
 
       {q.status === 'loading' && <p className="text-sm text-gray-500">{M.loading}</p>}
 
       {q.status === 'error' && (
-        <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
+        <div className="max-w-md rounded-3xl border border-red-100 bg-red-50 p-6 text-center">
           <p className="mb-3 text-sm text-red-700">{M.listError}</p>
-          <button type="button" onClick={q.refresh} className="rounded-xl bg-[#7a0d0d] px-4 py-2 text-sm font-black text-white">{M.retry}</button>
+          <button type="button" onClick={q.refresh} className="rounded-xl bg-[#7a0d0d] px-4 py-2.5 text-sm font-black text-white shadow-sm transition hover:bg-[#5a0909]">{M.retry}</button>
         </div>
       )}
 
       {q.status === 'ready' && items.length === 0 && (
-        <p className="rounded-2xl border border-gray-100 bg-white p-10 text-center text-sm text-gray-500">
+        <p className="rounded-3xl bg-white shadow-[0_18px_40px_-30px_rgba(122,13,13,0.45)] ring-1 ring-[#efe3cc] p-10 text-center text-sm font-bold text-gray-400">
           {filtered ? M.emptyFiltered : M.empty}
         </p>
       )}
@@ -70,10 +73,10 @@ export default function UsersPage() {
               صفحة {q.page.page} من {q.totalPages} · {q.page.total} مستخدم
             </p>
             <div className="flex items-center gap-2">
-              <button type="button" aria-label="الصفحة السابقة" disabled={q.page.page <= 1} onClick={() => q.setPage(q.page!.page - 1)} className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-gray-700 disabled:opacity-40">
+              <button type="button" aria-label="الصفحة السابقة" disabled={q.page.page <= 1} onClick={() => q.setPage(q.page!.page - 1)} className="inline-flex items-center gap-1 rounded-xl border border-[#e8dcc4] bg-white px-3.5 py-2 text-xs font-black text-gray-700 transition hover:bg-[#faf3e7] disabled:opacity-40">
                 <ChevronRight size={14} aria-hidden="true" /> السابق
               </button>
-              <button type="button" aria-label="الصفحة التالية" disabled={q.page.page >= q.totalPages} onClick={() => q.setPage(q.page!.page + 1)} className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-gray-700 disabled:opacity-40">
+              <button type="button" aria-label="الصفحة التالية" disabled={q.page.page >= q.totalPages} onClick={() => q.setPage(q.page!.page + 1)} className="inline-flex items-center gap-1 rounded-xl border border-[#e8dcc4] bg-white px-3.5 py-2 text-xs font-black text-gray-700 transition hover:bg-[#faf3e7] disabled:opacity-40">
                 التالي <ChevronLeft size={14} aria-hidden="true" />
               </button>
             </div>

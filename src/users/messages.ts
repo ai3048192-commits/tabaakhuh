@@ -3,6 +3,7 @@ import type { UserRole, UserStatus } from './types'
 /** Arabic, RTL-first. */
 export const userMessages = {
   pageTitle: 'إدارة المستخدمين',
+  subtitle: 'كل حسابات المنصة: ابحث، راجع، وعلّق أو فعّل الحسابات.',
   refresh: 'تحديث',
   loading: 'جارٍ تحميل المستخدمين…',
   listError: 'حدث خطأ ما. حاول مرة أخرى.',

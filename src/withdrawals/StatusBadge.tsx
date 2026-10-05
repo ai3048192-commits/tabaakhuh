@@ -28,7 +28,7 @@ export default function StatusBadge({ status }: { status: WithdrawalStatus }) {
   const Icon = ICONS[status]
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-lg border px-2 py-1 text-xs font-bold ${TONE[status]}`}
+      className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-black ${TONE[status]}`}
     >
       <Icon size={13} aria-hidden="true" />
       {LABELS[status]}

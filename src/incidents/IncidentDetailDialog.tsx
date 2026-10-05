@@ -121,7 +121,7 @@ export default function IncidentDetailDialog({
               )}
             </ul>
 
-            <label className="mb-1 block text-xs font-bold text-gray-500" htmlFor="inc-reply">
+            <label className="mb-1.5 block text-xs font-black text-[#6b4f3a]" htmlFor="inc-reply">
               {M.replyLabel}
             </label>
             <textarea
@@ -138,7 +138,7 @@ export default function IncidentDetailDialog({
                 disabled={busy || draft.trim() === ''}
                 aria-busy={busy}
                 onClick={() => void send()}
-                className="rounded-xl bg-[#7a0d0d] px-4 py-2 text-sm font-black text-white disabled:opacity-50"
+                className="rounded-xl bg-[#7a0d0d] px-4 py-2.5 text-sm font-black text-white shadow-sm transition hover:bg-[#5a0909] disabled:opacity-50"
               >
                 {M.send}
               </button>

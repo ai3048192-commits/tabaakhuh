@@ -10,6 +10,7 @@ export const driverMessages = {
   ...reviewMessages,
 
   pageTitle: 'طلبات السائقين',
+  subtitle: 'راجع طلبات انضمام السائقين ووافق أو ارفض.',
   awaitingCount: (n: number) => `${n} طلب في انتظار المراجعة`,
   loading: 'جارٍ تحميل الطلبات…',
   queueError: 'حصل خطأ أثناء تحميل الطلبات.',

@@ -29,7 +29,7 @@ export default function Field({
   const id = useId()
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={id} className="pr-1 text-[11px] font-bold text-gray-500">{label}</label>
+      <label htmlFor={id} className="pr-1 text-xs font-black text-[#6b4f3a]">{label}</label>
       <div className="relative flex items-center">
         {icon && <span className="absolute right-3 text-[#7a0d0d]/50">{icon}</span>}
         <input

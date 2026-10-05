@@ -47,7 +47,7 @@ export default function NotificationModal({ onClose }: { onClose: () => void }) 
     <QuickModalShell title="إرسال إشعار عام" onClose={onClose} maxWidth="max-w-xl">
       <div className="space-y-4">
         <div className="flex flex-col gap-1">
-          <label htmlFor="ntf-title" className="pr-1 text-[11px] font-bold text-gray-500">عنوان الإشعار</label>
+          <label htmlFor="ntf-title" className="pr-1 text-xs font-black text-[#6b4f3a]">عنوان الإشعار</label>
           <input
             id="ntf-title"
             value={title}
@@ -61,7 +61,7 @@ export default function NotificationModal({ onClose }: { onClose: () => void }) 
         </div>
 
         <div className="flex flex-col gap-1">
-          <label htmlFor="ntf-body" className="pr-1 text-[11px] font-bold text-gray-500">محتوى الرسالة</label>
+          <label htmlFor="ntf-body" className="pr-1 text-xs font-black text-[#6b4f3a]">محتوى الرسالة</label>
           <textarea
             id="ntf-body"
             value={body}
@@ -78,7 +78,7 @@ export default function NotificationModal({ onClose }: { onClose: () => void }) 
         </div>
 
         <div className="flex flex-col gap-1">
-          <span className="pr-1 text-[11px] font-bold text-gray-500">الجمهور المستهدف</span>
+          <span className="pr-1 text-xs font-black text-[#6b4f3a]">الجمهور المستهدف</span>
           <div role="group" aria-label="الجمهور المستهدف" className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {AUDIENCES.map((a) => (
               <button

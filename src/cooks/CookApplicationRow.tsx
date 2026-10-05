@@ -19,7 +19,7 @@ export default function CookApplicationRow({ entry, cityName, onOpen }: Props) {
   const p = entry.profile
   const named = Boolean(p.name && p.name.trim())
   return (
-    <article className="flex items-start gap-3 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+    <article className="flex items-start gap-3 rounded-3xl bg-white shadow-[0_18px_40px_-30px_rgba(122,13,13,0.45)] ring-1 ring-[#efe3cc] p-4 shadow-sm">
       <div className="min-w-0 flex-1">
         <div className="mb-2 flex items-center gap-2">
           <h3 className="truncate text-sm font-black text-gray-800">

@@ -10,7 +10,7 @@ function StatusBadge({ status }: { status: UserStatus }) {
   }
   const Icon = status === 'active' ? UserCheck : Ban
   return (
-    <span className={`inline-flex items-center gap-1 rounded-lg border px-2 py-1 text-xs font-bold ${tone[status]}`}>
+    <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-black ${tone[status]}`}>
       <Icon size={13} aria-hidden="true" />
       {M.statusLabels[status]}
     </span>
@@ -34,15 +34,15 @@ export default function UsersTable({
   /** Only cooks and drivers can receive a warning letter. */
   onWarn: (u: AdminUser) => void
 }) {
-  const th = 'px-3 py-2 text-right text-xs font-black text-gray-500'
-  const td = 'px-3 py-3 align-middle text-sm text-gray-700'
+  const th = 'px-4 py-3 text-right text-xs font-bold text-gray-400'
+  const td = 'px-4 py-3.5 align-middle text-sm text-gray-700'
   const iconBtn =
     'rounded-lg border border-gray-200 bg-white p-1.5 text-gray-500 hover:text-[#7a0d0d] disabled:opacity-40'
 
   return (
-    <div className="overflow-x-auto rounded-2xl border border-gray-100 bg-white">
+    <div className="overflow-x-auto rounded-3xl bg-white shadow-[0_18px_40px_-30px_rgba(122,13,13,0.45)] ring-1 ring-[#efe3cc]">
       <table className="w-full min-w-[820px] border-collapse">
-        <thead className="border-b border-gray-100 bg-gray-50">
+        <thead className="bg-[#fffaf1]">
           <tr>
             <th scope="col" className={th}>{M.colId}</th>
             <th scope="col" className={th}>{M.colName}</th>
@@ -58,7 +58,7 @@ export default function UsersTable({
             const busy = busyId === u.id
             const isSelf = currentUserId != null && u.id === currentUserId
             return (
-              <tr key={u.id} className="border-b border-gray-100 last:border-0">
+              <tr key={u.id} className="border-t border-[#f3ead9] transition hover:bg-[#fffaf1]">
                 <td className={`${td} font-bold text-gray-900`} dir="ltr">{u.id}</td>
                 <td className={`${td} font-bold text-gray-900`}>
                   {`${u.first_name} ${u.last_name}`.trim()}

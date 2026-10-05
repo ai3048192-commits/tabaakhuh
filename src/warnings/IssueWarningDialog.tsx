@@ -107,7 +107,7 @@ export default function IssueWarningDialog({
       </fieldset>
 
       <div className="mb-4 flex flex-col gap-1">
-        <label htmlFor={`${uid}-violation`} className="text-xs font-bold text-gray-500">
+        <label htmlFor={`${uid}-violation`} className="text-xs font-black text-[#6b4f3a]">
           {M.violationLabel}
         </label>
         <select
@@ -131,7 +131,7 @@ export default function IssueWarningDialog({
       </div>
 
       <div className="mb-6 flex flex-col gap-1">
-        <label htmlFor={`${uid}-details`} className="text-xs font-bold text-gray-500">
+        <label htmlFor={`${uid}-details`} className="text-xs font-black text-[#6b4f3a]">
           {M.detailsLabel} {!isOther && <span className="font-normal text-gray-400">{M.detailsOptional}</span>}
         </label>
         <textarea

@@ -18,11 +18,11 @@ export default function UsersFilters({
   onQuery: (q: string) => void
 }) {
   const uid = useId()
-  const field = 'rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm'
+  const field = 'rounded-xl border border-[#e8dcc4] bg-white px-3.5 py-2.5 text-sm text-gray-800 shadow-sm outline-none transition focus:border-[#7a0d0d] focus:ring-4 focus:ring-[#7a0d0d]/10 disabled:opacity-50'
   return (
-    <div className="mb-5 flex flex-wrap items-end gap-3 rounded-2xl border border-gray-100 bg-white p-4">
+    <div className="mb-5 flex flex-wrap items-end gap-3 rounded-3xl bg-white shadow-[0_18px_40px_-30px_rgba(122,13,13,0.45)] ring-1 ring-[#efe3cc] p-4">
       <div className="flex min-w-[220px] flex-1 flex-col gap-1">
-        <label htmlFor={`${uid}-q`} className="text-xs font-bold text-gray-500">{M.searchLabel}</label>
+        <label htmlFor={`${uid}-q`} className="text-xs font-black text-[#6b4f3a]">{M.searchLabel}</label>
         <div className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3">
           <Search size={15} className="text-gray-400" aria-hidden="true" />
           <input
@@ -35,14 +35,14 @@ export default function UsersFilters({
         </div>
       </div>
       <div className="flex flex-col gap-1">
-        <label htmlFor={`${uid}-role`} className="text-xs font-bold text-gray-500">{M.filterRole}</label>
+        <label htmlFor={`${uid}-role`} className="text-xs font-black text-[#6b4f3a]">{M.filterRole}</label>
         <select id={`${uid}-role`} className={field} value={filters.role} onChange={(e) => onRole(e.target.value as UF['role'])}>
           <option value="all">{M.allRoles}</option>
           {ROLES.map((r) => <option key={r} value={r}>{M.roleLabels[r]}</option>)}
         </select>
       </div>
       <div className="flex flex-col gap-1">
-        <label htmlFor={`${uid}-status`} className="text-xs font-bold text-gray-500">{M.filterStatus}</label>
+        <label htmlFor={`${uid}-status`} className="text-xs font-black text-[#6b4f3a]">{M.filterStatus}</label>
         <select id={`${uid}-status`} className={field} value={filters.status} onChange={(e) => onStatus(e.target.value as UF['status'])}>
           <option value="all">{M.allStatuses}</option>
           {STATUSES.map((s) => <option key={s} value={s}>{M.statusLabels[s]}</option>)}

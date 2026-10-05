@@ -5,6 +5,8 @@ import AreaFormDialog from './AreaFormDialog'
 import { areaMessages as M } from './messages'
 import { useDeliveryAreas } from './useDeliveryAreas'
 import type { Area, AreaMutationOutcome } from './types'
+import PageHeader from '../shared/PageHeader'
+import { bannerBtnGold } from '../shared/ui'
 
 type Dialog = null | { kind: 'add' } | { kind: 'edit'; area: Area } | { kind: 'toggle'; area: Area; busy: boolean }
 
@@ -40,25 +42,19 @@ export default function DeliveryPricingPage() {
   }
 
   return (
-    <div className="min-h-full bg-[#fcf9f2] p-4 font-['Tajawal'] md:p-6" dir="rtl">
-      <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-        <div className="max-w-2xl">
-          <h1 className="text-xl font-black text-[#7a0d0d]">{M.pageTitle}</h1>
-          <p className="mt-1 text-xs font-bold text-gray-500">{M.subtitle}</p>
-        </div>
-        {q.selectedCity && q.areasStatus === 'ready' && (
-          <button
-            type="button"
-            onClick={() => setDialog({ kind: 'add' })}
-            className="flex items-center gap-2 rounded-xl bg-[#7a0d0d] px-3 py-2 text-xs font-black text-white"
-          >
+    <div className="min-h-full bg-[#f7f1e6] p-4 font-['Tajawal'] md:p-8" dir="rtl">
+      <PageHeader
+        title={M.pageTitle}
+        subtitle={<span className="block max-w-2xl">{M.subtitle}</span>}
+        actions={q.selectedCity && q.areasStatus === 'ready' && (
+          <button type="button" onClick={() => setDialog({ kind: 'add' })} className={bannerBtnGold}>
             <Plus size={14} aria-hidden="true" />
             {M.addArea}
           </button>
         )}
-      </div>
+      />
 
-      <p className="mb-6 flex items-start gap-2 rounded-2xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
+      <p className="mb-6 flex items-start gap-2 rounded-2xl border border-amber-200 bg-amber-50 p-3 text-xs font-bold text-amber-800">
         <Info size={14} className="mt-0.5 shrink-0" aria-hidden="true" />
         {M.unservedNote}
       </p>
@@ -68,14 +64,14 @@ export default function DeliveryPricingPage() {
         <ErrorBox message={M.citiesError} onRetry={q.reloadCities} />
       )}
       {q.citiesStatus === 'ready' && q.cities.length === 0 && (
-        <p className="rounded-2xl border border-gray-100 bg-white p-10 text-center text-sm text-gray-500">{M.noCities}</p>
+        <p className="rounded-3xl bg-white shadow-[0_18px_40px_-30px_rgba(122,13,13,0.45)] ring-1 ring-[#efe3cc] p-10 text-center text-sm font-bold text-gray-400">{M.noCities}</p>
       )}
 
       {q.citiesStatus === 'ready' && q.cities.length > 0 && (
         <>
           <div className="mb-4 flex flex-wrap items-end gap-3">
             <div>
-              <label htmlFor={citySelectId} className="mb-1 block text-xs font-bold text-gray-500">
+              <label htmlFor={citySelectId} className="mb-1.5 block text-xs font-black text-[#6b4f3a]">
                 {M.cityLabel}
               </label>
               <select
@@ -109,13 +105,13 @@ export default function DeliveryPricingPage() {
           {q.areasStatus === 'loading' && <p className="text-sm text-gray-500">{M.loading}</p>}
           {q.areasStatus === 'error' && <ErrorBox message={M.listError} onRetry={() => void q.reloadAreas()} />}
           {q.areasStatus === 'ready' && q.areas.length === 0 && (
-            <p className="rounded-2xl border border-gray-100 bg-white p-10 text-center text-sm text-gray-500">{M.empty}</p>
+            <p className="rounded-3xl bg-white shadow-[0_18px_40px_-30px_rgba(122,13,13,0.45)] ring-1 ring-[#efe3cc] p-10 text-center text-sm font-bold text-gray-400">{M.empty}</p>
           )}
           {q.areasStatus === 'ready' && q.areas.length > 0 && (
-            <div className="overflow-x-auto rounded-2xl border border-gray-100 bg-white">
+            <div className="overflow-x-auto rounded-3xl bg-white shadow-[0_18px_40px_-30px_rgba(122,13,13,0.45)] ring-1 ring-[#efe3cc]">
               <table className="w-full min-w-[40rem] text-right">
                 <thead>
-                  <tr className="border-b border-gray-200 bg-gray-50 text-xs font-bold text-gray-500">
+                  <tr className="bg-[#fffaf1] text-xs font-bold text-gray-400">
                     <th scope="col" className="px-4 py-3">{M.colNameAr}</th>
                     <th scope="col" className="px-4 py-3">{M.colNameEn}</th>
                     <th scope="col" className="px-4 py-3">{M.colFee}</th>
@@ -125,7 +121,7 @@ export default function DeliveryPricingPage() {
                 </thead>
                 <tbody>
                   {q.areas.map((a) => (
-                    <tr key={a.id} className="border-b border-gray-100 last:border-0">
+                    <tr key={a.id} className="border-t border-[#f3ead9] transition hover:bg-[#fffaf1]">
                       <td className="px-4 py-3 text-sm font-bold text-gray-800">{a.name_ar}</td>
                       <td className="px-4 py-3 text-sm text-gray-600" dir="ltr">{a.name_en}</td>
                       <td className="px-4 py-3 text-sm font-black text-[#7a0d0d]">{M.fee(a.delivery_fee)}</td>
@@ -206,7 +202,7 @@ export default function DeliveryPricingPage() {
           label={dialog.area.is_active ? M.toggleOffTitle(dialog.area.name_ar) : M.toggleOnTitle(dialog.area.name_ar)}
           onDismiss={() => !dialog.busy && setDialog(null)}
         >
-          <h2 className="mb-2 text-base font-black text-gray-800">
+          <h2 className="mb-3 text-lg font-black text-[#7a0d0d]">
             {dialog.area.is_active ? M.toggleOffTitle(dialog.area.name_ar) : M.toggleOnTitle(dialog.area.name_ar)}
           </h2>
           <p className="mb-6 text-sm text-gray-600">{dialog.area.is_active ? M.toggleOffBody : M.toggleOnBody}</p>
@@ -215,7 +211,7 @@ export default function DeliveryPricingPage() {
               type="button"
               onClick={() => setDialog(null)}
               disabled={dialog.busy}
-              className="flex-1 rounded-xl border border-gray-200 py-2.5 text-sm font-bold text-gray-600 disabled:opacity-50"
+              className="flex-1 rounded-xl border border-[#e8dcc4] py-2.5 text-sm font-bold text-gray-600 transition hover:bg-[#faf3e7] disabled:opacity-50"
             >
               {M.cancel}
             </button>
@@ -224,7 +220,7 @@ export default function DeliveryPricingPage() {
               onClick={() => void confirmToggle()}
               disabled={dialog.busy}
               aria-busy={dialog.busy}
-              className="flex-1 rounded-xl bg-[#7a0d0d] py-2.5 text-sm font-black text-white disabled:opacity-50"
+              className="flex-1 rounded-xl bg-[#7a0d0d] py-2.5 text-sm font-black text-white shadow-md transition hover:bg-[#5a0909] disabled:opacity-50"
             >
               {M.confirm}
             </button>
@@ -237,9 +233,9 @@ export default function DeliveryPricingPage() {
 
 function ErrorBox({ message, onRetry }: { message: string; onRetry: () => void }) {
   return (
-    <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-center">
+    <div className="max-w-md rounded-3xl border border-red-100 bg-red-50 p-6 text-center">
       <p className="mb-3 text-sm text-red-700">{message}</p>
-      <button type="button" onClick={onRetry} className="rounded-xl bg-[#7a0d0d] px-4 py-2 text-sm font-black text-white">
+      <button type="button" onClick={onRetry} className="rounded-xl bg-[#7a0d0d] px-4 py-2.5 text-sm font-black text-white shadow-sm transition hover:bg-[#5a0909]">
         {M.retry}
       </button>
     </div>

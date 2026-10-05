@@ -13,6 +13,7 @@ export const cookMessages = {
   ...reviewMessages,
 
   pageTitle: 'طلبات الطهاة',
+  subtitle: 'راجع طلبات انضمام الطباخات ووافق أو ارفض.',
   awaitingCount: (n: number) => `${n} طلب في انتظار المراجعة`,
   loading: 'جارٍ تحميل الطلبات…',
   queueError: 'حصل خطأ أثناء تحميل الطلبات.',

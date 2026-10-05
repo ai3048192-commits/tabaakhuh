@@ -26,7 +26,7 @@ export default function CityRow({ city, state, onEdit, onToggle }: Props) {
   const ToggleIcon = city.is_active ? PowerOff : Power
 
   return (
-    <tr className="border-b border-gray-100 last:border-0">
+    <tr className="border-t border-[#f3ead9] transition hover:bg-[#fffaf1]">
       <td className="px-4 py-3 text-sm font-bold text-gray-800">{city.name_ar}</td>
       <td className="px-4 py-3 text-sm text-gray-600" dir="ltr">
         {city.name_en}

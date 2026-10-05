@@ -33,7 +33,7 @@ export default function StatusToggleDialog({
 
   return (
     <DialogShell label={title} onDismiss={onCancel}>
-      <h2 className="mb-2 text-base font-black text-gray-800">{title}</h2>
+      <h2 className="mb-3 text-lg font-black text-[#7a0d0d]">{title}</h2>
       <p className="mb-6 text-sm text-gray-600">{body}</p>
       {formError && <p className="mb-3 text-xs text-red-600">{formError}</p>}
       <div className="flex gap-3">
@@ -41,7 +41,7 @@ export default function StatusToggleDialog({
           type="button"
           onClick={onCancel}
           disabled={busy}
-          className="flex-1 rounded-xl border border-gray-200 py-2.5 text-sm font-bold text-gray-600 disabled:opacity-50"
+          className="flex-1 rounded-xl border border-[#e8dcc4] py-2.5 text-sm font-bold text-gray-600 transition hover:bg-[#faf3e7] disabled:opacity-50"
         >
           {M.cancel}
         </button>
@@ -51,7 +51,7 @@ export default function StatusToggleDialog({
           onClick={onConfirm}
           disabled={busy}
           aria-busy={busy}
-          className="flex-1 rounded-xl bg-[#7a0d0d] py-2.5 text-sm font-black text-white disabled:opacity-50"
+          className="flex-1 rounded-xl bg-[#7a0d0d] py-2.5 text-sm font-black text-white shadow-md transition hover:bg-[#5a0909] disabled:opacity-50"
         >
           {M.confirmToggle}
         </button>

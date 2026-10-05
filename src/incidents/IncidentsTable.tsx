@@ -11,7 +11,7 @@ const STATUS_STYLE: Record<IncidentStatus, string> = {
 
 function StatusPill({ status }: { status: IncidentStatus }) {
   return (
-    <span className={`inline-flex items-center rounded-lg border px-2 py-1 text-xs font-bold ${STATUS_STYLE[status]}`}>
+    <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-black ${STATUS_STYLE[status]}`}>
       {M.statusLabels[status]}
     </span>
   )
@@ -24,12 +24,12 @@ export default function IncidentsTable({
   items: Incident[]
   onOpen: (id: number) => void
 }) {
-  const th = 'px-3 py-2 text-right text-xs font-black text-gray-500'
-  const td = 'px-3 py-3 align-middle text-sm text-gray-700'
+  const th = 'px-4 py-3 text-right text-xs font-bold text-gray-400'
+  const td = 'px-4 py-3.5 align-middle text-sm text-gray-700'
   return (
-    <div className="overflow-x-auto rounded-2xl border border-gray-100 bg-white">
+    <div className="overflow-x-auto rounded-3xl bg-white shadow-[0_18px_40px_-30px_rgba(122,13,13,0.45)] ring-1 ring-[#efe3cc]">
       <table className="w-full min-w-[760px] border-collapse">
-        <thead className="border-b border-gray-100 bg-gray-50">
+        <thead className="bg-[#fffaf1]">
           <tr>
             <th scope="col" className={th}>{M.colId}</th>
             <th scope="col" className={th}>{M.colDriver}</th>
@@ -41,7 +41,7 @@ export default function IncidentsTable({
         </thead>
         <tbody>
           {items.map((it) => (
-            <tr key={it.id} className="border-b border-gray-100 last:border-0">
+            <tr key={it.id} className="border-t border-[#f3ead9] transition hover:bg-[#fffaf1]">
               <td className={`${td} font-bold text-gray-900`} dir="ltr">{it.id}</td>
               <td className={td}>
                 <span className="inline-flex items-center gap-1">
@@ -56,7 +56,7 @@ export default function IncidentsTable({
                 <button
                   type="button"
                   onClick={() => onOpen(it.id)}
-                  className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-bold text-[#7a0d0d]"
+                  className="inline-flex items-center gap-1 rounded-xl border border-[#e8dcc4] bg-white px-3 py-2 text-xs font-black text-[#7a0d0d] transition hover:bg-[#faf3e7]"
                 >
                   <Eye size={13} aria-hidden="true" />
                   {M.open}

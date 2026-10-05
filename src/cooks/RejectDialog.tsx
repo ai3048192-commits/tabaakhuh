@@ -32,7 +32,7 @@ export default function RejectDialog({ storeName, busy, onSubmit, onCancel }: Pr
     <DialogShell label={M.rejectTitle(storeName)} onDismiss={onCancel}>
       <h2 className="mb-3 text-base font-black text-gray-800">{M.rejectTitle(storeName)}</h2>
 
-      <label htmlFor="reject-reason" className="mb-1 block text-xs font-bold text-gray-500">
+      <label htmlFor="reject-reason" className="mb-1.5 block text-xs font-black text-[#6b4f3a]">
         {M.rejectReasonLabel}
       </label>
       <textarea
@@ -63,7 +63,7 @@ export default function RejectDialog({ storeName, busy, onSubmit, onCancel }: Pr
           type="button"
           onClick={onCancel}
           disabled={busy}
-          className="flex-1 rounded-xl border border-gray-200 py-2.5 text-sm font-bold text-gray-600 disabled:opacity-50"
+          className="flex-1 rounded-xl border border-[#e8dcc4] py-2.5 text-sm font-bold text-gray-600 transition hover:bg-[#faf3e7] disabled:opacity-50"
         >
           {M.cancel}
         </button>
@@ -72,7 +72,7 @@ export default function RejectDialog({ storeName, busy, onSubmit, onCancel }: Pr
           onClick={() => onSubmit(reason)}
           disabled={busy || !valid}
           aria-busy={busy}
-          className="flex-1 rounded-xl bg-[#7a0d0d] py-2.5 text-sm font-black text-white disabled:opacity-50"
+          className="flex-1 rounded-xl bg-[#7a0d0d] py-2.5 text-sm font-black text-white shadow-md transition hover:bg-[#5a0909] disabled:opacity-50"
         >
           {M.confirmReject}
         </button>

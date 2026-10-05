@@ -8,6 +8,7 @@ import ImageUploadField from './ImageUploadField'
 import SettingsCard from './SettingsCard'
 import { settingsMessages as M } from './messages'
 import type { NumberField, StringField, ToggleField } from './systemSettingsValidation'
+import PageHeader from '../shared/PageHeader'
 
 /** The landing editor is only downloaded when its tab is opened. */
 const LandingEditor = lazy(() => import('../landing/editor/LandingEditor'))
@@ -158,29 +159,21 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-full bg-[#f7f1e6] p-4 font-['Tajawal'] md:p-8" dir="rtl">
-      {/* Page header */}
-      <div className="relative mb-6 overflow-hidden rounded-[2rem] bg-gradient-to-l from-[#7a0d0d] via-[#6a0b0b] to-[#3d0606] p-6 text-white shadow-[0_25px_50px_-25px_rgba(122,13,13,0.7)] md:p-8">
-        <div className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:radial-gradient(circle,#fff_1.5px,transparent_1.5px)] [background-size:22px_22px]" />
-        <div className="pointer-events-none absolute -left-10 -top-16 h-56 w-56 rounded-full bg-[#e0a52e]/15 blur-3xl" />
-        <div className="relative flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-black md:text-3xl">{M.pageTitle}</h1>
-            <p className="mt-1.5 text-sm text-white/70">
-              {tab === 'system' ? M.subtitle : 'عدّل كل نصوص وصور وروابط الصفحة الرئيسية للموقع'}
-            </p>
-          </div>
-          {tab === 'landing' && (
-            <a
-              href="/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-xl bg-white/10 px-4 py-2 text-xs font-black text-white ring-1 ring-white/20 backdrop-blur transition hover:bg-white/20"
-            >
-              <ExternalLink size={14} aria-hidden="true" /> فتح الصفحة الرئيسية
-            </a>
-          )}
-        </div>
-        <div role="tablist" aria-label="أقسام الإعدادات" className="relative mt-6 inline-flex flex-wrap gap-1 rounded-2xl bg-black/20 p-1 ring-1 ring-white/10">
+      <PageHeader
+        title={M.pageTitle}
+        subtitle={tab === 'system' ? M.subtitle : 'عدّل كل نصوص وصور وروابط الصفحة الرئيسية للموقع'}
+        actions={tab === 'landing' && (
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-white/10 px-4 py-2.5 text-xs font-black text-white ring-1 ring-white/20 backdrop-blur transition hover:bg-white/20"
+          >
+            <ExternalLink size={14} aria-hidden="true" /> فتح الصفحة الرئيسية
+          </a>
+        )}
+      >
+        <div role="tablist" aria-label="أقسام الإعدادات" className="inline-flex flex-wrap gap-1 rounded-2xl bg-black/20 p-1 ring-1 ring-white/10">
           {tabs.map((t) => (
             <button
               key={t.key}
@@ -197,7 +190,7 @@ export default function SettingsPage() {
             </button>
           ))}
         </div>
-      </div>
+      </PageHeader>
 
       {tab === 'system' ? (
         <SystemSettings onToast={showToast} />

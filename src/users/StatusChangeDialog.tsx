@@ -32,12 +32,12 @@ export default function StatusChangeDialog({
 
   return (
     <DialogShell label={M.confirmTitle(name, next)} onDismiss={onCancel}>
-      <h2 className="mb-2 text-base font-black text-gray-800">{M.confirmTitle(name, next)}</h2>
+      <h2 className="mb-3 text-lg font-black text-[#7a0d0d]">{M.confirmTitle(name, next)}</h2>
       <p className="mb-4 text-sm text-gray-600">{M.confirmBody(next)}</p>
 
       {suspending && (
         <div className="mb-6 flex flex-col gap-1">
-          <label htmlFor={`${uid}-reason`} className="text-xs font-bold text-gray-500">
+          <label htmlFor={`${uid}-reason`} className="text-xs font-black text-[#6b4f3a]">
             {M.reasonLabel}
           </label>
           <textarea
@@ -49,13 +49,13 @@ export default function StatusChangeDialog({
             value={reason}
             onChange={(e) => setReason(e.target.value)}
             placeholder={M.reasonPlaceholder}
-            className="resize-none rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-[#7a0d0d]"
+            className="resize-none rounded-xl border border-[#e8dcc4] bg-white px-3.5 py-2.5 text-sm text-gray-800 shadow-sm outline-none transition focus:border-[#7a0d0d] focus:ring-4 focus:ring-[#7a0d0d]/10 disabled:opacity-50 outline-none focus:border-[#7a0d0d]"
           />
         </div>
       )}
 
       <div className="flex gap-3">
-        <button type="button" onClick={onCancel} disabled={busy} className="flex-1 rounded-xl border border-gray-200 py-2.5 text-sm font-bold text-gray-600 disabled:opacity-50">
+        <button type="button" onClick={onCancel} disabled={busy} className="flex-1 rounded-xl border border-[#e8dcc4] py-2.5 text-sm font-bold text-gray-600 transition hover:bg-[#faf3e7] disabled:opacity-50">
           {M.cancel}
         </button>
         <button

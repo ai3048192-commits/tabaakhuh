@@ -125,12 +125,12 @@ export default function AddCookModal({ onClose, onCreated }: { onClose: () => vo
         <Field label="البريد الإلكتروني" type="email" name="new-cook-email" autoComplete="off" value={v.email} onChange={set('email')} error={errors.email} icon={<Mail size={18} />} />
         <Field label="كلمة المرور" type="password" name="new-cook-secret" autoComplete="new-password" value={v.password} onChange={set('password')} error={errors.password} icon={<Lock size={18} />} placeholder="8 أحرف على الأقل" />
         <div className="flex flex-col gap-1">
-          <label htmlFor="ac-city" className="pr-1 text-[11px] font-bold text-gray-500">المدينة (اختياري)</label>
+          <label htmlFor="ac-city" className="pr-1 text-xs font-black text-[#6b4f3a]">المدينة (اختياري)</label>
           <select
             id="ac-city"
             value={v.city_id}
             onChange={(e) => set('city_id')(e.target.value)}
-            className="rounded-2xl border border-[#e8dfc9] bg-white py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-[#7a0d0d]/20"
+            className="rounded-xl border border-[#e8dcc4] bg-white px-4 py-3 text-sm text-gray-800 shadow-sm outline-none transition focus:border-[#7a0d0d] focus:ring-4 focus:ring-[#7a0d0d]/10 disabled:opacity-50"
           >
             <option value="">—</option>
             {cities.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -142,13 +142,13 @@ export default function AddCookModal({ onClose, onCreated }: { onClose: () => vo
       <p className="mt-6 mb-3 text-[11px] font-black uppercase tracking-widest text-gray-400">بيانات الطلب (اختيارية)</p>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="md:col-span-2 flex flex-col gap-1">
-          <label htmlFor="ac-bio" className="pr-1 text-[11px] font-bold text-gray-500">نبذة عن المطبخ</label>
+          <label htmlFor="ac-bio" className="pr-1 text-xs font-black text-[#6b4f3a]">نبذة عن المطبخ</label>
           <textarea
             id="ac-bio"
             value={p.bio}
             onChange={(e) => setProfile('bio')(e.target.value)}
             rows={3}
-            className="rounded-2xl border border-[#e8dfc9] bg-white py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-[#7a0d0d]/20"
+            className="rounded-xl border border-[#e8dcc4] bg-white px-4 py-3 text-sm text-gray-800 shadow-sm outline-none transition focus:border-[#7a0d0d] focus:ring-4 focus:ring-[#7a0d0d]/10 disabled:opacity-50"
           />
         </div>
         <Field label="العنوان التفصيلي" value={p.address_text} onChange={setProfile('address_text')} error={errors.address_text} icon={<MapPin size={18} />} />

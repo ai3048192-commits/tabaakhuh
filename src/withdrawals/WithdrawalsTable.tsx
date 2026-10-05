@@ -12,11 +12,11 @@ export default function WithdrawalsTable({
   rowState: (id: number) => RowStatus
   onAction: (id: number, kind: ActionKind) => void
 }) {
-  const th = 'px-3 py-2 text-right text-xs font-black text-gray-500'
+  const th = 'px-4 py-3 text-right text-xs font-bold text-gray-400'
   return (
-    <div className="overflow-x-auto rounded-2xl border border-gray-100 bg-white">
+    <div className="overflow-x-auto rounded-3xl bg-white shadow-[0_18px_40px_-30px_rgba(122,13,13,0.45)] ring-1 ring-[#efe3cc]">
       <table className="w-full min-w-[820px] border-collapse">
-        <thead className="border-b border-gray-100 bg-gray-50">
+        <thead className="bg-[#fffaf1]">
           <tr>
             <th scope="col" className={th}>{M.colId}</th>
             <th scope="col" className={th}>{M.colAmount}</th>

@@ -12,10 +12,10 @@ interface Props {
 /** Semantic table of the (filtered) cities. Scrolls inside its own container. */
 export default function CitiesTable({ cities, rowState, onEdit, onToggle }: Props) {
   return (
-    <div className="overflow-x-auto rounded-2xl border border-gray-100 bg-white">
+    <div className="overflow-x-auto rounded-3xl bg-white shadow-[0_18px_40px_-30px_rgba(122,13,13,0.45)] ring-1 ring-[#efe3cc]">
       <table className="w-full min-w-[34rem] text-right">
         <thead>
-          <tr className="border-b border-gray-200 bg-gray-50 text-xs font-bold text-gray-500">
+          <tr className="bg-[#fffaf1] text-xs font-bold text-gray-400">
             <th scope="col" className="px-4 py-3">
               {M.colNameAr}
             </th>

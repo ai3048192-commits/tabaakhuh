@@ -137,12 +137,12 @@ export default function AddDriverModal({
         <Field label="البريد الإلكتروني" type="email" name="new-driver-email" autoComplete="off" value={v.email} onChange={set('email')} error={errors.email} icon={<Mail size={18} />} />
         <Field label="كلمة المرور" type="password" name="new-driver-secret" autoComplete="new-password" value={v.password} onChange={set('password')} error={errors.password} icon={<Lock size={18} />} placeholder="8 أحرف على الأقل" />
         <div className="flex flex-col gap-1">
-          <label htmlFor="ad-city" className="pr-1 text-[11px] font-bold text-gray-500">المدينة (اختياري)</label>
+          <label htmlFor="ad-city" className="pr-1 text-xs font-black text-[#6b4f3a]">المدينة (اختياري)</label>
           <select
             id="ad-city"
             value={p.city_id}
             onChange={(e) => setProfile('city_id')(e.target.value)}
-            className="rounded-2xl border border-[#e8dfc9] bg-white py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-[#7a0d0d]/20"
+            className="rounded-xl border border-[#e8dcc4] bg-white px-4 py-3 text-sm text-gray-800 shadow-sm outline-none transition focus:border-[#7a0d0d] focus:ring-4 focus:ring-[#7a0d0d]/10 disabled:opacity-50"
           >
             <option value="">—</option>
             {cities.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -154,12 +154,12 @@ export default function AddDriverModal({
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Field label="تاريخ الميلاد" type="date" value={p.birth_date} onChange={setProfile('birth_date')} error={errors.birth_date} icon={<Calendar size={18} />} />
         <div className="flex flex-col gap-1">
-          <label htmlFor="ad-vtype" className="pr-1 text-[11px] font-bold text-gray-500">نوع المركبة</label>
+          <label htmlFor="ad-vtype" className="pr-1 text-xs font-black text-[#6b4f3a]">نوع المركبة</label>
           <select
             id="ad-vtype"
             value={p.vehicle_type}
             onChange={(e) => setProfile('vehicle_type')(e.target.value)}
-            className="rounded-2xl border border-[#e8dfc9] bg-white py-3 px-4 text-sm outline-none focus:ring-2 focus:ring-[#7a0d0d]/20"
+            className="rounded-xl border border-[#e8dcc4] bg-white px-4 py-3 text-sm text-gray-800 shadow-sm outline-none transition focus:border-[#7a0d0d] focus:ring-4 focus:ring-[#7a0d0d]/10 disabled:opacity-50"
           >
             <option value="">—</option>
             {VEHICLE_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}

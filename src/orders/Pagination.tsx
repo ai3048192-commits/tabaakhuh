@@ -23,7 +23,7 @@ export default function Pagination({
   const atStart = page <= 1
   const atEnd = page >= totalPages
   const btn =
-    'inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-gray-700 disabled:opacity-40'
+    'inline-flex items-center gap-1 rounded-xl border border-[#e8dcc4] bg-white px-3.5 py-2 text-xs font-black text-gray-700 transition hover:bg-[#faf3e7] disabled:opacity-40'
 
   return (
     <nav className="mt-4 flex flex-wrap items-center justify-between gap-3" aria-label={M.pageIndicator(page, totalPages)}>

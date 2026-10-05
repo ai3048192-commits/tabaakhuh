@@ -20,10 +20,10 @@ export default function OrderRow({
   order: Order
   onOpenDetail: (order: Order) => void
 }) {
-  const td = 'px-3 py-3 align-middle text-sm text-gray-700'
+  const td = 'whitespace-nowrap px-4 py-3.5 align-middle text-sm text-gray-700'
   const cookName = order.cook_name?.trim() || M.unknownCook
   return (
-    <tr className="border-b border-gray-100 last:border-0">
+    <tr className="border-t border-[#f3ead9] transition hover:bg-[#fffaf1]">
       <td className={`${td} font-bold text-gray-900`} dir="ltr">
         {order.order_number}
       </td>
@@ -69,7 +69,7 @@ export default function OrderRow({
           <button
             type="button"
             onClick={() => onOpenDetail(order)}
-            className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-bold text-[#7a0d0d]"
+            className="inline-flex items-center gap-1 rounded-xl border border-[#e8dcc4] bg-white px-3 py-2 text-xs font-black text-[#7a0d0d] transition hover:bg-[#faf3e7]"
           >
             <Eye size={13} aria-hidden="true" />
             {M.viewDetails}
@@ -77,7 +77,7 @@ export default function OrderRow({
           {needsDriverAssignment(order.status) && (
             <Link
               to={`/delivery?order=${order.id}`}
-              className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-bold text-[#7a0d0d]"
+              className="inline-flex items-center gap-1 rounded-xl border border-[#e8dcc4] bg-white px-3 py-2 text-xs font-black text-[#7a0d0d] transition hover:bg-[#faf3e7]"
             >
               <Truck size={13} aria-hidden="true" />
               {M.assignDriver}
