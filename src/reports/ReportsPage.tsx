@@ -71,7 +71,11 @@ export default function ReportsPage() {
         </div>
       )}
 
-      {q.status === 'ready' && r && (
+      {q.status === 'ready' && r && (() => {
+        // Days / cities with no activity at all are noise — show only rows that moved.
+        const series = r.series.filter((p) => p.revenue !== 0 || p.commission !== 0 || p.payouts !== 0)
+        const breakdown = r.breakdown.filter((b) => b.revenue !== 0 || b.orders !== 0)
+        return (
         <>
           <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <Kpi label={M.kpiRevenue} value={M.money(r.totals.revenue)} icon={TrendingUp} tone="bg-emerald-100 text-emerald-700" />
@@ -80,12 +84,15 @@ export default function ReportsPage() {
             <Kpi label={M.kpiOrders} value={M.count(r.totals.orders)} icon={ShoppingBag} tone="bg-sky-100 text-sky-700" />
           </div>
 
-          {r.series.length === 0 && r.breakdown.length === 0 ? (
+          {series.length === 0 && breakdown.length === 0 ? (
             <p className="rounded-3xl bg-white shadow-[0_18px_40px_-30px_rgba(122,13,13,0.45)] ring-1 ring-[#efe3cc] p-10 text-center text-sm font-bold text-gray-400">{M.empty}</p>
           ) : (
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               <section className="rounded-3xl bg-white shadow-[0_18px_40px_-30px_rgba(122,13,13,0.45)] ring-1 ring-[#efe3cc] p-5 md:p-6">
                 <h2 className="mb-5 flex items-center gap-2.5 font-black text-gray-900"><span className="grid h-9 w-9 place-items-center rounded-xl bg-[#7a0d0d]/[0.07] text-[#7a0d0d]"><TrendingUp size={17} aria-hidden="true" /></span>{M.seriesTitle}</h2>
+                {series.length === 0 ? (
+                  <p className="rounded-2xl border border-dashed border-[#efe3cc] bg-[#fffaf1] py-8 text-center text-xs font-bold text-gray-400">{M.noActivity}</p>
+                ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full border-collapse">
                     <thead className="bg-[#fffaf1]">
@@ -97,8 +104,8 @@ export default function ReportsPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {r.series.map((p) => (
-                        <tr key={p.period} className="border-b border-gray-50 last:border-0">
+                      {series.map((p) => (
+                        <tr key={p.period} className="transition hover:bg-[#fffaf1]">
                           <td className={td} dir="ltr">{p.period}</td>
                           <td className={td} dir="ltr">{M.money(p.revenue)}</td>
                           <td className={td} dir="ltr">{M.money(p.commission)}</td>
@@ -108,10 +115,14 @@ export default function ReportsPage() {
                     </tbody>
                   </table>
                 </div>
+                )}
               </section>
 
               <section className="rounded-3xl bg-white shadow-[0_18px_40px_-30px_rgba(122,13,13,0.45)] ring-1 ring-[#efe3cc] p-5 md:p-6">
                 <h2 className="mb-5 flex items-center gap-2.5 font-black text-gray-900"><span className="grid h-9 w-9 place-items-center rounded-xl bg-[#7a0d0d]/[0.07] text-[#7a0d0d]"><MapPin size={17} aria-hidden="true" /></span>{M.breakdownTitle}</h2>
+                {breakdown.length === 0 ? (
+                  <p className="rounded-2xl border border-dashed border-[#efe3cc] bg-[#fffaf1] py-8 text-center text-xs font-bold text-gray-400">{M.noActivity}</p>
+                ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full border-collapse">
                     <thead className="bg-[#fffaf1]">
@@ -122,8 +133,8 @@ export default function ReportsPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {r.breakdown.map((b) => (
-                        <tr key={b.label} className="border-b border-gray-50 last:border-0">
+                      {breakdown.map((b) => (
+                        <tr key={b.label} className="transition hover:bg-[#fffaf1]">
                           <td className={td}>{b.label}</td>
                           <td className={td} dir="ltr">{M.money(b.revenue)}</td>
                           <td className={td} dir="ltr">{M.count(b.orders)}</td>
@@ -132,11 +143,13 @@ export default function ReportsPage() {
                     </tbody>
                   </table>
                 </div>
+                )}
               </section>
             </div>
           )}
         </>
-      )}
+        )
+      })()}
     </div>
   )
 }

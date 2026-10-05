@@ -11,6 +11,7 @@ export const reportMessages = {
   listError: 'حدث خطأ ما. حاول مرة أخرى.',
   retry: 'إعادة المحاولة',
   empty: 'لا توجد بيانات في هذه الفترة.',
+  noActivity: 'مفيش حركة في الفترة دي.',
   fromAfterTo: 'تاريخ البداية يجب ألا يكون بعد تاريخ النهاية.',
 
   filterFrom: 'من تاريخ',

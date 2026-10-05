@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderAtReports } from '../helpers/harness'
 import { installFetchMock, type FetchMock } from '../helpers/fetchMock'
-import { fail, financialReportResponse } from '../helpers/fixtures'
+import { fail, financialReport, financialReportResponse } from '../helpers/fixtures'
 import { reportMessages as M } from '../../src/reports/messages'
 
 let fm: FetchMock
@@ -81,5 +81,28 @@ describe('Financial Reports (/admin/reports/financial)', () => {
     fm.reply(DEFAULT_KEY, { status: 401, json: fail('Unauthenticated.') })
     renderAtReports(fm, { admin: false })
     expect(await screen.findByText('صفحة تسجيل الدخول')).toBeInTheDocument()
+  })
+})
+
+describe('Financial reports — zero rows', () => {
+  it('hides periods and cities with no activity', async () => {
+    fm.reply(DEFAULT_KEY, {
+      json: financialReportResponse({
+        ...financialReport(),
+        series: [
+          { period: '2026-09-05', revenue: 0, commission: 0, payouts: 0 },
+          { period: '2026-09-06', revenue: 300, commission: 30, payouts: 0 },
+        ],
+        breakdown: [
+          { label: 'القاهرة', revenue: 300, orders: 2 },
+          { label: 'أسوان', revenue: 0, orders: 0 },
+        ],
+      }),
+    })
+    renderAtReports(fm)
+    expect(await screen.findByText('2026-09-06')).toBeInTheDocument()
+    expect(screen.queryByText('2026-09-05')).toBeNull()
+    expect(screen.getByText('القاهرة')).toBeInTheDocument()
+    expect(screen.queryByText('أسوان')).toBeNull()
   })
 })
