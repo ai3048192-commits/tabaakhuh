@@ -27,6 +27,50 @@ export async function fetchLandingContent(signal?: AbortSignal): Promise<LoadedL
   return toLoaded(await apiRequest<Wire>('/landing-content', { signal }))
 }
 
+/**
+ * The landing content is fetched as soon as the app boots on a public page
+ * (`main.tsx`), in parallel with the page's own code, and the page takes
+ * that same request instead of starting a second one after it mounts.
+ */
+let early: Promise<LoadedLanding> | null = null
+
+export function prefetchLandingContent(): void {
+  if (early) return
+  early = fetchLandingContent()
+  early.catch(() => { /* the page falls back to its own fetch */ })
+}
+
+/** Hands over the early request (once), or starts a fresh one. */
+export function takeLandingContent(signal?: AbortSignal): Promise<LoadedLanding> {
+  const p = early
+  early = null
+  return p ?? fetchLandingContent(signal)
+}
+
+/**
+ * The last content this browser saw, so a repeat visit paints immediately
+ * and refreshes in the background. Best-effort: any storage failure just
+ * means no cache.
+ */
+const CACHE_KEY = 'tabbakha.landingCache'
+
+export function readCachedLanding(): LandingContent | null {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY)
+    return raw ? mergeWithDefaults(DEFAULT_LANDING_CONTENT, JSON.parse(raw)) : null
+  } catch {
+    return null
+  }
+}
+
+export function writeCachedLanding(content: LandingContent): void {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(content))
+  } catch {
+    /* storage full or blocked — fine */
+  }
+}
+
 /** `PUT /admin/landing-content` — replaces the whole document. */
 export async function saveLandingContent(content: LandingContent): Promise<LoadedLanding> {
   return toLoaded(await authedRequest<Wire>('/admin/landing-content', { method: 'PUT', body: { content } }))
