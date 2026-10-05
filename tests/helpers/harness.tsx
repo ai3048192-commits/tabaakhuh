@@ -325,9 +325,9 @@ export function renderAtWithdrawals(
 /** Render the real `UsersPage` at `/users` in an already-signed-in admin session. */
 export function renderAtUsers(
   fm: FetchMock,
-  opts: { seedMe?: boolean; admin?: boolean } = {},
+  opts: { seedMe?: boolean; admin?: boolean; scope?: 'all' | 'customer' | 'cook' | 'driver' } = {},
 ) {
-  const { seedMe = true, admin = true } = opts
+  const { seedMe = true, admin = true, scope = 'all' } = opts
   const who = admin ? adminUser : { ...adminUser, role: 'customer' as const }
   localStorage.setItem(STORAGE_KEYS.token, 'tok-admin')
   localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(who))
@@ -342,7 +342,7 @@ export function renderAtUsers(
             path="/*"
             element={
               <RequireAdmin>
-                <UsersPage />
+                <UsersPage scope={scope} />
               </RequireAdmin>
             }
           />

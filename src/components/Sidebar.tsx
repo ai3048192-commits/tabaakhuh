@@ -52,11 +52,11 @@ export default function Sidebar({ isOpen, onClose }: { isOpen: boolean, onClose:
         </div>
 
         {/* القائمة — مضغوطة بحيث تكفي الشاشة من غير اسكرول (والاسكرول احتياطي للشاشات القصيرة جدًا) */}
-        <nav className="sidebar-scroll relative min-h-0 flex-1 space-y-3 overflow-y-auto px-3 pb-3 short:space-y-1.5">
+        <nav className="sidebar-scroll relative min-h-0 flex-1 space-y-3 overflow-y-auto px-3 pb-3 short:space-y-1 tiny:space-y-0.5">
           {menuGroups.map((group, gi) => (
             <div key={group.title}>
               <p className="mb-1 px-3 text-[10px] font-black tracking-wider text-white/35 short:hidden">{group.title}</p>
-              {gi > 0 && <div className="mx-3 mb-1.5 hidden h-px bg-white/10 short:block" aria-hidden="true" />}
+              {gi > 0 && <div className="mx-3 mb-1 hidden h-px bg-white/10 short:block tiny:hidden" aria-hidden="true" />}
               <div className="space-y-0.5">
                 {group.items.map((item) => {
                   const Icon = item.icon;
@@ -67,14 +67,14 @@ export default function Sidebar({ isOpen, onClose }: { isOpen: boolean, onClose:
                       to={item.path}
                       onClick={onClose}
                       aria-current={isActive ? 'page' : undefined}
-                      className={`group relative flex items-center gap-2.5 rounded-xl px-2.5 py-1.5 text-[13px] font-bold transition-all duration-200 short:py-1 ${
+                      className={`group relative flex items-center gap-2.5 rounded-xl px-2.5 py-1.5 text-[13px] font-bold transition-all duration-200 short:py-[3px] tiny:py-0.5 ${
                         isActive
                           ? 'bg-white text-[#7a0d0d] shadow-lg shadow-black/20'
                           : 'text-white/70 hover:bg-white/10 hover:text-white'
                       }`}
                     >
                       <span
-                        className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg transition ${
+                        className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg transition tiny:h-6 tiny:w-6 ${
                           isActive ? 'bg-[#7a0d0d] text-[#ffd27a]' : 'bg-white/5 text-white/60 group-hover:text-[#ffd27a]'
                         }`}
                       >

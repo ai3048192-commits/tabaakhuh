@@ -1,6 +1,6 @@
 /** Arabic, RTL-first. Provisional copy. */
 export const deliveryMessages = {
-  pageTitle: 'إدارة الدليفري',
+  pageTitle: 'متابعة التوصيل',
   provisionalNote:
     'ملاحظة: عقد هذه الشاشة مبدئي وبانتظار مواصفة عمليات نهائية؛ التحديث يدوي مؤقتًا.',
   refresh: 'تحديث',

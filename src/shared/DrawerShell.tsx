@@ -25,7 +25,7 @@ export default function DrawerShell({
   onDismiss: () => void
   children: ReactNode
   side?: 'left' | 'right'
-  width?: 'sm' | 'md'
+  width?: 'sm' | 'md' | 'lg'
 }) {
   const boxRef = useRef<HTMLDivElement>(null)
   const restoreRef = useRef<Element | null>(null)
@@ -85,7 +85,7 @@ export default function DrawerShell({
           "absolute inset-y-0 flex h-full w-full flex-col bg-white shadow-2xl font-['Tajawal']",
           'transition-transform duration-300 ease-out',
           side === 'left' ? 'left-0' : 'right-0',
-          width === 'md' ? 'max-w-md' : 'max-w-sm',
+          width === 'lg' ? 'max-w-2xl' : width === 'md' ? 'max-w-md' : 'max-w-sm',
           shown ? 'translate-x-0' : closed,
         ].join(' ')}
       >

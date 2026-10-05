@@ -4,6 +4,15 @@ import type { UserRole, UserStatus } from './types'
 export const userMessages = {
   pageTitle: 'إدارة المستخدمين',
   subtitle: 'كل حسابات المنصة: ابحث، راجع، وعلّق أو فعّل الحسابات.',
+
+  /** Per-screen titles: `/users` (all), `/customers`, `/cooks`, `/drivers`. */
+  scope: {
+    all: { title: 'كل الحسابات', subtitle: 'كل حسابات المنصة: عملاء وطباخات وسائقين ومديرين.', unit: 'حساب' },
+    customer: { title: 'إدارة العملاء', subtitle: 'كل العملاء: بياناتهم، بقالهم قد إيه، وطلباتهم وفلوسهم.', unit: 'عميل' },
+    cook: { title: 'إدارة الطباخات', subtitle: 'الطباخات المعتمدات: بيانات التسجيل، الطلبات، والأرباح.', unit: 'طباخة' },
+    driver: { title: 'إدارة الدليفري', subtitle: 'السائقين المعتمدين: بيانات التسجيل، التوصيلات، والأرباح.', unit: 'سائق' },
+  },
+  viewProfile: 'عرض الملف',
   refresh: 'تحديث',
   loading: 'جارٍ تحميل المستخدمين…',
   listError: 'حدث خطأ ما. حاول مرة أخرى.',
@@ -22,7 +31,7 @@ export const userMessages = {
   colContact: 'التواصل',
   colRole: 'الدور',
   colStatus: 'الحالة',
-  colJoined: 'تاريخ الانضمام',
+  colJoined: 'على التطبيق من',
   colActions: 'إجراءات',
 
   view: 'عرض',

@@ -9,8 +9,8 @@ import { reviewMessages } from '../review/messages'
 export const driverMessages = {
   ...reviewMessages,
 
-  pageTitle: 'طلبات السائقين',
-  subtitle: 'راجع طلبات انضمام السائقين ووافق أو ارفض.',
+  pageTitle: 'طلبات الدليفري',
+  subtitle: 'راجع طلبات انضمام السائقين. اللي توافق عليه بينتقل لإدارة الدليفري.',
   awaitingCount: (n: number) => `${n} طلب في انتظار المراجعة`,
   loading: 'جارٍ تحميل الطلبات…',
   queueError: 'حصل خطأ أثناء تحميل الطلبات.',
@@ -63,7 +63,7 @@ export const driverMessages = {
   rejectCounter: (n: number) => `${n} / 1000`,
   confirmReject: 'تأكيد الرفض',
 
-  approvedToast: 'تمت الموافقة على الطلب.',
+  approvedToast: 'تمت الموافقة على الطلب — السائق انتقل لإدارة الدليفري.',
   rejectedToast: 'تم رفض الطلب.',
   noLongerPendingToast: 'لم يعد هذا الطلب في انتظار المراجعة.',
   notFoundToast: 'تعذّر العثور على الطلب.',

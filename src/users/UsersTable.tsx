@@ -1,6 +1,7 @@
 import { Eye, Ban, ShieldCheck, UserCheck, FileWarning } from 'lucide-react'
 import { warningMessages as WM } from '../warnings/messages'
 import { userMessages as M } from './messages'
+import { tenure } from './tenure'
 import type { AdminUser, UserStatus } from './types'
 
 function StatusBadge({ status }: { status: UserStatus }) {
@@ -24,7 +25,10 @@ export default function UsersTable({
   onView,
   onStatus,
   onWarn,
+  hideRole = false,
 }: {
+  /** Role-scoped screens: every row has the same role, so the column is dropped. */
+  hideRole?: boolean
   items: AdminUser[]
   busyId: number | null
   /** The signed-in admin — their own row can't be suspended from here. */
@@ -37,7 +41,7 @@ export default function UsersTable({
   const th = 'px-4 py-3 text-right text-xs font-bold text-gray-400'
   const td = 'px-4 py-3.5 align-middle text-sm text-gray-700'
   const iconBtn =
-    'rounded-lg border border-gray-200 bg-white p-1.5 text-gray-500 hover:text-[#7a0d0d] disabled:opacity-40'
+    'grid h-8 w-8 place-items-center rounded-lg border border-[#e8dcc4] bg-white text-gray-500 transition hover:bg-[#faf3e7] hover:text-[#7a0d0d] disabled:opacity-40'
 
   return (
     <div className="overflow-x-auto rounded-3xl bg-white shadow-[0_18px_40px_-30px_rgba(122,13,13,0.45)] ring-1 ring-[#efe3cc]">
@@ -47,7 +51,7 @@ export default function UsersTable({
             <th scope="col" className={th}>{M.colId}</th>
             <th scope="col" className={th}>{M.colName}</th>
             <th scope="col" className={th}>{M.colContact}</th>
-            <th scope="col" className={th}>{M.colRole}</th>
+            {!hideRole && <th scope="col" className={th}>{M.colRole}</th>}
             <th scope="col" className={th}>{M.colStatus}</th>
             <th scope="col" className={th}>{M.colJoined}</th>
             <th scope="col" className={th}>{M.colActions}</th>
@@ -61,15 +65,23 @@ export default function UsersTable({
               <tr key={u.id} className="border-t border-[#f3ead9] transition hover:bg-[#fffaf1]">
                 <td className={`${td} font-bold text-gray-900`} dir="ltr">{u.id}</td>
                 <td className={`${td} font-bold text-gray-900`}>
-                  {`${u.first_name} ${u.last_name}`.trim()}
+                  <button type="button" onClick={() => onView(u)} className="flex items-center gap-2.5 text-right hover:text-[#7a0d0d]">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#7a0d0d] text-xs font-black text-[#ffd27a]" aria-hidden="true">
+                      {u.first_name?.trim().charAt(0) || '؟'}
+                    </span>
+                    {`${u.first_name} ${u.last_name}`.trim()}
+                  </button>
                 </td>
                 <td className={td}>
                   <span dir="ltr" className="block">{u.email}</span>
                   <span dir="ltr" className="block text-xs text-gray-400">{u.phone}</span>
                 </td>
-                <td className={td}>{M.roleLabels[u.role]}</td>
+                {!hideRole && <td className={td}>{M.roleLabels[u.role]}</td>}
                 <td className={td}><StatusBadge status={u.status} /></td>
-                <td className={td} dir="ltr">{u.created_at?.slice(0, 10) ?? '—'}</td>
+                <td className={td}>
+                  <span className="block font-bold text-gray-800">{tenure(u.created_at) ?? '—'}</span>
+                  <span className="block text-xs text-gray-400" dir="ltr">{u.created_at?.slice(0, 10) ?? ''}</span>
+                </td>
                 <td className={td}>
                   <div className="flex gap-2">
                     <button type="button" className={iconBtn} aria-label={M.view} onClick={() => onView(u)}>

@@ -12,8 +12,8 @@ import { reviewMessages } from '../review/messages'
 export const cookMessages = {
   ...reviewMessages,
 
-  pageTitle: 'طلبات الطهاة',
-  subtitle: 'راجع طلبات انضمام الطباخات ووافق أو ارفض.',
+  pageTitle: 'طلبات الطباخات',
+  subtitle: 'راجع طلبات انضمام الطباخات. اللي توافق عليها بتنتقل لإدارة الطباخات.',
   awaitingCount: (n: number) => `${n} طلب في انتظار المراجعة`,
   loading: 'جارٍ تحميل الطلبات…',
   queueError: 'حصل خطأ أثناء تحميل الطلبات.',
@@ -68,7 +68,7 @@ export const cookMessages = {
   rejectCounter: (n: number) => `${n} / 1000`,
   confirmReject: 'تأكيد الرفض',
 
-  approvedToast: (store: string) => `تمت الموافقة على «${store}».`,
+  approvedToast: (store: string) => `تمت الموافقة على «${store}» — انتقلت لإدارة الطباخات.`,
   rejectedToast: (store: string) => `تم رفض طلب «${store}».`,
   noLongerPendingToast: 'لم يعد هذا الطلب في انتظار المراجعة.',
   notFoundToast: 'تعذّر العثور على الطلب.',

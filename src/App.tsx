@@ -77,10 +77,14 @@ function AdminLayout() {
           <Routes>
             <Route path="/dashboard" element={<OverviewPage onQuickAction={setModalType} />} />
             <Route path="/users" element={<UsersPage />} />
+            <Route path="/customers" element={<UsersPage key="customer" scope="customer" />} />
             <Route path="/orders" element={<OrdersPage />} />
             <Route path="/withdrawals" element={<WithdrawalsPage />} />
-            <Route path="/cooks" element={<CookApplicationsPage />} />
-            <Route path="/drivers" element={<DriverApplicationsPage />} />
+            {/* Approved cooks / drivers (management) vs. applicants (review queues). */}
+            <Route path="/cooks" element={<UsersPage key="cook" scope="cook" />} />
+            <Route path="/drivers" element={<UsersPage key="driver" scope="driver" />} />
+            <Route path="/cook-applications" element={<CookApplicationsPage />} />
+            <Route path="/driver-applications" element={<DriverApplicationsPage />} />
             <Route path="/cities" element={<CitiesPage />} />
             <Route path="/delivery-pricing" element={<DeliveryPricingPage />} />
             <Route path="/reports" element={<ReportsPage />} />

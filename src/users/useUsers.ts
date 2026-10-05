@@ -40,8 +40,8 @@ export interface UseUsers {
  * pagination, plus the status-change flow. Wired to the PROVISIONAL
  * `/admin/users*` contract.
  */
-export function useUsers(): UseUsers {
-  const [filters, setFilters] = useState<UsersFilters>(EMPTY_FILTERS)
+export function useUsers({ role, approval }: { role?: UsersFilters['role']; approval?: 'approved' } = {}): UseUsers {
+  const [filters, setFilters] = useState<UsersFilters>(() => ({ ...EMPTY_FILTERS, role: role ?? 'all' }))
   const [pageNum, setPageNum] = useState(1)
   const [pageData, setPageData] = useState<UsersPage | null>(null)
   const [status, setStatus] = useState<UsersScreenStatus>('loading')
@@ -63,7 +63,7 @@ export function useUsers(): UseUsers {
   const load = useCallback(async () => {
     if (!hasPageRef.current) setStatus('loading')
     try {
-      const data = await listUsers({ filters, page: pageNum })
+      const data = await listUsers({ filters, page: pageNum, approval })
       setPageData(data)
       setStatus('ready')
     } catch {
@@ -74,7 +74,7 @@ export function useUsers(): UseUsers {
         setStatus('error')
       }
     }
-  }, [filters, pageNum, showToast])
+  }, [filters, pageNum, approval, showToast])
 
   // Debounce the search term; role/status apply immediately.
   const debounced = useRef<number | undefined>(undefined)

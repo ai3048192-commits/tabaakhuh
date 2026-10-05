@@ -1,7 +1,8 @@
 import {
   LayoutGrid, Users, ShoppingBag, ChefHat,
   TrendingUp, MessageSquareWarning, Settings,
-  Bike, MapPin, Wallet, AlertTriangle, Truck, LayoutTemplate, type LucideIcon,
+  Bike, MapPin, Wallet, AlertTriangle, Truck, LayoutTemplate, UserRound, ClipboardList, ClipboardCheck,
+  Navigation, type LucideIcon,
 } from 'lucide-react';
 
 interface MenuItem { name: string; icon: LucideIcon; path: string }
@@ -13,15 +14,23 @@ export const menuGroups: { title: string; items: MenuItem[] }[] = [
     items: [
       { name: 'لوحة التحكم', icon: LayoutGrid, path: '/dashboard' },
       { name: 'مراقبة الطلبات', icon: ShoppingBag, path: '/orders' },
-      { name: 'إدارة الدليفري', icon: Truck, path: '/delivery' },
+      { name: 'متابعة التوصيل', icon: Navigation, path: '/delivery' },
     ],
   },
   {
     title: 'الحسابات',
     items: [
-      { name: 'إدارة المستخدمين', icon: Users, path: '/users' },
+      { name: 'إدارة العملاء', icon: UserRound, path: '/customers' },
       { name: 'إدارة الطباخات', icon: ChefHat, path: '/cooks' },
-      { name: 'طلبات السائقين', icon: Bike, path: '/drivers' },
+      { name: 'إدارة الدليفري', icon: Bike, path: '/drivers' },
+      { name: 'كل الحسابات', icon: Users, path: '/users' },
+    ],
+  },
+  {
+    title: 'طلبات الانضمام',
+    items: [
+      { name: 'طلبات الطباخات', icon: ClipboardList, path: '/cook-applications' },
+      { name: 'طلبات الدليفري', icon: ClipboardCheck, path: '/driver-applications' },
     ],
   },
   {

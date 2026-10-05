@@ -5,21 +5,27 @@ import { displayName } from '../auth/types'
 import IssueWarningDialog from '../warnings/IssueWarningDialog'
 import { warningMessages as WM } from '../warnings/messages'
 import { fullName } from '../warnings/warningDocument'
-import type { AdminUser } from './types'
+import type { AdminUser, UsersScope } from './types'
 import { useUsers } from './useUsers'
 import UsersFilters from './UsersFilters'
 import UsersTable from './UsersTable'
-import UserDetailDialog from './UserDetailDialog'
+import AccountDrawer from './AccountDrawer'
 import StatusChangeDialog from './StatusChangeDialog'
 import { userMessages as M } from './messages'
 import PageHeader from '../shared/PageHeader'
 import { bannerBtnLight } from '../shared/ui'
 
-/** `/users` — user directory: filter by role/status, search, paginate, view, change status. */
-export default function UsersPage() {
-  const q = useUsers()
+/**
+ * The account directory. `scope="all"` is `/users` (every role, with a role
+ * filter); `customer` / `cook` / `driver` are the per-role management screens —
+ * cooks and drivers there are approved accounts only, so an applicant shows
+ * up here the moment they're approved. "عرض" opens the account page.
+ */
+export default function UsersPage({ scope = 'all' }: { scope?: UsersScope }) {
+  const q = useUsers(scope === 'all' ? {} : { role: scope, approval: scope === 'customer' ? undefined : 'approved' })
   const { account } = useAuth()
-  const filtered = q.filters.role !== 'all' || q.filters.status !== 'all' || q.filters.q.trim() !== ''
+  const S = M.scope[scope]
+  const filtered = (scope === 'all' && q.filters.role !== 'all') || q.filters.status !== 'all' || q.filters.q.trim() !== ''
   const items = q.page?.items ?? []
 
   // Warnings are generated entirely client-side (no backend record), so their
@@ -38,8 +44,8 @@ export default function UsersPage() {
   return (
     <div className="min-h-full bg-[#f7f1e6] p-4 font-['Tajawal'] md:p-8" dir="rtl">
       <PageHeader
-        title={M.pageTitle}
-        subtitle={M.subtitle}
+        title={S.title}
+        subtitle={q.status === 'ready' && q.page ? `${S.subtitle} · ${q.page.total} ${S.unit}` : S.subtitle}
         actions={q.status === 'ready' && (
           <button type="button" onClick={q.refresh} className={bannerBtnLight}>
             <RefreshCw size={14} aria-hidden="true" />
@@ -48,7 +54,7 @@ export default function UsersPage() {
         )}
       />
 
-      <UsersFilters filters={q.filters} onRole={q.setRole} onStatus={q.setStatusFilter} onQuery={q.setQuery} />
+      <UsersFilters filters={q.filters} onRole={q.setRole} onStatus={q.setStatusFilter} onQuery={q.setQuery} hideRole={scope !== 'all'} />
 
       {q.status === 'loading' && <p className="text-sm text-gray-500">{M.loading}</p>}
 
@@ -67,10 +73,10 @@ export default function UsersPage() {
 
       {q.status === 'ready' && items.length > 0 && q.page && (
         <>
-          <UsersTable items={items} busyId={q.busyId} currentUserId={account?.id ?? null} onView={q.openDetail} onStatus={q.askStatus} onWarn={setWarning} />
+          <UsersTable items={items} busyId={q.busyId} currentUserId={account?.id ?? null} onView={q.openDetail} onStatus={q.askStatus} onWarn={setWarning} hideRole={scope !== 'all'} />
           <nav className="mt-4 flex items-center justify-between gap-3" aria-label={`صفحة ${q.page.page} من ${q.totalPages}`}>
             <p className="text-xs font-bold text-gray-500" dir="rtl">
-              صفحة {q.page.page} من {q.totalPages} · {q.page.total} مستخدم
+              صفحة {q.page.page} من {q.totalPages} · {q.page.total} {S.unit}
             </p>
             <div className="flex items-center gap-2">
               <button type="button" aria-label="الصفحة السابقة" disabled={q.page.page <= 1} onClick={() => q.setPage(q.page!.page - 1)} className="inline-flex items-center gap-1 rounded-xl border border-[#e8dcc4] bg-white px-3.5 py-2 text-xs font-black text-gray-700 transition hover:bg-[#faf3e7] disabled:opacity-40">
@@ -103,7 +109,7 @@ export default function UsersPage() {
           onCancel={() => setWarning(null)}
         />
       )}
-      {q.detail && <UserDetailDialog user={q.detail} onClose={q.closeDetail} />}
+      {q.detail && <AccountDrawer user={q.detail} onClose={q.closeDetail} />}
       {q.confirming && (
         <StatusChangeDialog
           user={q.confirming.user}
