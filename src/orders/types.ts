@@ -26,6 +26,29 @@ export interface OrderItem {
   unit_price: number
   quantity: number
   line_total: number
+  /** Snapshot of the size picked at order time; absent on older payloads. */
+  size?: { id: number; name: string; price: number } | null
+  /** Snapshot of the add-ons picked at order time (already in `unit_price`). */
+  add_ons?: { name: string; price: number }[]
+}
+
+/** A custom order's quote from the cook. */
+export interface OrderQuote {
+  id: number
+  message: string | null
+  price: number
+  /** ISO 8601. */
+  proposed_delivery_date: string | null
+  status: string
+}
+
+/** One step in the order's status timeline. */
+export interface OrderStatusHistoryEntry {
+  status: OrderStatus
+  changed_by_user_id: number | null
+  note: string | null
+  /** ISO 8601. */
+  created_at: string
 }
 
 /** Extra information attached to a custom order (`type === 'custom'`). Any field may be null. */
@@ -62,10 +85,26 @@ export interface Order {
   cancel_reason: string | null
   items: OrderItem[]
   custom_details: CustomOrderDetails | null
-  /** Always `null` on this screen — never read. */
-  quote: unknown
-  /** Always `[]` on this screen — never read. */
-  status_history: unknown[]
+  /** Only on `GET /admin/orders/{id}`; `null` in the list. */
+  quote: OrderQuote | null
+  /** Only on `GET /admin/orders/{id}`; `[]` in the list. */
+  status_history: OrderStatusHistoryEntry[]
+
+  // --- Filled in by `GET /admin/orders/{id}` (null/absent in the list) ---
+  /** ISO 8601 — when the order was placed. */
+  created_at?: string | null
+  /** `delivery` or `pickup` (collected from the kitchen). */
+  delivery_type?: string | null
+  customer_name?: string | null
+  customer_phone?: string | null
+  cook_phone?: string | null
+  cook_address_text?: string | null
+  driver_id?: number | null
+  driver_name?: string | null
+  driver_phone?: string | null
+  delivery_address_text?: string | null
+  delivery_address_lat?: number | null
+  delivery_address_lng?: number | null
 }
 
 /** The paginated `data` envelope. `per_page` is documented 20; read it, never hard-code. */
@@ -101,7 +140,7 @@ export type OrdersStatus = 'loading' | 'ready' | 'error'
 /** Which explicit empty state (if any) to show — see data-model.md §6. */
 export type EmptyKind = 'none' | 'unfiltered' | 'filtered' | 'beyond-range'
 
-/** The open order-detail modal, or `null` when none. Holds a snapshot of the order. */
+/** The open order-detail panel, or `null` when none. Holds the list's snapshot of the order. */
 export type DetailState = { order: Order } | null
 
 /** Field-level messages from a 422 (keyed to the offending filter control). */

@@ -62,7 +62,7 @@ describe('Orders Oversight — URL-synced state (FR-036, SC-017)', () => {
     expect(fm.count(`GET /admin/orders?placed_from=${F}&page=1`)).toBe(1)
   })
 
-  it('opening the detail does not issue any request or change the query', async () => {
+  it('opening the detail only fetches that order — the list query is untouched', async () => {
     const user = userEvent.setup()
     fm.reply(`GET /admin/orders?placed_from=${F}&page=1`, {
       json: ordersPage([order({ id: 9 })], { total: 1 }),
@@ -73,6 +73,6 @@ describe('Orders Oversight — URL-synced state (FR-036, SC-017)', () => {
 
     await user.click(screen.getByRole('button', { name: new RegExp(M.viewDetails) }))
     await screen.findByRole('dialog')
-    expect(fm.calls.length).toBe(before)
+    expect(fm.calls.slice(before).map((c) => `${c.method} ${c.path}`)).toEqual(['GET /admin/orders/9'])
   })
 })
