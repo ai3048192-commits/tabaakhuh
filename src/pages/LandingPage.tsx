@@ -148,9 +148,9 @@ function PhoneMockup({ c }: { c: LandingContent }) {
     <div className="relative flex origin-center scale-[0.82] justify-center sm:scale-90 lg:scale-100 lg:pl-16 xl:pl-24">
       {/* glow blobs */}
       <div className="pointer-events-none absolute -inset-16 -z-10">
-        <div className="lp-glow absolute right-6 top-1/3 h-48 w-48 rounded-full bg-[#b68614] opacity-25 blur-3xl" />
-        <div className="lp-glow absolute bottom-10 left-0 h-56 w-56 rounded-full bg-[#8f3410] opacity-25 blur-3xl" />
-        <div className="absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#e0a52e] opacity-10 blur-[90px]" />
+        <div className="lp-orb lp-glow absolute right-6 top-1/3 h-48 w-48 rounded-full bg-[#b68614] opacity-25 blur-3xl" />
+        <div className="lp-orb lp-glow absolute bottom-10 left-0 h-56 w-56 rounded-full bg-[#8f3410] opacity-25 blur-3xl" />
+        <div className="lp-orb absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#e0a52e] opacity-10 blur-[90px]" />
       </div>
 
       <div className="lp-phone-tilt relative">
@@ -468,10 +468,10 @@ export default function LandingPage({ view = "home" }: { view?: "home" | "contac
   }
 
   return (
-    <div dir="rtl" className="min-h-screen overflow-x-hidden bg-[#faf3e7] text-[#3a2a1a]">
+    <div dir="rtl" className="lp-root min-h-screen overflow-x-hidden bg-[#faf3e7] text-[#3a2a1a]">
       {/* ============ HEADER ============ */}
       <header className="fixed inset-x-0 top-0 z-50 px-4 pt-6 sm:px-8" dir="rtl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between rounded-full bg-[#2a0407]/80 px-7 py-4 shadow-[0_25px_60px_rgba(0,0,0,0.8)] ring-1 ring-white/10 backdrop-blur-3xl transition-all duration-300">
+        <div className="mx-auto flex max-w-7xl items-center justify-between rounded-full bg-[#2a0407]/95 px-7 py-4 lg:bg-[#2a0407]/80 shadow-[0_25px_60px_rgba(0,0,0,0.8)] ring-1 ring-white/10 backdrop-blur-3xl transition-all duration-300">
           <a href={isContact ? "/" : "#home"} className="group flex cursor-pointer items-center">
             <div className="relative rounded-full p-1.5 transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110">
               <img src={logo} alt={c.brand.name} className="h-10 w-auto object-contain drop-shadow-md md:h-11" />
@@ -577,8 +577,8 @@ export default function LandingPage({ view = "home" }: { view?: "home" | "contac
         className="relative overflow-hidden bg-[#180204] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#4a080f] via-[#210205] to-[#120102]"
       >
         <div className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:radial-gradient(circle,#fff_1.5px,transparent_1.5px)] [background-size:32px_32px]" />
-        <div className="lp-glow pointer-events-none absolute -left-32 top-10 h-[35rem] w-[35rem] animate-pulse rounded-full bg-[#f4c752]/15 blur-[150px]" />
-        <div className="lp-glow pointer-events-none absolute right-[-10%] top-1/3 h-[30rem] w-[30rem] rounded-full bg-[#e0a52e]/10 blur-[130px]" />
+        <div className="lp-orb lp-glow pointer-events-none absolute -left-32 top-10 h-[35rem] w-[35rem] animate-pulse rounded-full bg-[#f4c752]/15 blur-[150px]" />
+        <div className="lp-orb lp-glow pointer-events-none absolute right-[-10%] top-1/3 h-[30rem] w-[30rem] rounded-full bg-[#e0a52e]/10 blur-[130px]" />
 
         {c.hero.enabled ? (
           <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-6 pb-28 pt-44 md:grid-cols-2 md:gap-16 md:pb-36 md:pt-48">
@@ -631,7 +631,7 @@ export default function LandingPage({ view = "home" }: { view?: "home" | "contac
             </div>
 
             <div className="relative mx-auto w-full max-w-md">
-              <div className="lp-glow absolute inset-4 -z-10 animate-pulse rounded-full bg-[#ffd27a]/25 blur-3xl" />
+              <div className="lp-orb lp-glow absolute inset-4 -z-10 animate-pulse rounded-full bg-[#ffd27a]/25 blur-3xl" />
               <div className="relative overflow-hidden rounded-[3.25rem] bg-gradient-to-b from-white/20 via-white/5 to-transparent p-4 shadow-[0_70px_120px_-25px_rgba(0,0,0,0.9)] ring-1 ring-white/20 backdrop-blur-2xl">
                 <img
                   src={heroImage}
@@ -665,7 +665,7 @@ export default function LandingPage({ view = "home" }: { view?: "home" | "contac
       {/* ============ WHY ============ */}
       {c.why.enabled && (
         <section id="why" className="relative overflow-hidden bg-[#f1dcc0]">
-          <div className="pointer-events-none absolute right-5 top-1/2 h-72 w-72 rounded-full bg-white/40 blur-[90px] md:right-10 md:h-96 md:w-96 md:blur-[120px]" />
+          <div className="lp-orb pointer-events-none absolute right-5 top-1/2 h-72 w-72 rounded-full bg-white/40 blur-[90px] md:right-10 md:h-96 md:w-96 md:blur-[120px]" />
 
           <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 md:py-28">
             <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
@@ -747,8 +747,8 @@ export default function LandingPage({ view = "home" }: { view?: "home" | "contac
       {/* ============ FEATURES ============ */}
       {c.features.enabled && (
         <section className="relative overflow-hidden bg-[#faf3e7]">
-          <div className="pointer-events-none absolute -right-20 top-1/4 h-72 w-72 rounded-full bg-[#ffd27a]/20 blur-[100px]" />
-          <div className="pointer-events-none absolute -left-20 bottom-10 h-72 w-72 rounded-full bg-[#7a0d0d]/10 blur-[100px]" />
+          <div className="lp-orb pointer-events-none absolute -right-20 top-1/4 h-72 w-72 rounded-full bg-[#ffd27a]/20 blur-[100px]" />
+          <div className="lp-orb pointer-events-none absolute -left-20 bottom-10 h-72 w-72 rounded-full bg-[#7a0d0d]/10 blur-[100px]" />
 
           <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24">
             {c.features.cards.length > 0 && (
@@ -808,7 +808,7 @@ export default function LandingPage({ view = "home" }: { view?: "home" | "contac
       {/* ============ HOW ============ */}
       {c.how.enabled && (
         <section id="how" className="relative overflow-hidden bg-[#faf3e7] pb-16 pt-10">
-          <div className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#e0a52e]/5 blur-[100px]" />
+          <div className="lp-orb pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#e0a52e]/5 blur-[100px]" />
 
           <div className="relative mx-auto max-w-7xl px-5">
             <SectionHeading kicker={c.how.kicker} title={c.how.title} />
@@ -923,8 +923,8 @@ export default function LandingPage({ view = "home" }: { view?: "home" | "contac
           className="relative overflow-hidden bg-[radial-gradient(130%_120%_at_50%_100%,#571212_0%,#3d0a0a_55%,#320808_100%)]"
         >
           <div className="pointer-events-none absolute inset-0 opacity-[0.08] [background-image:radial-gradient(circle,#fff_1.5px,transparent_1.5px)] [background-size:26px_26px]" />
-          <div className="lp-glow pointer-events-none absolute -left-24 bottom-1/4 h-80 w-80 rounded-full bg-[#e0a52e]/15 blur-[100px]" />
-          <div className="lp-glow pointer-events-none absolute -right-20 top-1/2 h-72 w-72 rounded-full bg-[#b68614]/20 blur-[100px]" />
+          <div className="lp-orb lp-glow pointer-events-none absolute -left-24 bottom-1/4 h-80 w-80 rounded-full bg-[#e0a52e]/15 blur-[100px]" />
+          <div className="lp-orb lp-glow pointer-events-none absolute -right-20 top-1/2 h-72 w-72 rounded-full bg-[#b68614]/20 blur-[100px]" />
 
           <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-5 py-20 md:grid-cols-2 md:py-24">
             <div className="text-center md:text-right">
@@ -965,7 +965,7 @@ export default function LandingPage({ view = "home" }: { view?: "home" | "contac
             </div>
 
             <div className="relative flex justify-center">
-              <div className="pointer-events-none absolute inset-0 m-auto h-72 w-72 rounded-full bg-gradient-to-tr from-[#e0a52e]/20 to-red-500/20 blur-3xl" />
+              <div className="lp-orb pointer-events-none absolute inset-0 m-auto h-72 w-72 rounded-full bg-gradient-to-tr from-[#e0a52e]/20 to-red-500/20 blur-3xl" />
               <PhoneMockup c={c} />
             </div>
           </div>
@@ -977,8 +977,8 @@ export default function LandingPage({ view = "home" }: { view?: "home" | "contac
       {/* ============ FAQ ============ */}
       {c.faq.enabled && (
         <section id="faq" className="relative overflow-hidden bg-[#faf3e7] py-16 lg:py-28">
-          <div className="pointer-events-none absolute right-1/4 top-1/4 h-[500px] w-[500px] rounded-full bg-[#7a0d0d]/[0.06] blur-[150px]" />
-          <div className="pointer-events-none absolute bottom-1/4 left-1/4 h-[500px] w-[500px] rounded-full bg-[#e0a52e]/[0.1] blur-[170px]" />
+          <div className="lp-orb pointer-events-none absolute right-1/4 top-1/4 h-[500px] w-[500px] rounded-full bg-[#7a0d0d]/[0.06] blur-[150px]" />
+          <div className="lp-orb pointer-events-none absolute bottom-1/4 left-1/4 h-[500px] w-[500px] rounded-full bg-[#e0a52e]/[0.1] blur-[170px]" />
 
           <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <div className="mb-14 flex flex-col items-center text-center lg:mb-20">
@@ -1062,7 +1062,7 @@ export default function LandingPage({ view = "home" }: { view?: "home" | "contac
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
           <div className="relative flex flex-col items-center justify-between gap-8 overflow-hidden rounded-[2.5rem] bg-[radial-gradient(ellipse_at_top_right,#7a0d0d_0%,#4a0707_60%,#2d0404_100%)] px-6 py-12 text-center shadow-[0_30px_70px_-20px_rgba(122,13,13,0.5)] ring-1 ring-white/10 sm:px-10 sm:py-16 md:flex-row md:text-right">
             <div className="pointer-events-none absolute inset-0 opacity-[0.08] [background-image:radial-gradient(circle,#fff_1.5px,transparent_1.5px)] [background-size:24px_24px]" />
-            <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#e0a52e]/20 blur-[100px]" />
+            <div className="lp-orb pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#e0a52e]/20 blur-[100px]" />
 
             <div className="relative z-10 flex max-w-xl flex-col items-center md:items-start">
               {c.cta.badge && (
@@ -1097,7 +1097,7 @@ export default function LandingPage({ view = "home" }: { view?: "home" | "contac
       {/* ============ SOCIAL MEDIA ============ */}
       {c.social.enabled && socials.length > 0 && (
         <section id="social" className="relative overflow-hidden bg-[#f1dcc0] py-16 sm:py-20">
-          <div className="pointer-events-none absolute -left-20 top-0 h-72 w-72 rounded-full bg-white/50 blur-[100px]" />
+          <div className="lp-orb pointer-events-none absolute -left-20 top-0 h-72 w-72 rounded-full bg-white/50 blur-[100px]" />
           <div className="relative mx-auto max-w-6xl px-5">
             <SectionHeading kicker={c.social.kicker} title={c.social.title} subtitle={c.social.subtitle} />
             <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:justify-center sm:gap-4">
@@ -1137,7 +1137,7 @@ export default function LandingPage({ view = "home" }: { view?: "home" | "contac
         <>
           <section className="relative overflow-hidden bg-[#180204] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#4a080f] via-[#210205] to-[#120102]">
             <div className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:radial-gradient(circle,#fff_1.5px,transparent_1.5px)] [background-size:32px_32px]" />
-            <div className="lp-glow pointer-events-none absolute -left-32 top-10 h-[28rem] w-[28rem] rounded-full bg-[#f4c752]/15 blur-[150px]" />
+            <div className="lp-orb lp-glow pointer-events-none absolute -left-32 top-10 h-[28rem] w-[28rem] rounded-full bg-[#f4c752]/15 blur-[150px]" />
             <div className="relative mx-auto max-w-3xl px-6 pb-16 pt-40 text-center md:pb-20 md:pt-44">
               {c.contact.kicker && (
                 <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-2 text-xs font-black text-[#ffd27a] backdrop-blur-2xl">

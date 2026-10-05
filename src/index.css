@@ -44,6 +44,27 @@ html {
   .lp-phone-tilt { transform: none; }
 }
 
+/*
+ * Phones & tablets (iOS Safari above all): the decorative glow orbs — big
+ * elements under `filter: blur(90–170px)`, several of them animated — plus
+ * the many frosted `backdrop-filter` panels blow past WebKit's compositing
+ * memory, and Safari then stops painting whole regions (they show up white).
+ * On small screens the orbs go and the panels keep their translucent colour
+ * without the live blur. Desktop keeps the full effect.
+ */
+@media (max-width: 1024px), (hover: none) {
+  .lp-root .lp-orb { display: none; }
+  .lp-root *,
+  .lp-root *::before,
+  .lp-root *::after {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-float, .lp-float-soft, .lp-float-delay, .lp-glow { animation: none; }
+}
+
 .lp-no-scrollbar::-webkit-scrollbar { display: none; }
 .lp-no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
