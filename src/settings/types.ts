@@ -22,7 +22,12 @@ export interface PlatformSettings {
   notif_sms_cooks_enabled: boolean
   notif_order_status_enabled: boolean
   default_delivery_radius_km: number | null
+  /** The customer app's launcher icon — one of the icons bundled in the app build. */
+  app_icon: AppIconKey
 }
+
+/** The launcher icons the customer app ships with (backend `AppIcon::ALL`). */
+export type AppIconKey = 'default' | 'ramadan' | 'eid_fitr' | 'eid_adha' | 'mawlid' | 'christmas'
 
 /** A partial update — any subset of {@link PlatformSettings}, at least one key. */
 export type SettingsPatch = Partial<PlatformSettings>

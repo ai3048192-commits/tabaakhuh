@@ -4,6 +4,7 @@ import { RefreshCw, Wallet, Info, Bell, MapPin, Settings2, LayoutTemplate, Exter
 import { fetchCityDirectory } from '../cities/citiesApi'
 import { usePlatformSettings } from './usePlatformSettings'
 import { useSystemSettings } from './useSystemSettings'
+import AppIconCard from './AppIconCard'
 import ImageUploadField from './ImageUploadField'
 import SettingsCard from './SettingsCard'
 import { settingsMessages as M } from './messages'
@@ -265,7 +266,7 @@ function SystemSettings({ onToast }: { onToast: (msg: string) => void }) {
 
       {s.status === 'ready' && s.savedFee !== null && (
         <>
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <SettingsCard title={M.cardFinanceTitle} icon={<Wallet size={18} aria-hidden="true" />}>
               <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-[#faf3e7] p-4">
                 <p className="text-sm text-[#6b4f3a]">{M.deliveryPricingMoved}</p>
@@ -338,6 +339,15 @@ function SystemSettings({ onToast }: { onToast: (msg: string) => void }) {
                 </div>
               </div>
             </SettingsCard>
+          </div>
+
+          <div className="mt-6">
+            <AppIconCard
+              key={s.saved?.app_icon}
+              current={s.saved?.app_icon ?? 'default'}
+              onSaved={s.applyServerSettings}
+              onToast={onToast}
+            />
           </div>
 
           <div className="sticky bottom-4 z-20 mt-6 flex items-center justify-between gap-3 rounded-2xl bg-white/95 p-3 shadow-lg ring-1 ring-[#efe3cc] backdrop-blur">

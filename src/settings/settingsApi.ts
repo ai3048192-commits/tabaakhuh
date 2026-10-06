@@ -22,6 +22,7 @@ const DEFAULTS: PlatformSettings = {
   notif_sms_cooks_enabled: true,
   notif_order_status_enabled: true,
   default_delivery_radius_km: null,
+  app_icon: 'default',
 }
 
 function normalize(raw: Partial<PlatformSettings> | null | undefined): PlatformSettings {

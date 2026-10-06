@@ -69,7 +69,7 @@ function AdminLayout() {
           page's `min-h-full` root flow normally, so the page background always
           covers the full scroll height — no white gap under short pages, no
           flex-shrink clipping under tall ones. */}
-      <main className="flex-1 h-full overflow-y-auto">
+      <main className="flex-1 min-w-0 h-full overflow-y-auto">
         <Header toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
         {/* Inside the shell: a screen swap keeps the Header and Sidebar on
             screen and only the content area shows the pending state. */}

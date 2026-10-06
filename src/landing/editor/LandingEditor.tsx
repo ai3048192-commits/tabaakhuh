@@ -128,9 +128,9 @@ export default function LandingEditor({ onToast }: { onToast: (msg: string) => v
   const lastSaved = fmtTime(updatedAt)
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[17rem_minmax(0,1fr)]">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[17rem_minmax(0,1fr)]">
       {/* Section list */}
-      <nav aria-label="أقسام الصفحة" className="lg:sticky lg:top-24 lg:self-start">
+      <nav aria-label="أقسام الصفحة" className="min-w-0 lg:sticky lg:top-24 lg:self-start">
         <div className="rounded-3xl bg-white p-2 shadow-sm ring-1 ring-[#efe3cc]">
           <p className="px-3 pb-2 pt-2 text-[11px] font-black text-gray-400">أقسام الصفحة</p>
           <ul className="flex gap-1.5 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible lg:pb-0">

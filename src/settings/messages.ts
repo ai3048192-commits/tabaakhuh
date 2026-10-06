@@ -90,6 +90,22 @@ export const settingsMessages = {
   vEmail: 'بريد إلكتروني غير صالح.',
   vUrl: 'رابط غير صالح (لازم يبدأ بـ http).',
 
+  // app icon card
+  cardAppIconTitle: 'أيقونة التطبيق',
+  appIconHint:
+    'اختار أيقونة المناسبة واضغط «تطبيق». الأيقونة بتتغير على موبايلات العملاء أول ما يفتحوا التطبيق، وعلى iOS بتظهر للعميل رسالة إن الأيقونة اتغيّرت.',
+  appIconCurrent: 'الحالية',
+  appIconApply: 'تطبيق الأيقونة',
+  appIconSavedToast: 'تم تغيير أيقونة التطبيق.',
+  appIconNames: {
+    default: 'الأساسية',
+    ramadan: 'رمضان',
+    eid_fitr: 'عيد الفطر',
+    eid_adha: 'عيد الأضحى',
+    mawlid: 'المولد النبوي',
+    christmas: 'الكريسماس',
+  },
+
   // cities card
   citiesLoading: 'جارٍ تحميل المدن…',
   citiesEmpty: 'لا توجد مدن.',

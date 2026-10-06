@@ -470,11 +470,11 @@ export default function LandingPage({ view = "home" }: { view?: "home" | "contac
   return (
     <div dir="rtl" className="lp-root min-h-screen overflow-x-hidden bg-[#faf3e7] text-[#3a2a1a]">
       {/* ============ HEADER ============ */}
-      <header className="fixed inset-x-0 top-0 z-50 px-4 pt-6 sm:px-8" dir="rtl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between rounded-full bg-[#2a0407]/95 px-7 py-4 lg:bg-[#2a0407]/80 shadow-[0_25px_60px_rgba(0,0,0,0.8)] ring-1 ring-white/10 backdrop-blur-3xl transition-all duration-300">
+      <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-8 sm:pt-6" dir="rtl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between rounded-full bg-[#2a0407]/95 px-4 py-1.5 md:px-7 md:py-4 lg:bg-[#2a0407]/80 shadow-[0_25px_60px_rgba(0,0,0,0.8)] ring-1 ring-white/10 backdrop-blur-3xl transition-all duration-300">
           <a href={isContact ? "/" : "#home"} className="group flex cursor-pointer items-center">
-            <div className="relative rounded-full p-1.5 transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110">
-              <img src={logo} alt={c.brand.name} className="h-10 w-auto object-contain drop-shadow-md md:h-11" />
+            <div className="relative rounded-full p-1 transition-transform md:p-1.5 duration-500 group-hover:-rotate-6 group-hover:scale-110">
+              <img src={logo} alt={c.brand.name} className="h-8 w-auto object-contain drop-shadow-md md:h-11" />
             </div>
           </a>
 
@@ -506,13 +506,13 @@ export default function LandingPage({ view = "home" }: { view?: "home" | "contac
           )}
 
           <button
-            className="relative rounded-full bg-white/10 p-3 text-white shadow-lg transition-all duration-300 hover:bg-white/20 active:scale-95 md:hidden"
+            className="relative rounded-full bg-white/10 p-2 text-white shadow-lg transition-all duration-300 hover:bg-white/20 active:scale-95 md:hidden"
             onClick={() => setMenuOpen((v) => !v)}
             aria-label={menuOpen ? "إغلاق القائمة" : "فتح القائمة"}
             aria-expanded={menuOpen}
           >
             <div className={`transition-transform duration-300 ${menuOpen ? "rotate-90 scale-110 text-[#ffd27a]" : "rotate-0"}`}>
-              {menuOpen ? <X size={24} /> : <Menu size={24} />}
+              {menuOpen ? <X size={20} /> : <Menu size={20} />}
             </div>
           </button>
         </div>
@@ -581,7 +581,7 @@ export default function LandingPage({ view = "home" }: { view?: "home" | "contac
         <div className="lp-orb lp-glow pointer-events-none absolute right-[-10%] top-1/3 h-[30rem] w-[30rem] rounded-full bg-[#e0a52e]/10 blur-[130px]" />
 
         {c.hero.enabled ? (
-          <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-6 pb-28 pt-44 md:grid-cols-2 md:gap-16 md:pb-36 md:pt-48">
+          <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-6 pb-28 pt-28 sm:pt-44 md:grid-cols-2 md:gap-16 md:pb-36 md:pt-48">
             <div className="flex flex-col items-center text-center md:items-start md:text-right">
               {c.hero.badge && (
                 <div className="inline-flex items-center gap-2.5 rounded-full bg-white/10 px-5 py-2.5 text-xs font-black text-white/95 shadow-[0_10px_30px_rgba(0,0,0,0.3)] backdrop-blur-2xl">
@@ -1138,7 +1138,7 @@ export default function LandingPage({ view = "home" }: { view?: "home" | "contac
           <section className="relative overflow-hidden bg-[#180204] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#4a080f] via-[#210205] to-[#120102]">
             <div className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:radial-gradient(circle,#fff_1.5px,transparent_1.5px)] [background-size:32px_32px]" />
             <div className="lp-orb lp-glow pointer-events-none absolute -left-32 top-10 h-[28rem] w-[28rem] rounded-full bg-[#f4c752]/15 blur-[150px]" />
-            <div className="relative mx-auto max-w-3xl px-6 pb-16 pt-40 text-center md:pb-20 md:pt-44">
+            <div className="relative mx-auto max-w-3xl px-6 pb-16 pt-28 text-center sm:pt-40 md:pb-20 md:pt-44">
               {c.contact.kicker && (
                 <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-2 text-xs font-black text-[#ffd27a] backdrop-blur-2xl">
                   <span className="h-1.5 w-1.5 rounded-full bg-[#ffd27a]" />
