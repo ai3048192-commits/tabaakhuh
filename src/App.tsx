@@ -32,6 +32,7 @@ const DepositsPage = lazy(() => import("./deposits/DepositsPage"));
 const CookApplicationsPage = lazy(() => import("./cooks/CookApplicationsPage"));
 const DriverApplicationsPage = lazy(() => import("./drivers/DriverApplicationsPage"));
 const CitiesPage = lazy(() => import("./cities/CitiesPage"));
+const FoodCategoriesPage = lazy(() => import("./foodCategories/FoodCategoriesPage"));
 const DeliveryPricingPage = lazy(() => import("./areas/DeliveryPricingPage"));
 const ReportsPage = lazy(() => import("./reports/ReportsPage"));
 const ComplaintsPage = lazy(() => import("./complaints/ComplaintsPage"));
@@ -88,6 +89,7 @@ function AdminLayout() {
             <Route path="/cook-applications" element={<CookApplicationsPage />} />
             <Route path="/driver-applications" element={<DriverApplicationsPage />} />
             <Route path="/cities" element={<CitiesPage />} />
+            <Route path="/food-categories" element={<FoodCategoriesPage />} />
             <Route path="/delivery-pricing" element={<DeliveryPricingPage />} />
             <Route path="/reports" element={<ReportsPage />} />
             <Route path="/complaints" element={<ComplaintsPage />} />

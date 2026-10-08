@@ -2,7 +2,7 @@ import {
   LayoutGrid, Users, ShoppingBag, ChefHat,
   TrendingUp, MessageSquareWarning, Settings,
   Bike, MapPin, Wallet, AlertTriangle, Truck, LayoutTemplate, UserRound, ClipboardList, ClipboardCheck,
-  Navigation, HandCoins, type LucideIcon,
+  Navigation, HandCoins, Tags, type LucideIcon,
 } from 'lucide-react';
 
 interface MenuItem { name: string; icon: LucideIcon; path: string }
@@ -47,6 +47,7 @@ export const menuGroups: { title: string; items: MenuItem[] }[] = [
     title: 'الإعدادات',
     items: [
       { name: 'إدارة المدن', icon: MapPin, path: '/cities' },
+      { name: 'تصنيفات الأكل', icon: Tags, path: '/food-categories' },
       { name: 'أسعار التوصيل', icon: Truck, path: '/delivery-pricing' },
       { name: 'إعدادات النظام', icon: Settings, path: '/settings' },
       { name: 'محتوى الصفحة الرئيسية', icon: LayoutTemplate, path: '/settings?tab=landing' },

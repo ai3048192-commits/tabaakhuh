@@ -1,7 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { ImagePlus, Loader2, Trash2, UploadCloud } from 'lucide-react'
 import { settingsMessages as M } from './messages'
-import type { StringField } from './systemSettingsValidation'
 import {
   ACCEPT_ATTR,
   CloudinaryError,
@@ -19,13 +18,14 @@ const ERR_TEXT: Record<UploadErrorKind, string> = {
 }
 
 /**
- * A file-picker bound to one string settings field (`logo_url` / `icon_url`).
+ * A file-picker bound to one string field (`logo_url` / `icon_url` in
+ * settings, a food category's `image_url`).
  * The admin picks an image; it's uploaded straight to Cloudinary and, on
  * success, the returned `secure_url` is written into the draft via `onChange` —
  * exactly where the old URL text input used to write. Nothing is persisted here;
  * the page-level "حفظ الإعدادات" button still does the single `PUT`.
  */
-export default function ImageUploadField({
+export default function ImageUploadField<F extends string>({
   label,
   field,
   value,
@@ -33,12 +33,12 @@ export default function ImageUploadField({
   onChange,
 }: {
   label: string
-  field: StringField
+  field: F
   /** Current draft URL for this field ('' when unset). */
   value: string
   /** Server/client validation error for this field, if any. */
   error?: string
-  onChange: (f: StringField, raw: string) => void
+  onChange: (f: F, raw: string) => void
 }) {
   const inputId = useId()
   const errId = useId()
