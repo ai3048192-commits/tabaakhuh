@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useId, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { RefreshCw, Wallet, Info, Bell, MapPin, Settings2, LayoutTemplate, ExternalLink, Save, Loader2 } from 'lucide-react'
+import { RefreshCw, Wallet, Info, Bell, MapPin, Settings2, LayoutTemplate, ExternalLink, Save, Loader2, HandCoins } from 'lucide-react'
 import { fetchCityDirectory } from '../cities/citiesApi'
 import { usePlatformSettings } from './usePlatformSettings'
 import { useSystemSettings } from './useSystemSettings'
@@ -325,6 +325,24 @@ function SystemSettings({ onToast }: { onToast: (msg: string) => void }) {
                   <ImageUploadField label={M.logoLabel} field="logo_url" value={sys.strDrafts.logo_url} error={sys.errors.logo_url} onChange={sys.setStr} />
                   <ImageUploadField label={M.iconLabel} field="icon_url" value={sys.strDrafts.icon_url} error={sys.errors.icon_url} onChange={sys.setStr} />
                 </div>
+              </div>
+            </SettingsCard>
+
+            <SettingsCard title={M.cardDepositTitle} icon={<HandCoins size={18} aria-hidden="true" />}>
+              <div className="space-y-3">
+                <p className="text-sm text-[#6b4f3a]">{M.depositIntro}</p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <TextField label={M.depositVodafoneLabel} field="deposit_vodafone_cash_number" value={sys.strDrafts.deposit_vodafone_cash_number} error={sys.errors.deposit_vodafone_cash_number} placeholder="01012345678" onChange={sys.setStr} />
+                  <TextField label={M.depositInstapayLabel} field="deposit_instapay_address" value={sys.strDrafts.deposit_instapay_address} error={sys.errors.deposit_instapay_address} placeholder="tabbakha@instapay" onChange={sys.setStr} />
+                </div>
+                <NumField label={M.depositPercentLabel} field="deposit_percent" value={sys.numDrafts.deposit_percent} error={sys.errors.deposit_percent} placeholder="20" onChange={sys.setNum} />
+                <p className="text-xs text-gray-400">{M.depositOffHint}</p>
+                <Link
+                  to="/deposits"
+                  className="inline-block rounded-xl bg-[#7a0d0d] px-4 py-2 text-sm font-black text-white transition hover:bg-[#5a0909]"
+                >
+                  {M.depositReviewLink}
+                </Link>
               </div>
             </SettingsCard>
 

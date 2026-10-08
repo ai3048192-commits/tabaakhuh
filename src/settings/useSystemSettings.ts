@@ -42,6 +42,7 @@ function draftsFrom(s: PlatformSettings | null) {
       commission_percent: numFrom(s?.commission_percent ?? 0),
       min_order_total: numFrom(s?.min_order_total ?? 0),
       default_delivery_radius_km: numFrom(s?.default_delivery_radius_km ?? null),
+      deposit_percent: numFrom(s?.deposit_percent ?? 20),
     } as NumDrafts,
     strDrafts: {
       store_name: s?.store_name ?? '',
@@ -49,6 +50,8 @@ function draftsFrom(s: PlatformSettings | null) {
       support_phone: s?.support_phone ?? '',
       logo_url: s?.logo_url ?? '',
       icon_url: s?.icon_url ?? '',
+      deposit_vodafone_cash_number: s?.deposit_vodafone_cash_number ?? '',
+      deposit_instapay_address: s?.deposit_instapay_address ?? '',
     } as StrDrafts,
     toggles: {
       first_order_discount_enabled: s?.first_order_discount_enabled ?? false,

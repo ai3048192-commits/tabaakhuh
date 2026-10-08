@@ -23,6 +23,9 @@ const DEFAULTS: PlatformSettings = {
   notif_order_status_enabled: true,
   default_delivery_radius_km: null,
   app_icon: 'default',
+  deposit_percent: 20,
+  deposit_vodafone_cash_number: null,
+  deposit_instapay_address: null,
 }
 
 function normalize(raw: Partial<PlatformSettings> | null | undefined): PlatformSettings {

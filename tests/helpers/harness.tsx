@@ -15,6 +15,7 @@ import DeliveryPricingPage from '../../src/areas/DeliveryPricingPage'
 import OverviewPage from '../../src/overview/OverviewPage'
 import OrdersPage from '../../src/orders/OrdersPage'
 import WithdrawalsPage from '../../src/withdrawals/WithdrawalsPage'
+import DepositsPage from '../../src/deposits/DepositsPage'
 import UsersPage from '../../src/users/UsersPage'
 import ComplaintsPage from '../../src/complaints/ComplaintsPage'
 import ReportsPage from '../../src/reports/ReportsPage'
@@ -313,6 +314,31 @@ export function renderAtWithdrawals(
             element={
               <RequireAdmin>
                 <WithdrawalsPage />
+              </RequireAdmin>
+            }
+          />
+        </Routes>
+      </AuthProvider>
+    </MemoryRouter>,
+  )
+}
+
+/** Render the real `DepositsPage` at `/deposits` in an already-signed-in admin session. */
+export function renderAtDeposits(fm: FetchMock) {
+  localStorage.setItem(STORAGE_KEYS.token, 'tok-admin')
+  localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(adminUser))
+  fm.reply('GET /auth/me', { json: ok({ user: adminUser }) })
+
+  return render(
+    <MemoryRouter initialEntries={['/deposits']}>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<div>صفحة تسجيل الدخول</div>} />
+          <Route
+            path="/*"
+            element={
+              <RequireAdmin>
+                <DepositsPage />
               </RequireAdmin>
             }
           />

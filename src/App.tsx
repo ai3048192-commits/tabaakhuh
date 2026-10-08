@@ -28,6 +28,7 @@ const OverviewPage = lazy(() => import("./overview/OverviewPage"));
 const UsersPage = lazy(() => import("./users/UsersPage"));
 const OrdersPage = lazy(() => import("./orders/OrdersPage"));
 const WithdrawalsPage = lazy(() => import("./withdrawals/WithdrawalsPage"));
+const DepositsPage = lazy(() => import("./deposits/DepositsPage"));
 const CookApplicationsPage = lazy(() => import("./cooks/CookApplicationsPage"));
 const DriverApplicationsPage = lazy(() => import("./drivers/DriverApplicationsPage"));
 const CitiesPage = lazy(() => import("./cities/CitiesPage"));
@@ -80,6 +81,7 @@ function AdminLayout() {
             <Route path="/customers" element={<UsersPage key="customer" scope="customer" />} />
             <Route path="/orders" element={<OrdersPage />} />
             <Route path="/withdrawals" element={<WithdrawalsPage />} />
+            <Route path="/deposits" element={<DepositsPage />} />
             {/* Approved cooks / drivers (management) vs. applicants (review queues). */}
             <Route path="/cooks" element={<UsersPage key="cook" scope="cook" />} />
             <Route path="/drivers" element={<UsersPage key="driver" scope="driver" />} />

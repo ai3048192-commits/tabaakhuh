@@ -24,6 +24,12 @@ export interface PlatformSettings {
   default_delivery_radius_km: number | null
   /** The customer app's launcher icon — one of the icons bundled in the app build. */
   app_icon: AppIconKey
+  /** Custom-order deposit — share of the food price (0 turns deposits off). */
+  deposit_percent: number
+  /** The platform's Vodafone Cash wallet customers send the deposit to. */
+  deposit_vodafone_cash_number: string | null
+  /** The platform's InstaPay address (`name@instapay`) customers send the deposit to. */
+  deposit_instapay_address: string | null
 }
 
 /** The launcher icons the customer app ships with (backend `AppIcon::ALL`). */

@@ -768,6 +768,47 @@ Message: `Withdrawal request marked paid.`
 
 ---
 
+## Phase 9 — عرابين الطلبات الخاصة (specs/066)
+
+العميل بيحوّل عربون الطلب الخاص (نسبة من سعر الأكل، الافتراضي 20٪) على حساب المنصة في فودافون كاش أو إنستاباي ويرفع صورة التحويل.
+الأدمن يأكد إن الفلوس وصلت، وبعدين يحوّلها للطباخة — والطباخة مش بتقدر تبدأ التحضير قبل `paid_to_cook`.
+
+دورة الحالة: `awaiting_payment → submitted → verified → paid_to_cook` (و `submitted → rejected → submitted` لو الصورة اترفضت).
+
+### 9.1 `GET /admin/deposits`
+
+Query: `status` (اختياري: `submitted` | `verified` | `paid_to_cook` | `rejected` | `awaiting_payment`) · `page`. من غير `status` بيرجع الكل ما عدا `awaiting_payment`.
+
+```json
+{
+  "items": [{
+    "id": 3, "order_id": 10, "order_number": "TBK-2026-000010", "order_status": "accepted",
+    "order_subtotal": 1000, "order_total": 1050,
+    "amount": 200, "percentage": 20, "status": "submitted", "method": "vodafone_cash",
+    "rejection_reason": null, "proof_image_url": "<signed link, 30 min>", "payout_note": null,
+    "submitted_at": "…", "verified_at": null, "paid_to_cook_at": null,
+    "customer": { "name": "…", "phone": "…" }, "cook": { "name": "…", "phone": "…" }
+  }],
+  "page": 1, "per_page": 20, "total": 1,
+  "counts": { "awaiting_payment": 0, "submitted": 1, "rejected": 0, "verified": 0, "paid_to_cook": 0 }
+}
+```
+
+### 9.2 `POST /admin/deposits/{id}/verify`
+الفلوس وصلت حساب المنصة. بيسجّل `orders.deposit_paid` (المندوب يحصّل الباقي بس) ويبعت إشعار للعميل والطباخة. `409` لو مش `submitted`.
+
+### 9.3 `POST /admin/deposits/{id}/reject` — body `{ "reason": "…" }` (مطلوب، 3–500 حرف)
+العميل بيشوف السبب ويرفع صورة تانية.
+
+### 9.4 `POST /admin/deposits/{id}/mark-paid` — body `{ "note": "…" }` (اختياري)
+اتحوّل للطباخة. `409` لو مش `verified` أو لو الطلب اتلغى (العربون محتاج يترد للعميل).
+
+### إعدادات (في `PUT /admin/settings`)
+`deposit_percent` (0–100، الافتراضي 20؛ 0 = من غير عربون) · `deposit_vodafone_cash_number` (`01xxxxxxxxx`) · `deposit_instapay_address`.
+من غير ولا حساب، الطلبات الخاصة مش بتطلب عربون.
+
+---
+
 ## ملخّص كل الـ Endpoints
 
 | # | Phase | Method & Path | الوصف |
@@ -794,6 +835,10 @@ Message: `Withdrawal request marked paid.`
 | 20 | Orders | `GET /admin/orders` | كل الطلبات مع فلاتر وترقيم |
 | 21 | Reports | `GET /admin/reports/overview` | إحصائيات الصفحة الرئيسية |
 | 22 | Reports | `GET /admin/reports/financial` | تقرير مالي (إيراد/عمولة/مدفوعات) مع سلسلة زمنية وتوزيع حسب المدينة |
+| 23 | Deposits | `GET /admin/deposits` | طابور العرابين (`status`,`page`) + عدد كل حالة |
+| 24 | Deposits | `POST /admin/deposits/{id}/verify` | تأكيد استلام التحويل |
+| 25 | Deposits | `POST /admin/deposits/{id}/reject` | رفض التحويل (`reason`) |
+| 26 | Deposits | `POST /admin/deposits/{id}/mark-paid` | تم التحويل للطباخة (`note` اختياري) |
 
 ---
 

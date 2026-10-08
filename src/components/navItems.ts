@@ -2,7 +2,7 @@ import {
   LayoutGrid, Users, ShoppingBag, ChefHat,
   TrendingUp, MessageSquareWarning, Settings,
   Bike, MapPin, Wallet, AlertTriangle, Truck, LayoutTemplate, UserRound, ClipboardList, ClipboardCheck,
-  Navigation, type LucideIcon,
+  Navigation, HandCoins, type LucideIcon,
 } from 'lucide-react';
 
 interface MenuItem { name: string; icon: LucideIcon; path: string }
@@ -36,6 +36,7 @@ export const menuGroups: { title: string; items: MenuItem[] }[] = [
   {
     title: 'المالية والدعم',
     items: [
+      { name: 'العرابين', icon: HandCoins, path: '/deposits' },
       { name: 'طلبات السحب', icon: Wallet, path: '/withdrawals' },
       { name: 'التقارير المالية', icon: TrendingUp, path: '/reports' },
       { name: 'الشكاوى والاقتراحات', icon: MessageSquareWarning, path: '/complaints' },
