@@ -58,6 +58,50 @@ describe('Delivery Operations (provisional /admin/delivery/*)', () => {
     expect(fm.count(DRIVERS)).toBe(2)
   })
 
+  it('changing the driver of an assigned order POSTs the new driver', async () => {
+    const user = userEvent.setup()
+    fm.reply(ACTIVE, { json: ok([activeDelivery({ order_id: 800, order_number: 'ORD-2026-000800', driver_id: 900, driver_name: 'سائق 900' })]) })
+    fm.reply(DRIVERS, { json: deliveryDriversResponse([
+      deliveryDriver({ id: 900, name: 'سائق 900', is_available: false, active_deliveries: 1 }),
+      deliveryDriver({ id: 901, name: 'سائق 901', is_available: true }),
+    ]) })
+    fm.reply('POST /admin/delivery/orders/800/assign', {
+      json: ok(activeDelivery({ order_id: 800, driver_id: 901, driver_name: 'سائق 901' })),
+    })
+    renderAtDelivery(fm)
+    await screen.findByText('ORD-2026-000800')
+
+    await user.click(screen.getByRole('button', { name: M.reassign }))
+    const dialog = await screen.findByRole('dialog')
+    await user.selectOptions(within(dialog).getByLabelText(M.pickDriver), '901')
+    await user.click(within(dialog).getByRole('button', { name: M.confirm }))
+
+    await waitFor(() => expect(fm.lastCall('POST /admin/delivery/orders/800/assign')?.body).toEqual({ driver_id: 901 }))
+    expect(await screen.findByRole('status')).toHaveTextContent(M.assignedToast)
+  })
+
+  it("shows the server's reason when the assignment is refused, not a generic error", async () => {
+    const user = userEvent.setup()
+    fm.reply(ACTIVE, { json: ok([activeDelivery({ order_id: 800, order_number: 'ORD-2026-000800', driver_id: null })]) })
+    fm.reply(DRIVERS, { json: deliveryDriversResponse([deliveryDriver({ id: 900, name: 'سائق 900', is_available: true })]) })
+    fm.reply('POST /admin/delivery/orders/800/assign', {
+      status: 422,
+      json: fail('المندوب ده مش متاح لتوصيلة جديدة.'),
+    })
+    renderAtDelivery(fm)
+    await screen.findByText('ORD-2026-000800')
+
+    await user.click(screen.getByRole('button', { name: M.assign }))
+    const dialog = await screen.findByRole('dialog')
+    await user.selectOptions(within(dialog).getByLabelText(M.pickDriver), '900')
+    await user.click(within(dialog).getByRole('button', { name: M.confirm }))
+
+    expect(await screen.findByRole('status')).toHaveTextContent('المندوب ده مش متاح لتوصيلة جديدة.')
+    // It asks for Arabic so the reason reads right.
+    const sent = fm.fn.mock.calls.find(([url]) => String(url).endsWith('/admin/delivery/orders/800/assign'))
+    expect(new Headers((sent?.[1] as RequestInit).headers).get('accept-language')).toBe('ar')
+  })
+
   it('an offline first load shows a screen error + Retry', async () => {
     const user = userEvent.setup()
     fm.reply(ACTIVE, { networkError: true }, { json: ok([activeDelivery({ order_id: 1 })]) })

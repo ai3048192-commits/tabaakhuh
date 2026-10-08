@@ -79,10 +79,16 @@ export async function listDeliveryDrivers(
   }
 }
 
-/** `POST /admin/delivery/orders/{id}/assign` — body `{ driver_id }`. */
+/**
+ * `POST /admin/delivery/orders/{id}/assign` — body `{ driver_id }`. Also moves
+ * an order that already has a driver to a different one, until it's picked up.
+ * Asks for Arabic: a `422` carries the reason (driver busy, order picked up…)
+ * and the admin sees it as is.
+ */
 export function assignDriver(orderId: number, driverId: number): Promise<unknown> {
   return authedRequest<unknown>(`/admin/delivery/orders/${orderId}/assign`, {
     method: 'POST',
     body: { driver_id: driverId },
+    headers: { 'Accept-Language': 'ar' },
   })
 }

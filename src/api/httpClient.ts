@@ -47,6 +47,8 @@ export interface HttpOptions {
   /** When present, sent as `Authorization: Bearer <token>`. */
   token?: string | null
   signal?: AbortSignal
+  /** Extra request headers (e.g. `Accept-Language: ar` for a server message shown to the admin). */
+  headers?: Record<string, string>
 }
 
 /**
@@ -58,7 +60,7 @@ export interface HttpOptions {
 export async function apiRequest<T>(path: string, opts: HttpOptions = {}): Promise<T> {
   const { method = 'GET', body, token, signal } = opts
 
-  const headers: Record<string, string> = { Accept: 'application/json' }
+  const headers: Record<string, string> = { Accept: 'application/json', ...opts.headers }
   if (body !== undefined) headers['Content-Type'] = 'application/json'
   if (token) headers.Authorization = `Bearer ${token}`
 

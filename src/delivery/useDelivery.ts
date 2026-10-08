@@ -71,7 +71,10 @@ export function useDelivery(): UseDelivery {
         showToast(
           err instanceof ApiError && err.status === 404
             ? 'تعذّر العثور على الطلب أو السائق.'
-            : 'تعذّر إتمام العملية. حاول مرة أخرى.',
+            : // The server says why (driver busy, already picked up…).
+              err instanceof ApiError && err.status === 422 && err.message
+              ? err.message
+              : 'تعذّر إتمام العملية. حاول مرة أخرى.',
         )
         return false
       } finally {
