@@ -3,26 +3,24 @@ import type { DepositFilter, DepositMethod, DepositStatus } from './types'
 /** Arabic, RTL-first. */
 export const depositMessages = {
   pageTitle: 'العرابين',
-  subtitle: 'عربون الطلبات الخاصة: اتأكد إن التحويل وصل حساب المنصة، وبعدين حوّله للطباخة عشان تبدأ التحضير.',
+  subtitle: 'متابعة عرابين الطلبات الخاصة: العميل بيحوّل للطباخة مباشرة والطباخة هي اللي بتأكد الوصول. الصفحة دي للمتابعة بس.',
   refresh: 'تحديث',
   loading: 'جارٍ تحميل العرابين…',
   queueError: 'حدث خطأ ما. حاول مرة أخرى.',
   retry: 'إعادة المحاولة',
 
   filters: {
-    submitted: 'بانتظار المراجعة',
-    verified: 'اتأكد — لسه ماتحوّلش',
-    paid_to_cook: 'اتحوّل للطباخة',
+    submitted: 'بانتظار تأكيد الطباخة',
+    confirmed: 'اتأكد',
     rejected: 'مرفوض',
-    all: 'الكل',
+    disputed: 'خلاف',
   } satisfies Record<DepositFilter, string>,
 
   status: {
     awaiting_payment: 'العميل لسه مادفعش',
-    submitted: 'بانتظار المراجعة',
-    rejected: 'مرفوض',
-    verified: 'اتأكد — لسه ماتحوّلش',
-    paid_to_cook: 'اتحوّل للطباخة',
+    submitted: 'بانتظار تأكيد الطباخة',
+    rejected: 'مرفوض من الطباخة',
+    confirmed: 'اتأكد',
   } satisfies Record<DepositStatus, string>,
 
   method: {
@@ -31,7 +29,11 @@ export const depositMessages = {
   } satisfies Record<DepositMethod, string>,
 
   emptyFor: (f: DepositFilter) =>
-    f === 'submitted' ? 'مفيش تحويلات مستنية مراجعة دلوقتي.' : 'مفيش عرابين هنا.',
+    f === 'submitted'
+      ? 'مفيش عرابين مستنية تأكيد الطباخة دلوقتي.'
+      : f === 'disputed'
+        ? 'مفيش عرابين فيها خلاف.'
+        : 'مفيش عرابين هنا.',
 
   order: (n: string | null, id: number) => `طلب ${n ?? `#${id}`}`,
   amount: 'العربون',
@@ -47,45 +49,17 @@ export const depositMessages = {
   copy: 'نسخ',
   copied: 'اتنسخ',
   rejectionReason: 'سبب الرفض',
-  payoutNote: 'ملاحظة التحويل',
-  orderCancelled: 'الطلب اتلغى — العربون محتاج يترد للعميل، متحوّلوش للطباخة.',
-  sendToCookHint: (phone: string | null) =>
-    phone ? `حوّل المبلغ على رقم الطباخة ${phone} وبعدين علّم إنه اتحوّل.` : 'حوّل المبلغ للطباخة وبعدين علّم إنه اتحوّل.',
+  rejectCount: (n: number) => `اترفض ${n} ${n === 1 ? 'مرة' : 'مرات'}`,
+  disputed: 'خلاف',
+  payTo: 'اتحوّل على حساب الطباخة',
+  vodafoneCash: 'فودافون كاش',
+  instapay: 'إنستاباي',
+  noAccount: 'مفيش حساب مسجّل',
+  confirmedAt: 'وقت التأكيد',
+  orderCancelled: 'الطلب اتلغى بعد التحويل — العربون عند الطباخة، تابع الرد مع العميل.',
+  summaryTitle: 'العرابين المؤكدة',
+  summaryTotal: 'إجمالي المبالغ المؤكدة',
+  summaryCount: (n: number) => `${n} عربون مؤكد`,
 
-  actionVerify: 'تأكيد الاستلام',
-  actionReject: 'رفض',
-  actionMarkPaid: 'تم التحويل للطباخة',
-
-  dialog: {
-    verify: {
-      title: 'تأكيد استلام العربون',
-      body: 'اتأكدت إن المبلغ وصل فعلًا لحساب المنصة؟ العميل والطباخة هيوصلهم إشعار.',
-      cta: 'أيوه، وصل',
-    },
-    reject: {
-      title: 'رفض التحويل',
-      body: 'العميل هيشوف السبب ويقدر يرفع صورة تانية.',
-      cta: 'رفض التحويل',
-      field: 'سبب الرفض',
-      placeholder: 'مثلًا: المبلغ ناقص، أو الصورة مش واضحة',
-    },
-    mark_paid: {
-      title: 'تحويل العربون للطباخة',
-      body: 'علّم إنك حوّلت المبلغ للطباخة؟ هتقدر تبدأ تحضير الطلب على طول.',
-      cta: 'اتحوّل',
-      field: 'رقم العملية أو ملاحظة (اختياري)',
-      placeholder: 'مثلًا: رقم عملية فودافون كاش',
-    },
-  },
-  cancel: 'إلغاء',
-  reasonTooShort: 'اكتب السبب (3 حروف على الأقل).',
-
-  doneToast: {
-    verify: 'تم تأكيد العربون.',
-    reject: 'تم رفض التحويل وإبلاغ العميل.',
-    mark_paid: 'تم تسجيل التحويل للطباخة.',
-  },
-  notFoundToast: 'العربون ده مش موجود. اتحدّثت القائمة.',
-  retryToast: 'تعذّر تنفيذ الإجراء. حاول مرة أخرى.',
   refreshFailed: 'تعذّر التحديث. حاول مرة أخرى.',
 }

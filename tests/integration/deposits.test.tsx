@@ -1,38 +1,44 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { screen, within, waitFor } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderAtDeposits } from '../helpers/harness'
 import { installFetchMock, type FetchMock } from '../helpers/fetchMock'
-import { fail, ok } from '../helpers/fixtures'
+import { ok } from '../helpers/fixtures'
 import { depositMessages as M } from '../../src/deposits/messages'
-import type { Deposit, DepositPage } from '../../src/deposits/types'
+import type { Deposit, DepositInfo, DepositPage } from '../../src/deposits/types'
 
-function deposit(over: Partial<Deposit> = {}): Deposit {
+function deposit(over: Partial<DepositInfo> = {}, item: Partial<Deposit> = {}): Deposit {
   return {
-    id: 3,
-    order_id: 10,
+    deposit: {
+      id: 3,
+      order_id: 10,
+      amount: 200,
+      percent: 20,
+      status: 'submitted',
+      method: 'vodafone_cash',
+      rejection_reason: null,
+      reject_count: 0,
+      proof_image_url: 'https://res.cloudinary.com/x/proof.jpg',
+      submitted_at: '2026-10-08T10:00:00+00:00',
+      confirmed_at: null,
+      cook_name: 'مطبخ سوسن',
+      pay_to: { vodafone_cash: '01022222222', instapay: 'sosan@instapay' },
+      ...over,
+    },
     order_number: 'TBK-2026-000010',
     order_status: 'accepted',
     order_subtotal: 1000,
     order_total: 1050,
-    amount: 200,
-    percentage: 20,
-    status: 'submitted',
-    method: 'vodafone_cash',
-    rejection_reason: null,
-    proof_image_url: 'https://res.cloudinary.com/x/proof.jpg',
-    payout_note: null,
-    submitted_at: '2026-10-08T10:00:00+00:00',
-    verified_at: null,
-    paid_to_cook_at: null,
-    customer: { name: 'منى', phone: '01011111111' },
-    cook: { name: 'مطبخ سوسن', phone: '01022222222' },
-    ...over,
+    customer_name: 'منى',
+    customer_phone: '01011111111',
+    cook_name: 'مطبخ سوسن',
+    cook_phone: '01033333333',
+    ...item,
   }
 }
 
-function page(items: Deposit[], counts: DepositPage['counts'] = {}) {
-  return ok<DepositPage>({ items, page: 1, per_page: 20, total: items.length, counts })
+function page(items: Deposit[], counts: DepositPage['counts'] = {}, confirmed_total = 0) {
+  return ok<DepositPage>({ items, page: 1, per_page: 20, total: items.length, counts, confirmed_total })
 }
 
 let fm: FetchMock
@@ -46,99 +52,55 @@ afterEach(() => {
 
 const LIST = 'GET /admin/deposits?status=submitted&page=1'
 
-describe('deposits queue', () => {
-  it('opens on the transfers awaiting review, with the proof and both parties', async () => {
+describe('deposits monitoring', () => {
+  it('opens on deposits awaiting the cook, with proof, parties and the account paid to — and no actions', async () => {
     fm.reply(LIST, { json: page([deposit()], { submitted: 1 }) })
     renderAtDeposits(fm)
 
     expect(await screen.findByText('طلب TBK-2026-000010')).toBeInTheDocument()
     expect(screen.getByText('منى')).toBeInTheDocument()
-    expect(screen.getByText('مطبخ سوسن')).toBeInTheDocument()
+    expect(screen.getAllByText('مطبخ سوسن').length).toBeGreaterThan(0)
     expect(screen.getByText(M.method.vodafone_cash)).toBeInTheDocument()
+    expect(screen.getByText('01022222222')).toBeInTheDocument()
+    expect(screen.getByText('sosan@instapay')).toBeInTheDocument()
     expect(screen.getByRole('img', { name: M.proofAlt('TBK-2026-000010') })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: M.actionVerify })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: M.actionMarkPaid })).toBeNull()
+    expect(screen.queryByRole('button', { name: /تأكيد الاستلام|رفض|تم التحويل/ })).toBeNull()
   })
 
-  it('verify → one POST, the list reloads', async () => {
-    const user = userEvent.setup()
-    fm.reply(LIST, { json: page([deposit()]) }, { json: page([]) })
-    fm.reply('POST /admin/deposits/3/verify', { json: ok(deposit({ status: 'verified' })) })
+  it('shows the confirmed total and count, and tab badges from counts', async () => {
+    fm.reply(LIST, { json: page([deposit()], { submitted: 1, confirmed: 4, disputed: 2 }, 800) })
     renderAtDeposits(fm)
-    await screen.findByText('طلب TBK-2026-000010')
 
-    await user.click(screen.getByRole('button', { name: M.actionVerify }))
-    await user.click(within(await screen.findByRole('dialog')).getByRole('button', { name: M.dialog.verify.cta }))
-
-    await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent(M.doneToast.verify))
-    expect(fm.count('POST /admin/deposits/3/verify')).toBe(1)
-    expect(await screen.findByText(M.emptyFor('submitted'))).toBeInTheDocument()
+    expect(await screen.findByText(M.summaryCount(4))).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: M.summaryTitle })).toHaveTextContent('800')
+    expect(screen.getByRole('button', { name: new RegExp(`${M.filters.disputed}\\s*2`) })).toBeInTheDocument()
   })
 
-  it('reject needs a reason, and sends it', async () => {
+  it('the disputed tab queries disputed=1 and shows reject count and reason', async () => {
     const user = userEvent.setup()
-    fm.reply(LIST, { json: page([deposit()]) })
-    fm.reply('POST /admin/deposits/3/reject', { json: ok(deposit({ status: 'rejected' })) })
-    renderAtDeposits(fm)
-    await screen.findByText('طلب TBK-2026-000010')
-
-    await user.click(screen.getByRole('button', { name: M.actionReject }))
-    const dialog = await screen.findByRole('dialog')
-    await user.click(within(dialog).getByRole('button', { name: M.dialog.reject.cta }))
-    expect(within(dialog).getByText(M.reasonTooShort)).toBeInTheDocument()
-    expect(fm.count('POST /admin/deposits/3/reject')).toBe(0)
-
-    await user.type(within(dialog).getByRole('textbox'), 'المبلغ ناقص')
-    await user.click(within(dialog).getByRole('button', { name: M.dialog.reject.cta }))
-
-    await waitFor(() => expect(fm.count('POST /admin/deposits/3/reject')).toBe(1))
-    expect(fm.lastCall('POST /admin/deposits/3/reject')?.body).toEqual({ reason: 'المبلغ ناقص' })
-  })
-
-  it('a verified deposit offers the payout, with the note sent along', async () => {
-    const user = userEvent.setup()
-    fm.reply('GET /admin/deposits?status=verified&page=1', { json: page([deposit({ status: 'verified' })]) })
     fm.reply(LIST, { json: page([]) })
-    fm.reply('POST /admin/deposits/3/mark-paid', { json: ok(deposit({ status: 'paid_to_cook' })) })
-    renderAtDeposits(fm)
-    await screen.findByText(M.emptyFor('submitted'))
-
-    await user.click(screen.getByRole('button', { name: M.filters.verified }))
-    await user.click(await screen.findByRole('button', { name: M.actionMarkPaid }))
-    const dialog = await screen.findByRole('dialog')
-    expect(within(dialog).getByText(/01022222222/)).toBeInTheDocument()
-    await user.type(within(dialog).getByRole('textbox'), 'ref 991')
-    await user.click(within(dialog).getByRole('button', { name: M.dialog.mark_paid.cta }))
-
-    await waitFor(() => expect(fm.count('POST /admin/deposits/3/mark-paid')).toBe(1))
-    expect(fm.lastCall('POST /admin/deposits/3/mark-paid')?.body).toEqual({ note: 'ref 991' })
-  })
-
-  it('a cancelled order is flagged for refund and never offers the payout', async () => {
-    const user = userEvent.setup()
-    fm.reply('GET /admin/deposits?status=verified&page=1', {
-      json: page([deposit({ status: 'verified', order_status: 'cancelled' })]),
+    fm.reply('GET /admin/deposits?disputed=1&page=1', {
+      json: page([deposit({ status: 'rejected', reject_count: 2, rejection_reason: 'المبلغ مش واصل' })]),
     })
-    fm.reply(LIST, { json: page([]) })
     renderAtDeposits(fm)
     await screen.findByText(M.emptyFor('submitted'))
 
-    await user.click(screen.getByRole('button', { name: M.filters.verified }))
-    expect(await screen.findByText(M.orderCancelled)).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: M.actionMarkPaid })).toBeNull()
+    await user.click(screen.getByRole('button', { name: M.filters.disputed }))
+    expect(await screen.findByText('المبلغ مش واصل')).toBeInTheDocument()
+    expect(screen.getByText(M.rejectCount(2))).toBeInTheDocument()
+    expect(fm.count('GET /admin/deposits?disputed=1&page=1')).toBe(1)
   })
 
-  it('a 409 shows the server message and reloads', async () => {
+  it('a confirmed deposit shows when it was confirmed', async () => {
     const user = userEvent.setup()
-    fm.reply(LIST, { json: page([deposit()]) })
-    fm.reply('POST /admin/deposits/3/verify', { status: 409, json: fail('العربون ده اتحدّث حالًا، حدّث الصفحة.') })
+    fm.reply(LIST, { json: page([]) })
+    fm.reply('GET /admin/deposits?status=confirmed&page=1', {
+      json: page([deposit({ status: 'confirmed', confirmed_at: '2026-10-08T12:00:00+00:00' })]),
+    })
     renderAtDeposits(fm)
-    await screen.findByText('طلب TBK-2026-000010')
+    await screen.findByText(M.emptyFor('submitted'))
 
-    await user.click(screen.getByRole('button', { name: M.actionVerify }))
-    await user.click(within(await screen.findByRole('dialog')).getByRole('button', { name: M.dialog.verify.cta }))
-
-    await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('العربون ده اتحدّث حالًا'))
-    expect(fm.count(LIST)).toBe(2)
+    await user.click(screen.getByRole('button', { name: M.filters.confirmed }))
+    expect(await screen.findByText(new RegExp(M.confirmedAt))).toBeInTheDocument()
   })
 })

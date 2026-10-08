@@ -120,6 +120,12 @@ export function CookDetails({
       <Field label={M.fieldAddress} layout={layout} value={val(p.address_text)} />
       <Field label={M.fieldRadius} layout={layout} value={M.radiusKm(p.delivery_radius_km)} />
       <Field label={M.fieldRating} layout={layout} value={M.rating(p.rating_avg, p.rating_count)} />
+      {p.payment_vodafone_cash_number ? (
+        <Field label={M.fieldPayVodafone} layout={layout} value={<bdi dir="ltr">{p.payment_vodafone_cash_number}</bdi>} />
+      ) : null}
+      {p.payment_instapay_address ? (
+        <Field label={M.fieldPayInstapay} layout={layout} value={<bdi dir="ltr">{p.payment_instapay_address}</bdi>} />
+      ) : null}
       {p.bio ? <Field label={M.fieldBio} layout={layout} value={p.bio} wide /> : null}
     </dl>
   )

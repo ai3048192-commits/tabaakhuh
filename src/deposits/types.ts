@@ -1,42 +1,60 @@
 /**
- * Custom-order deposit shapes — `GET /admin/deposits` and its three action
- * endpoints (backend specs/066). The customer transfers the deposit to the
- * platform's Vodafone Cash / InstaPay account and uploads a screenshot; the
- * admin verifies it, then forwards the money to the cook.
+ * Custom-order deposit shapes — `GET /admin/deposits` (backend specs/068).
+ * The customer pays the COOK directly and uploads a screenshot; the cook
+ * confirms receipt in her own app. The admin only monitors (read-only).
  */
 
-export type DepositStatus = 'awaiting_payment' | 'submitted' | 'rejected' | 'verified' | 'paid_to_cook'
+export type DepositStatus = 'awaiting_payment' | 'submitted' | 'rejected' | 'confirmed'
 
 export type DepositMethod = 'vodafone_cash' | 'instapay'
 
-export interface DepositParty {
-  name: string | null
-  phone: string | null
+/** A payment account: the cook's Vodafone Cash wallet and/or InstaPay address. */
+export interface PaymentAccounts {
+  vodafone_cash: string | null
+  instapay: string | null
+}
+
+/** The `deposit` object inside one item. */
+export interface DepositInfo {
+  id: number
+  order_id: number
+  amount: number
+  percent: number
+  status: DepositStatus
+  method: DepositMethod | null
+  rejection_reason: string | null
+  /** Rejections so far; `>= 2` while not confirmed = a dispute. */
+  reject_count: number
+  /** Short-lived signed link to the customer's transfer screenshot. */
+  proof_image_url: string | null
+  /** ISO 8601. */
+  submitted_at: string | null
+  confirmed_at: string | null
+  cook_name: string | null
+  /** The account the customer was told to pay (snapshot at deposit creation). */
+  pay_to: PaymentAccounts | null
 }
 
 /** One element of `data.items`. */
 export interface Deposit {
-  id: number
-  order_id: number
+  deposit: DepositInfo
   order_number: string | null
-  /** The order's own status — `cancelled` means the deposit must be refunded, not forwarded. */
+  /** The order's own status — `cancelled` after a confirmed deposit needs a manual refund follow-up. */
   order_status: string
   order_subtotal: number
   order_total: number
-  amount: number
-  percentage: number
-  status: DepositStatus
-  method: DepositMethod | null
-  rejection_reason: string | null
-  /** Short-lived signed link to the customer's transfer screenshot. */
-  proof_image_url: string | null
-  payout_note: string | null
-  /** ISO 8601. */
-  submitted_at: string | null
-  verified_at: string | null
-  paid_to_cook_at: string | null
-  customer: DepositParty
-  cook: DepositParty
+  customer_name: string | null
+  customer_phone: string | null
+  cook_name: string | null
+  cook_phone: string | null
+}
+
+export interface DepositCounts {
+  awaiting_payment?: number
+  submitted?: number
+  confirmed?: number
+  rejected?: number
+  disputed?: number
 }
 
 export interface DepositPage {
@@ -45,18 +63,12 @@ export interface DepositPage {
   per_page: number
   total: number
   /** Deposits per status — the tab badges. */
-  counts: Partial<Record<DepositStatus, number>>
+  counts: DepositCounts
+  /** Sum of the confirmed deposits' amounts. */
+  confirmed_total: number
 }
 
-/** The queue tabs; `all` omits the `status` query param (everything but awaiting payment). */
-export type DepositFilter = 'submitted' | 'verified' | 'paid_to_cook' | 'rejected' | 'all'
-
-export type DepositAction = 'verify' | 'reject' | 'mark_paid'
-
-export type ActionOutcome =
-  | { ok: true }
-  | { ok: false; reason: 'conflict'; message: string }
-  | { ok: false; reason: 'not_found' }
-  | { ok: false; reason: 'transient' }
+/** The monitoring tabs; `disputed` maps to `disputed=1` (no `status` param). */
+export type DepositFilter = 'submitted' | 'confirmed' | 'rejected' | 'disputed'
 
 export type DepositsStatus = 'loading' | 'ready' | 'error'

@@ -10,6 +10,7 @@ import SettingsCard from './SettingsCard'
 import { settingsMessages as M } from './messages'
 import type { NumberField, StringField, ToggleField } from './systemSettingsValidation'
 import PageHeader from '../shared/PageHeader'
+import { DEPOSITS_ENABLED } from '../deposits/featureFlag'
 
 /** The landing editor is only downloaded when its tab is opened. */
 const LandingEditor = lazy(() => import('../landing/editor/LandingEditor'))
@@ -328,13 +329,10 @@ function SystemSettings({ onToast }: { onToast: (msg: string) => void }) {
               </div>
             </SettingsCard>
 
+            {DEPOSITS_ENABLED && (
             <SettingsCard title={M.cardDepositTitle} icon={<HandCoins size={18} aria-hidden="true" />}>
               <div className="space-y-3">
                 <p className="text-sm text-[#6b4f3a]">{M.depositIntro}</p>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <TextField label={M.depositVodafoneLabel} field="deposit_vodafone_cash_number" value={sys.strDrafts.deposit_vodafone_cash_number} error={sys.errors.deposit_vodafone_cash_number} placeholder="01012345678" onChange={sys.setStr} />
-                  <TextField label={M.depositInstapayLabel} field="deposit_instapay_address" value={sys.strDrafts.deposit_instapay_address} error={sys.errors.deposit_instapay_address} placeholder="tabbakha@instapay" onChange={sys.setStr} />
-                </div>
                 <NumField label={M.depositPercentLabel} field="deposit_percent" value={sys.numDrafts.deposit_percent} error={sys.errors.deposit_percent} placeholder="20" onChange={sys.setNum} />
                 <p className="text-xs text-gray-400">{M.depositOffHint}</p>
                 <Link
@@ -345,6 +343,7 @@ function SystemSettings({ onToast }: { onToast: (msg: string) => void }) {
                 </Link>
               </div>
             </SettingsCard>
+            )}
 
             <SettingsCard title={M.cardNotifTitle} icon={<Bell size={18} aria-hidden="true" />}>
               <div className="space-y-2">

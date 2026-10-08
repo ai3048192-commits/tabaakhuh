@@ -5,9 +5,14 @@ import { safeUrl } from '../shared/safeUrl'
 import { formatAmount, formatDateTime } from '../withdrawals/format'
 import DepositStatusBadge from './DepositStatusBadge'
 import { depositMessages as M } from './messages'
-import type { Deposit, DepositAction, DepositParty } from './types'
+import type { Deposit } from './types'
 
-function Party({ label, party }: { label: string; party: DepositParty }) {
+interface Party {
+  name: string | null
+  phone: string | null
+}
+
+function PartyInfo({ label, party }: { label: string; party: Party }) {
   const [copied, setCopied] = useState(false)
   const copy = () => {
     if (!party.phone) return
@@ -38,21 +43,20 @@ function Party({ label, party }: { label: string; party: DepositParty }) {
   )
 }
 
-/** One deposit in the queue — the proof, the people, and the next step. */
+/** One deposit in the monitoring list — read-only. */
 export default function DepositCard({
-  deposit,
-  busy,
-  onAction,
+  item,
   onOpenProof,
 }: {
-  deposit: Deposit
-  busy: boolean
-  onAction: (action: DepositAction) => void
+  item: Deposit
   onOpenProof: (url: string) => void
 }) {
-  const proof = safeUrl(deposit.proof_image_url)
-  const cancelled = deposit.order_status === 'cancelled'
-  const btn = 'rounded-xl border px-3.5 py-2 text-xs font-black transition disabled:opacity-50'
+  const d = item.deposit
+  const proof = safeUrl(d.proof_image_url)
+  const cancelled = item.order_status === 'cancelled'
+  const disputed = d.reject_count >= 2 && d.status !== 'confirmed'
+  const payTo = d.pay_to
+  const cookName = item.cook_name ?? d.cook_name
 
   return (
     <article className={`${cardCls} flex flex-col gap-4 p-5 sm:flex-row`}>
@@ -66,7 +70,7 @@ export default function DepositCard({
           >
             <img
               src={proof}
-              alt={M.proofAlt(deposit.order_number)}
+              alt={M.proofAlt(item.order_number)}
               className="h-40 w-full object-cover sm:h-36 sm:w-28"
               loading="lazy"
             />
@@ -83,64 +87,72 @@ export default function DepositCard({
 
       <div className="min-w-0 flex-1 space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h3 className="text-base font-black text-[#7a0d0d]">{M.order(deposit.order_number, deposit.order_id)}</h3>
-          <DepositStatusBadge status={deposit.status} />
+          <h3 className="text-base font-black text-[#7a0d0d]">{M.order(item.order_number, d.order_id)}</h3>
+          <div className="flex flex-wrap items-center gap-1.5">
+            {disputed && (
+              <span className="inline-flex items-center gap-1 rounded-full border border-red-300 bg-red-50 px-2.5 py-1 text-[11px] font-black text-red-700">
+                <AlertTriangle size={13} aria-hidden="true" />
+                {M.disputed}
+              </span>
+            )}
+            <DepositStatusBadge status={d.status} />
+          </div>
         </div>
 
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-          <p className="text-2xl font-black text-gray-900" dir="ltr">{formatAmount(deposit.amount)}</p>
-          <p className="text-xs font-bold text-gray-500">{M.ofSubtotal(deposit.percentage)}</p>
-          {deposit.method && (
+          <p className="text-2xl font-black text-gray-900" dir="ltr">{formatAmount(d.amount)}</p>
+          <p className="text-xs font-bold text-gray-500">{M.ofSubtotal(d.percent)}</p>
+          {d.method && (
             <p className="text-xs font-bold text-gray-600">
-              {M.sentVia} <span className="text-[#7a0d0d]">{M.method[deposit.method]}</span>
-            </p>
-          )}
-          {deposit.submitted_at && (
-            <p className="text-xs text-gray-400">
-              {M.submittedAt}: <span dir="ltr">{formatDateTime(deposit.submitted_at)}</span>
+              {M.sentVia} <span className="text-[#7a0d0d]">{M.method[d.method]}</span>
             </p>
           )}
         </div>
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <Party label={M.customer} party={deposit.customer} />
-          <Party label={M.cook} party={deposit.cook} />
+          <PartyInfo label={M.customer} party={{ name: item.customer_name, phone: item.customer_phone }} />
+          <PartyInfo label={M.cook} party={{ name: cookName, phone: item.cook_phone }} />
         </div>
 
-        {deposit.rejection_reason && deposit.status === 'rejected' && (
+        <div className="rounded-xl bg-[#faf3e7] px-3 py-2 text-xs text-gray-700">
+          <p className="mb-1 font-black text-gray-500">{M.payTo}</p>
+          {payTo && (payTo.vodafone_cash || payTo.instapay) ? (
+            <ul className="space-y-0.5 font-bold">
+              {payTo.vodafone_cash && (
+                <li>{M.vodafoneCash}: <span dir="ltr">{payTo.vodafone_cash}</span></li>
+              )}
+              {payTo.instapay && (
+                <li>{M.instapay}: <span dir="ltr">{payTo.instapay}</span></li>
+              )}
+            </ul>
+          ) : (
+            <p className="text-gray-400">{M.noAccount}</p>
+          )}
+        </div>
+
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400">
+          {d.submitted_at && (
+            <p>{M.submittedAt}: <span dir="ltr">{formatDateTime(d.submitted_at)}</span></p>
+          )}
+          {d.confirmed_at && (
+            <p>{M.confirmedAt}: <span dir="ltr">{formatDateTime(d.confirmed_at)}</span></p>
+          )}
+          {d.reject_count > 0 && (
+            <p className="font-bold text-red-700">{M.rejectCount(d.reject_count)}</p>
+          )}
+        </div>
+
+        {d.rejection_reason && d.reject_count > 0 && (
           <p className="rounded-xl bg-red-50 px-3 py-2 text-xs text-red-700">
-            <span className="font-black">{M.rejectionReason}: </span>{deposit.rejection_reason}
+            <span className="font-black">{M.rejectionReason}: </span>{d.rejection_reason}
           </p>
         )}
-        {deposit.payout_note && (
-          <p className="rounded-xl bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
-            <span className="font-black">{M.payoutNote}: </span>{deposit.payout_note}
-          </p>
-        )}
-        {cancelled && deposit.status !== 'rejected' && (
+        {cancelled && (
           <p className="flex items-start gap-2 rounded-xl bg-amber-50 px-3 py-2 text-xs font-bold text-amber-800">
             <AlertTriangle size={14} className="mt-0.5 shrink-0" aria-hidden="true" />
             {M.orderCancelled}
           </p>
         )}
-
-        <div className="flex flex-wrap gap-2 pt-1">
-          {deposit.status === 'submitted' && (
-            <>
-              <button type="button" disabled={busy} aria-busy={busy} onClick={() => onAction('verify')} className={`${btn} border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100`}>
-                {M.actionVerify}
-              </button>
-              <button type="button" disabled={busy} aria-busy={busy} onClick={() => onAction('reject')} className={`${btn} border-red-300 bg-red-50 text-red-700 hover:bg-red-100`}>
-                {M.actionReject}
-              </button>
-            </>
-          )}
-          {deposit.status === 'verified' && !cancelled && (
-            <button type="button" disabled={busy} aria-busy={busy} onClick={() => onAction('mark_paid')} className={`${btn} border-blue-300 bg-blue-50 text-blue-800 hover:bg-blue-100`}>
-              {M.actionMarkPaid}
-            </button>
-          )}
-        </div>
       </div>
     </article>
   )

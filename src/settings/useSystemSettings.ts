@@ -50,8 +50,6 @@ function draftsFrom(s: PlatformSettings | null) {
       support_phone: s?.support_phone ?? '',
       logo_url: s?.logo_url ?? '',
       icon_url: s?.icon_url ?? '',
-      deposit_vodafone_cash_number: s?.deposit_vodafone_cash_number ?? '',
-      deposit_instapay_address: s?.deposit_instapay_address ?? '',
     } as StrDrafts,
     toggles: {
       first_order_discount_enabled: s?.first_order_discount_enabled ?? false,

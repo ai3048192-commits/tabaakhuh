@@ -40,12 +40,10 @@ export const settingsMessages = {
   cardStoreTitle: 'بيانات المتجر',
   cardDepositTitle: 'عربون الطلبات الخاصة',
   depositIntro:
-    'العميل بيحوّل العربون على حسابات المنصة دي بعد ما يوافق على عرض الطباخة، وبتراجع التحويل وتحوّله للطباخة من صفحة العرابين.',
+    'العميل بيحوّل العربون للطباخة مباشرة على حسابها بعد ما يوافق على عرضها، والطباخة هي اللي بتأكد الوصول. هنا بتحدد النسبة بس.',
   depositPercentLabel: 'نسبة العربون من سعر الأكل (%)',
-  depositVodafoneLabel: 'رقم فودافون كاش',
-  depositInstapayLabel: 'عنوان إنستاباي',
-  depositOffHint: 'من غير ولا حساب، أو بنسبة 0، الطلبات الخاصة مش هتطلب عربون.',
-  depositReviewLink: 'مراجعة العرابين',
+  depositOffHint: 'بنسبة 0، الطلبات الخاصة مش هتطلب عربون.',
+  depositReviewLink: 'متابعة العرابين',
   cardNotifTitle: 'الإشعارات ونطاق التوصيل',
   cardCitiesTitle: 'المدن والمناطق',
 
@@ -95,7 +93,6 @@ export const settingsMessages = {
   vMinOrderRange: 'لا يمكن أن يكون بالسالب.',
   vRadiusRange: 'النطاق بين 1 و200 كم.',
   vTooLong: 'أطول من الحد المسموح.',
-  vWallet: 'رقم المحفظة لازم يكون 11 رقم ويبدأ بـ 01.',
   vDepositPercentRange: 'النسبة لازم تكون بين 0 و 100.',
   vEmail: 'بريد إلكتروني غير صالح.',
   vUrl: 'رابط غير صالح (لازم يبدأ بـ http).',

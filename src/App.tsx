@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from "./auth/AuthContext";
 import RequireAdmin from "./auth/RequireAdmin";
 import FullScreenLoader from "./auth/FullScreenLoader";
 import ErrorBoundary from "./shared/ErrorBoundary";
+import { DEPOSITS_ENABLED } from "./deposits/featureFlag";
 import "./index.css";
 
 /*
@@ -82,7 +83,7 @@ function AdminLayout() {
             <Route path="/customers" element={<UsersPage key="customer" scope="customer" />} />
             <Route path="/orders" element={<OrdersPage />} />
             <Route path="/withdrawals" element={<WithdrawalsPage />} />
-            <Route path="/deposits" element={<DepositsPage />} />
+            {DEPOSITS_ENABLED && <Route path="/deposits" element={<DepositsPage />} />}
             {/* Approved cooks / drivers (management) vs. applicants (review queues). */}
             <Route path="/cooks" element={<UsersPage key="cook" scope="cook" />} />
             <Route path="/drivers" element={<UsersPage key="driver" scope="driver" />} />

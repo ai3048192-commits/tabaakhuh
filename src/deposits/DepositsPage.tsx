@@ -3,40 +3,21 @@ import { RefreshCw } from 'lucide-react'
 import PageHeader from '../shared/PageHeader'
 import { bannerBtnLight, pageCls } from '../shared/ui'
 import Pager from '../withdrawals/Pager'
-import ActionDialog from './ActionDialog'
 import DepositCard from './DepositCard'
 import ProofViewer from './ProofViewer'
 import { useDeposits } from './useDeposits'
 import { depositMessages as M } from './messages'
-import type { ActionOutcome, Deposit, DepositAction, DepositFilter } from './types'
+import { formatAmount } from '../withdrawals/format'
+import type { DepositFilter } from './types'
 
-const TABS: DepositFilter[] = ['submitted', 'verified', 'paid_to_cook', 'rejected', 'all']
+const TABS: DepositFilter[] = ['submitted', 'confirmed', 'rejected', 'disputed']
 
-/** `/deposits` — check customers' deposit transfers and forward them to the cooks. */
+/** `/deposits` — read-only monitoring of customers' deposits to cooks. */
 export default function DepositsPage() {
   const q = useDeposits()
-  const [toast, setToast] = useState<string | null>(null)
-  const [dialog, setDialog] = useState<{ deposit: Deposit; action: DepositAction } | null>(null)
   const [proof, setProof] = useState<{ url: string; orderNumber: string | null } | null>(null)
 
-  const say = (text: string) => {
-    setToast(text)
-    window.setTimeout(() => setToast((t) => (t === text ? null : t)), 6000)
-  }
-
-  const outcomeText = (o: ActionOutcome, action: DepositAction) =>
-    o.ok ? M.doneToast[action] : o.reason === 'conflict' ? o.message : o.reason === 'not_found' ? M.notFoundToast : M.retryToast
-
-  const confirm = (note: string | null) => {
-    if (!dialog) return
-    const { deposit, action } = dialog
-    void q.run(deposit.id, action, note).then((o) => {
-      if (o.ok || o.reason !== 'transient') setDialog(null)
-      say(outcomeText(o, action))
-    })
-  }
-
-  const liveMsg = toast ?? q.toast
+  const liveMsg = q.toast
   const counts = q.page?.counts ?? {}
 
   return (
@@ -52,10 +33,18 @@ export default function DepositsPage() {
         )}
       />
 
+      {q.page && (
+        <section aria-label={M.summaryTitle} className="mb-5 flex flex-wrap items-baseline gap-x-6 gap-y-1 rounded-2xl bg-white p-4 ring-1 ring-[#efe3cc]">
+          <p className="text-xs font-black text-gray-500">{M.summaryTotal}</p>
+          <p className="text-2xl font-black text-emerald-800" dir="ltr">{formatAmount(q.page.confirmed_total)}</p>
+          <p className="text-xs font-bold text-gray-500">{M.summaryCount(counts.confirmed ?? 0)}</p>
+        </section>
+      )}
+
       <div role="group" aria-label={M.pageTitle} className="mb-5 flex flex-wrap gap-1 rounded-xl border border-gray-200 bg-white p-1">
         {TABS.map((t) => {
           const active = t === q.filter
-          const n = t === 'all' ? undefined : counts[t]
+          const n = counts[t]
           return (
             <button
               key={t}
@@ -108,10 +97,8 @@ export default function DepositsPage() {
           <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
             {q.page.items.map((d) => (
               <DepositCard
-                key={d.id}
-                deposit={d}
-                busy={q.busyId === d.id}
-                onAction={(action) => setDialog({ deposit: d, action })}
+                key={d.deposit.id}
+                item={d}
                 onOpenProof={(url) => setProof({ url, orderNumber: d.order_number })}
               />
             ))}
@@ -129,15 +116,6 @@ export default function DepositsPage() {
         </div>
       )}
 
-      {dialog && (
-        <ActionDialog
-          deposit={dialog.deposit}
-          action={dialog.action}
-          busy={q.busyId === dialog.deposit.id}
-          onConfirm={confirm}
-          onCancel={() => setDialog(null)}
-        />
-      )}
       {proof && <ProofViewer url={proof.url} orderNumber={proof.orderNumber} onClose={() => setProof(null)} />}
     </div>
   )

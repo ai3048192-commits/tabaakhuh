@@ -18,6 +18,12 @@ export interface CookApplication {
   phone?: string | null
   email?: string | null
   bio: string
+  /**
+   * Where the cook receives custom-order deposits (spec 068). Optional — shown
+   * only when the cook payload carries them.
+   */
+  payment_vodafone_cash_number?: string | null
+  payment_instapay_address?: string | null
   avatar_url: string | null
   national_id_front_url: string | null
   national_id_back_url: string | null

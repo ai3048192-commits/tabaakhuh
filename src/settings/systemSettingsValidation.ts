@@ -18,8 +18,6 @@ export type StringField =
   | 'support_phone'
   | 'logo_url'
   | 'icon_url'
-  | 'deposit_vodafone_cash_number'
-  | 'deposit_instapay_address'
 
 export type ToggleField =
   | 'first_order_discount_enabled'
@@ -35,8 +33,6 @@ const NUMERIC = /^-?\d+(\.\d+)?$/
 // re-implementing their full grammar; the server rejects the true edge cases.
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const URL_RE = /^https?:\/\/[^\s]+$/
-/** An Egyptian mobile wallet: 11 digits starting 01 (the backend's rule). */
-const WALLET = /^01\d{9}$/
 
 interface NumberRule {
   min: number
@@ -55,7 +51,7 @@ const NUMBER_RULES: Record<NumberField, NumberRule> = {
 
 interface StringRule {
   max: number
-  kind: 'text' | 'email' | 'url' | 'phone' | 'wallet'
+  kind: 'text' | 'email' | 'url' | 'phone'
 }
 
 const STRING_RULES: Record<StringField, StringRule> = {
@@ -64,8 +60,6 @@ const STRING_RULES: Record<StringField, StringRule> = {
   support_phone: { max: 32, kind: 'phone' },
   logo_url: { max: 2048, kind: 'url' },
   icon_url: { max: 2048, kind: 'url' },
-  deposit_vodafone_cash_number: { max: 11, kind: 'wallet' },
-  deposit_instapay_address: { max: 100, kind: 'text' },
 }
 
 export interface NumberFieldResult {
@@ -102,7 +96,6 @@ export function validateStringField(field: StringField, raw: string): StringFiel
   const rule = STRING_RULES[field]
 
   if (trimmed === '') return { value: null, error: null }
-  if (rule.kind === 'wallet' && !WALLET.test(trimmed)) return { value: trimmed, error: M.vWallet }
   if (trimmed.length > rule.max) return { value: trimmed, error: M.vTooLong }
   if (rule.kind === 'email' && !EMAIL.test(trimmed)) return { value: trimmed, error: M.vEmail }
   if (rule.kind === 'url' && !URL_RE.test(trimmed)) return { value: trimmed, error: M.vUrl }
