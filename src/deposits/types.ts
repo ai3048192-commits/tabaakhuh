@@ -62,13 +62,10 @@ export interface DepositPage {
   page: number
   per_page: number
   total: number
-  /** Deposits per status — the tab badges. */
+  /** Deposits per status. */
   counts: DepositCounts
   /** Sum of the confirmed deposits' amounts. */
   confirmed_total: number
 }
-
-/** The monitoring tabs; `disputed` maps to `disputed=1` (no `status` param). */
-export type DepositFilter = 'submitted' | 'confirmed' | 'rejected' | 'disputed'
 
 export type DepositsStatus = 'loading' | 'ready' | 'error'

@@ -2,27 +2,24 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { clampPage, totalPages as calcTotalPages } from '../withdrawals/pagination'
 import { listDeposits } from './depositsApi'
 import { depositMessages as M } from './messages'
-import type { DepositFilter, DepositPage, DepositsStatus } from './types'
+import type { DepositPage, DepositsStatus } from './types'
 
 export interface UseDeposits {
   status: DepositsStatus
   page: DepositPage | null
-  filter: DepositFilter
   pageNum: number
   totalPages: number
   beyondRange: boolean
   toast: string | null
-  setFilter: (next: DepositFilter) => void
   setPage: (n: number) => void
   refresh: () => void
 }
 
 /**
- * Owns the deposits monitoring list: the server-paginated page per tab.
- * Read-only — there are no actions. A `401` is handled upstream.
+ * Owns the deposits monitoring list: the server-paginated deposits, newest
+ * first. Read-only — there are no actions. A `401` is handled upstream.
  */
 export function useDeposits(): UseDeposits {
-  const [filter, setFilterState] = useState<DepositFilter>('submitted')
   const [pageNum, setPageNum] = useState(1)
   const [pageData, setPageData] = useState<DepositPage | null>(null)
   const [status, setStatus] = useState<DepositsStatus>('loading')
@@ -39,10 +36,10 @@ export function useDeposits(): UseDeposits {
   }, [])
 
   const load = useCallback(
-    async (next: { filter: DepositFilter; page: number }) => {
+    async (page: number) => {
       if (!hasPageRef.current) setStatus('loading')
       try {
-        const data = await listDeposits(next)
+        const data = await listDeposits(page)
         setPageData(data)
         setStatus('ready')
         return data
@@ -60,17 +57,12 @@ export function useDeposits(): UseDeposits {
   )
 
   useEffect(() => {
-    void load({ filter, page: pageNum })
+    void load(pageNum)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter, pageNum])
+  }, [pageNum])
 
   const totalPages = pageData ? calcTotalPages(pageData.total, Math.max(1, pageData.per_page)) : 1
   const beyondRange = pageData != null && pageData.items.length === 0 && pageNum > 1
-
-  const setFilter = useCallback((next: DepositFilter) => {
-    setFilterState(next)
-    setPageNum(1)
-  }, [])
 
   const setPage = useCallback(
     (n: number) => setPageNum((cur) => clampPage(n, Math.max(1, totalPages)) || cur),
@@ -78,8 +70,8 @@ export function useDeposits(): UseDeposits {
   )
 
   const refresh = useCallback(() => {
-    void load({ filter, page: pageNum })
-  }, [load, filter, pageNum])
+    void load(pageNum)
+  }, [load, pageNum])
 
-  return { status, page: pageData, filter, pageNum, totalPages, beyondRange, toast, setFilter, setPage, refresh }
+  return { status, page: pageData, pageNum, totalPages, beyondRange, toast, setPage, refresh }
 }

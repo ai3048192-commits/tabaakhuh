@@ -8,9 +8,6 @@ import ProofViewer from './ProofViewer'
 import { useDeposits } from './useDeposits'
 import { depositMessages as M } from './messages'
 import { formatAmount } from '../withdrawals/format'
-import type { DepositFilter } from './types'
-
-const TABS: DepositFilter[] = ['submitted', 'confirmed', 'rejected', 'disputed']
 
 /** `/deposits` — read-only monitoring of customers' deposits to cooks. */
 export default function DepositsPage() {
@@ -41,31 +38,6 @@ export default function DepositsPage() {
         </section>
       )}
 
-      <div role="group" aria-label={M.pageTitle} className="mb-5 flex flex-wrap gap-1 rounded-xl border border-gray-200 bg-white p-1">
-        {TABS.map((t) => {
-          const active = t === q.filter
-          const n = counts[t]
-          return (
-            <button
-              key={t}
-              type="button"
-              aria-pressed={active}
-              onClick={() => q.setFilter(t)}
-              className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold ${
-                active ? 'bg-[#7a0d0d] text-white' : 'text-gray-600 hover:bg-gray-50'
-              }`}
-            >
-              {M.filters[t]}
-              {n ? (
-                <span className={`rounded-full px-1.5 text-[10px] font-black ${active ? 'bg-white/20' : 'bg-amber-100 text-amber-800'}`}>
-                  {n}
-                </span>
-              ) : null}
-            </button>
-          )
-        })}
-      </div>
-
       {q.status === 'loading' && <p className="text-sm text-gray-500">{M.loading}</p>}
 
       {q.status === 'error' && (
@@ -84,7 +56,7 @@ export default function DepositsPage() {
       {q.status === 'ready' && q.page && q.page.items.length === 0 && (
         <>
           <p className="rounded-3xl bg-white p-10 text-center text-sm font-bold text-gray-400 shadow-[0_18px_40px_-30px_rgba(122,13,13,0.45)] ring-1 ring-[#efe3cc]">
-            {M.emptyFor(q.filter)}
+            {M.empty}
           </p>
           {q.beyondRange && (
             <Pager page={q.pageNum} totalPages={q.totalPages} total={q.page.total} beyondRange onPage={q.setPage} />

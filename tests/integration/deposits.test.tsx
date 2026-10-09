@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import { renderAtDeposits } from '../helpers/harness'
 import { installFetchMock, type FetchMock } from '../helpers/fetchMock'
 import { ok } from '../helpers/fixtures'
@@ -50,10 +49,10 @@ afterEach(() => {
   localStorage.clear()
 })
 
-const LIST = 'GET /admin/deposits?status=submitted&page=1'
+const LIST = 'GET /admin/deposits?page=1'
 
 describe('deposits monitoring', () => {
-  it('opens on deposits awaiting the cook, with proof, parties and the account paid to — and no actions', async () => {
+  it('lists the deposits customers sent, with proof, parties and the account paid to — no tabs, no actions', async () => {
     fm.reply(LIST, { json: page([deposit()], { submitted: 1 }) })
     renderAtDeposits(fm)
 
@@ -65,42 +64,42 @@ describe('deposits monitoring', () => {
     expect(screen.getByText('sosan@instapay')).toBeInTheDocument()
     expect(screen.getByRole('img', { name: M.proofAlt('TBK-2026-000010') })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /تأكيد الاستلام|رفض|تم التحويل/ })).toBeNull()
+    // No filter categories: one list, asked for without a status.
+    expect(screen.queryByRole('group', { name: M.pageTitle })).toBeNull()
+    expect(screen.queryByRole('button', { name: /بانتظار تأكيد الطباخة|اتأكد|مرفوض|خلاف/ })).toBeNull()
+    expect(fm.count(LIST)).toBe(1)
   })
 
-  it('shows the confirmed total and count, and tab badges from counts', async () => {
-    fm.reply(LIST, { json: page([deposit()], { submitted: 1, confirmed: 4, disputed: 2 }, 800) })
+  it('shows deposits in every state together, each with its own status', async () => {
+    fm.reply(LIST, {
+      json: page([
+        deposit({ id: 1, status: 'submitted' }, { order_number: 'TBK-2026-000001' }),
+        deposit({ id: 2, status: 'confirmed', confirmed_at: '2026-10-08T12:00:00+00:00' }, { order_number: 'TBK-2026-000002' }),
+        deposit({ id: 3, status: 'rejected', reject_count: 2, rejection_reason: 'المبلغ مش واصل' }, { order_number: 'TBK-2026-000003' }),
+      ]),
+    })
+    renderAtDeposits(fm)
+
+    expect(await screen.findByText('طلب TBK-2026-000001')).toBeInTheDocument()
+    expect(screen.getByText('طلب TBK-2026-000002')).toBeInTheDocument()
+    expect(screen.getByText('طلب TBK-2026-000003')).toBeInTheDocument()
+    expect(screen.getByText(new RegExp(M.confirmedAt))).toBeInTheDocument()
+    expect(screen.getByText('المبلغ مش واصل')).toBeInTheDocument()
+    expect(screen.getByText(M.rejectCount(2))).toBeInTheDocument()
+  })
+
+  it('shows the confirmed total and count', async () => {
+    fm.reply(LIST, { json: page([deposit()], { submitted: 1, confirmed: 4 }, 800) })
     renderAtDeposits(fm)
 
     expect(await screen.findByText(M.summaryCount(4))).toBeInTheDocument()
     expect(screen.getByRole('region', { name: M.summaryTitle })).toHaveTextContent('800')
-    expect(screen.getByRole('button', { name: new RegExp(`${M.filters.disputed}\\s*2`) })).toBeInTheDocument()
   })
 
-  it('the disputed tab queries disputed=1 and shows reject count and reason', async () => {
-    const user = userEvent.setup()
+  it('says so when no customer has sent a deposit yet', async () => {
     fm.reply(LIST, { json: page([]) })
-    fm.reply('GET /admin/deposits?disputed=1&page=1', {
-      json: page([deposit({ status: 'rejected', reject_count: 2, rejection_reason: 'المبلغ مش واصل' })]),
-    })
     renderAtDeposits(fm)
-    await screen.findByText(M.emptyFor('submitted'))
 
-    await user.click(screen.getByRole('button', { name: M.filters.disputed }))
-    expect(await screen.findByText('المبلغ مش واصل')).toBeInTheDocument()
-    expect(screen.getByText(M.rejectCount(2))).toBeInTheDocument()
-    expect(fm.count('GET /admin/deposits?disputed=1&page=1')).toBe(1)
-  })
-
-  it('a confirmed deposit shows when it was confirmed', async () => {
-    const user = userEvent.setup()
-    fm.reply(LIST, { json: page([]) })
-    fm.reply('GET /admin/deposits?status=confirmed&page=1', {
-      json: page([deposit({ status: 'confirmed', confirmed_at: '2026-10-08T12:00:00+00:00' })]),
-    })
-    renderAtDeposits(fm)
-    await screen.findByText(M.emptyFor('submitted'))
-
-    await user.click(screen.getByRole('button', { name: M.filters.confirmed }))
-    expect(await screen.findByText(new RegExp(M.confirmedAt))).toBeInTheDocument()
+    expect(await screen.findByText(M.empty)).toBeInTheDocument()
   })
 })

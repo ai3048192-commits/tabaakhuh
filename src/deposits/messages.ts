@@ -1,20 +1,13 @@
-import type { DepositFilter, DepositMethod, DepositStatus } from './types'
+import type { DepositMethod, DepositStatus } from './types'
 
 /** Arabic, RTL-first. */
 export const depositMessages = {
   pageTitle: 'العرابين',
-  subtitle: 'متابعة عرابين الطلبات الخاصة: العميل بيحوّل للطباخة مباشرة والطباخة هي اللي بتأكد الوصول. الصفحة دي للمتابعة بس.',
+  subtitle: 'العرابين اللي العملاء بعتوها للطباخات في الطلبات الخاصة: العميل بيحوّل للطباخة مباشرة والطباخة هي اللي بتأكد الوصول. الصفحة دي للمتابعة بس.',
   refresh: 'تحديث',
   loading: 'جارٍ تحميل العرابين…',
   queueError: 'حدث خطأ ما. حاول مرة أخرى.',
   retry: 'إعادة المحاولة',
-
-  filters: {
-    submitted: 'بانتظار تأكيد الطباخة',
-    confirmed: 'اتأكد',
-    rejected: 'مرفوض',
-    disputed: 'خلاف',
-  } satisfies Record<DepositFilter, string>,
 
   status: {
     awaiting_payment: 'العميل لسه مادفعش',
@@ -28,12 +21,7 @@ export const depositMessages = {
     instapay: 'إنستاباي',
   } satisfies Record<DepositMethod, string>,
 
-  emptyFor: (f: DepositFilter) =>
-    f === 'submitted'
-      ? 'مفيش عرابين مستنية تأكيد الطباخة دلوقتي.'
-      : f === 'disputed'
-        ? 'مفيش عرابين فيها خلاف.'
-        : 'مفيش عرابين هنا.',
+  empty: 'مفيش عرابين اتبعتت من العملاء لسه.',
 
   order: (n: string | null, id: number) => `طلب ${n ?? `#${id}`}`,
   amount: 'العربون',
