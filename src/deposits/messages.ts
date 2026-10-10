@@ -17,7 +17,7 @@ export const depositMessages = {
   } satisfies Record<DepositStatus, string>,
 
   method: {
-    vodafone_cash: 'فودافون كاش',
+    vodafone_cash: 'محفظة إلكترونية',
     instapay: 'إنستاباي',
   } satisfies Record<DepositMethod, string>,
 
@@ -40,7 +40,7 @@ export const depositMessages = {
   rejectCount: (n: number) => `اترفض ${n} ${n === 1 ? 'مرة' : 'مرات'}`,
   disputed: 'خلاف',
   payTo: 'اتحوّل على حساب الطباخة',
-  vodafoneCash: 'فودافون كاش',
+  vodafoneCash: 'محفظة إلكترونية',
   instapay: 'إنستاباي',
   noAccount: 'مفيش حساب مسجّل',
   confirmedAt: 'وقت التأكيد',

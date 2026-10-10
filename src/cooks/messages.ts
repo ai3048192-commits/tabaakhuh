@@ -40,7 +40,7 @@ export const cookMessages = {
   fieldRadius: 'نطاق التوصيل',
   radiusKm: (n: number) => `${n} كم`,
   fieldBio: 'نبذة',
-  fieldPayVodafone: 'فودافون كاش (للعربون)',
+  fieldPayVodafone: 'محفظة إلكترونية (للعربون)',
   fieldPayInstapay: 'إنستاباي (للعربون)',
   fieldDocuments: 'المستندات',
   fieldRating: 'التقييم',
