@@ -10,7 +10,7 @@ import Pagination from './Pagination'
 import OrderDetailDialog from './OrderDetailDialog'
 import { orderMessages as M } from './messages'
 
-/** `/orders` — the read-only Orders Oversight screen (US1–US3 + conditional auto-refresh). */
+/** `/orders` — the Orders Oversight screen (read-only, apart from cancelling a problem order from its detail panel) (US1–US3 + conditional auto-refresh). */
 export default function OrdersPage() {
   const q = useOrdersOversight()
   const [cities, setCities] = useState<{ id: number; name_ar: string }[]>([])
@@ -152,7 +152,7 @@ export default function OrdersPage() {
         </div>
       )}
 
-      {q.detail && <OrderDetailDialog order={q.detail.order} onClose={q.closeDetail} />}
+      {q.detail && <OrderDetailDialog order={q.detail.order} onClose={q.closeDetail} onChanged={q.refresh} />}
     </div>
   )
 }

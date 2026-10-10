@@ -18,3 +18,18 @@ export function listOrders(query: OrdersQuery, signal?: AbortSignal): Promise<Or
     { signal },
   )
 }
+
+/**
+ * `POST /admin/orders/{id}/cancel` — support cancels a problem order from any
+ * live status (even after the cook marked it ready or a driver took it). The
+ * reason is required: it is shown to the customer and cook and kept on the
+ * order's history. Returns the cancelled order. A finished order answers 409.
+ */
+export function cancelOrder(id: number, reason: string): Promise<Order> {
+  return authedRequest<Order>(`/admin/orders/${id}/cancel`, {
+    method: 'POST',
+    body: { reason },
+    // The server's own message is Arabic for this header — shown as is on failure.
+    headers: { 'Accept-Language': 'ar' },
+  })
+}

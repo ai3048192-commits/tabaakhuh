@@ -7,6 +7,7 @@ import DrawerShell from '../shared/DrawerShell'
 import { safeUrl } from '../shared/safeUrl'
 import OrderTypeBadge from './OrderTypeBadge'
 import OrderStatusBadge from './OrderStatusBadge'
+import CancelOrderPanel from './CancelOrderPanel'
 import { isCancelled, statusLabel, STATUS_ICONS } from './orderStatus'
 import { formatOrderDate, formatOrderDateTime } from './cairoDates'
 import { orderMessages as M } from './messages'
@@ -22,9 +23,12 @@ import type { Order, OrderStatus } from './types'
 export default function OrderDetailDialog({
   order: snapshot,
   onClose,
+  onChanged,
 }: {
   order: Order
   onClose: () => void
+  /** Called after the order was changed here (cancelled), so the list can refresh. */
+  onChanged?: () => void
 }) {
   const { order, status, retry } = useOrderDetail(snapshot)
   const closeRef = useRef<HTMLButtonElement>(null)
@@ -177,6 +181,14 @@ export default function OrderDetailDialog({
         )}
 
         {status === 'ready' && <Timeline order={order} />}
+
+        <CancelOrderPanel
+          order={order}
+          onCancelled={() => {
+            retry()
+            onChanged?.()
+          }}
+        />
       </div>
     </DrawerShell>
   )
