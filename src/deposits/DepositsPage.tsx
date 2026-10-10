@@ -66,8 +66,8 @@ export default function DepositsPage() {
 
       {q.status === 'ready' && q.page && q.page.items.length > 0 && (
         <>
-          {/* items-start: a card opened by a tap must not stretch the closed one beside it */}
-          <div className="grid grid-cols-1 items-start gap-4 xl:grid-cols-2">
+          {/* One column: each deposit is a row, opened in place by a tap. */}
+          <div className="flex flex-col gap-3">
             {q.page.items.map((d) => (
               <DepositCard
                 key={d.deposit.id}
