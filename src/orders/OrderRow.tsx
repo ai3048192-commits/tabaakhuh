@@ -74,7 +74,7 @@ export default function OrderRow({
             <Eye size={13} aria-hidden="true" />
             {M.viewDetails}
           </button>
-          {needsDriverAssignment(order.status) && (
+          {needsDriverAssignment(order.status) && order.delivery_type !== 'pickup' && (
             <Link
               to={`/delivery?order=${order.id}`}
               className="inline-flex items-center gap-1 rounded-xl border border-[#e8dcc4] bg-white px-3 py-2 text-xs font-black text-[#7a0d0d] transition hover:bg-[#faf3e7]"
