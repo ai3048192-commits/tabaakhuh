@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { screen } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { renderAtDeposits } from '../helpers/harness'
 import { installFetchMock, type FetchMock } from '../helpers/fetchMock'
 import { ok } from '../helpers/fixtures'
@@ -12,7 +13,7 @@ function deposit(over: Partial<DepositInfo> = {}, item: Partial<Deposit> = {}): 
       id: 3,
       order_id: 10,
       amount: 200,
-      percent: 20,
+      percentage: 20,
       status: 'submitted',
       method: 'vodafone_cash',
       rejection_reason: null,
@@ -52,25 +53,35 @@ afterEach(() => {
 const LIST = 'GET /admin/deposits?page=1'
 
 describe('deposits monitoring', () => {
-  it('lists the deposits customers sent, with proof, parties and the account paid to — no tabs, no actions', async () => {
+  it('lists each deposit as one compact row, and opens the full details on tap — no tabs, no actions', async () => {
     fm.reply(LIST, { json: page([deposit()], { submitted: 1 }) })
     renderAtDeposits(fm)
 
-    expect(await screen.findByText('طلب TBK-2026-000010')).toBeInTheDocument()
-    expect(screen.getByText('منى')).toBeInTheDocument()
-    expect(screen.getAllByText('مطبخ سوسن').length).toBeGreaterThan(0)
-    expect(screen.getByText(M.method.vodafone_cash)).toBeInTheDocument()
+    // Closed: order, amount, who → whom, method and status only.
+    const row = await screen.findByRole('button', { name: /طلب TBK-2026-000010/ })
+    expect(row).toHaveAttribute('aria-expanded', 'false')
+    expect(within(row).getByText('طلب TBK-2026-000010')).toBeInTheDocument()
+    expect(within(row).getByText(/منى/)).toBeInTheDocument()
+    expect(within(row).getByText(M.method.vodafone_cash)).toBeInTheDocument()
+    expect(screen.queryByText('01022222222')).toBeNull()
+    expect(screen.queryByRole('img', { name: M.proofAlt('TBK-2026-000010') })).toBeNull()
+
+    // Open: the proof, both phones, the account it was sent to, and the share of the price.
+    await userEvent.setup().click(row)
+    expect(row).toHaveAttribute('aria-expanded', 'true')
     expect(screen.getByText('01022222222')).toBeInTheDocument()
     expect(screen.getByText('sosan@instapay')).toBeInTheDocument()
     expect(screen.getByRole('img', { name: M.proofAlt('TBK-2026-000010') })).toBeInTheDocument()
+    expect(screen.getByText(M.ofSubtotal(20))).toBeInTheDocument()
+    expect(screen.queryByText(/undefined/)).toBeNull()
+
     expect(screen.queryByRole('button', { name: /تأكيد الاستلام|رفض|تم التحويل/ })).toBeNull()
     // No filter categories: one list, asked for without a status.
     expect(screen.queryByRole('group', { name: M.pageTitle })).toBeNull()
-    expect(screen.queryByRole('button', { name: /بانتظار تأكيد الطباخة|اتأكد|مرفوض|خلاف/ })).toBeNull()
     expect(fm.count(LIST)).toBe(1)
   })
 
-  it('shows deposits in every state together, each with its own status', async () => {
+  it('shows deposits in every state together, each with its own status, and flags a dispute while closed', async () => {
     fm.reply(LIST, {
       json: page([
         deposit({ id: 1, status: 'submitted' }, { order_number: 'TBK-2026-000001' }),
@@ -83,7 +94,14 @@ describe('deposits monitoring', () => {
     expect(await screen.findByText('طلب TBK-2026-000001')).toBeInTheDocument()
     expect(screen.getByText('طلب TBK-2026-000002')).toBeInTheDocument()
     expect(screen.getByText('طلب TBK-2026-000003')).toBeInTheDocument()
+    // The dispute is visible without opening the row.
+    expect(screen.getByText(M.disputed)).toBeInTheDocument()
+    expect(screen.queryByText('المبلغ مش واصل')).toBeNull()
+
+    const user = userEvent.setup()
+    await user.click(screen.getByRole('button', { name: /طلب TBK-2026-000002/ }))
     expect(screen.getByText(new RegExp(M.confirmedAt))).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /طلب TBK-2026-000003/ }))
     expect(screen.getByText('المبلغ مش واصل')).toBeInTheDocument()
     expect(screen.getByText(M.rejectCount(2))).toBeInTheDocument()
   })

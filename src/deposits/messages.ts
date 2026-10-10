@@ -44,6 +44,7 @@ export const depositMessages = {
   instapay: 'إنستاباي',
   noAccount: 'مفيش حساب مسجّل',
   confirmedAt: 'وقت التأكيد',
+  cancelledShort: 'الطلب اتلغى',
   orderCancelled: 'الطلب اتلغى بعد التحويل — العربون عند الطباخة، تابع الرد مع العميل.',
   summaryTitle: 'العرابين المؤكدة',
   summaryTotal: 'إجمالي المبالغ المؤكدة',

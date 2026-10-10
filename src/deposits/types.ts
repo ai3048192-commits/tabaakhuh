@@ -19,7 +19,8 @@ export interface DepositInfo {
   id: number
   order_id: number
   amount: number
-  percent: number
+  /** The deposit as a share of the food price (the API calls it `percentage`). */
+  percentage: number
   status: DepositStatus
   method: DepositMethod | null
   rejection_reason: string | null
