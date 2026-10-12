@@ -1,4 +1,4 @@
-import { Eye, Ban, ShieldCheck, UserCheck, FileWarning } from 'lucide-react'
+import { Eye, Ban, ShieldCheck, UserCheck, FileWarning, MailCheck, MailWarning } from 'lucide-react'
 import { warningMessages as WM } from '../warnings/messages'
 import { userMessages as M } from './messages'
 import { tenure } from './tenure'
@@ -14,6 +14,21 @@ function StatusBadge({ status }: { status: UserStatus }) {
     <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-black ${tone[status]}`}>
       <Icon size={13} aria-hidden="true" />
       {M.statusLabels[status]}
+    </span>
+  )
+}
+
+function VerifiedBadge({ verified }: { verified: boolean }) {
+  const Icon = verified ? MailCheck : MailWarning
+  return (
+    <span
+      title={verified ? M.verifiedHint : M.unverifiedHint}
+      className={`mt-1 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-bold ${
+        verified ? 'border-sky-200 bg-sky-50 text-sky-800' : 'border-amber-300 bg-amber-50 text-amber-800'
+      }`}
+    >
+      <Icon size={12} aria-hidden="true" />
+      {verified ? M.verified : M.unverified}
     </span>
   )
 }
@@ -77,7 +92,12 @@ export default function UsersTable({
                   <span dir="ltr" className="block text-xs text-gray-400">{u.phone}</span>
                 </td>
                 {!hideRole && <td className={td}>{M.roleLabels[u.role]}</td>}
-                <td className={td}><StatusBadge status={u.status} /></td>
+                <td className={td}>
+                  <StatusBadge status={u.status} />
+                  {typeof u.email_verified === 'boolean' && (
+                    <span className="block"><VerifiedBadge verified={u.email_verified} /></span>
+                  )}
+                </td>
                 <td className={td}>
                   <span className="block font-bold text-gray-800">{tenure(u.created_at) ?? '—'}</span>
                   <span className="block text-xs text-gray-400" dir="ltr">{u.created_at?.slice(0, 10) ?? ''}</span>

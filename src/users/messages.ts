@@ -25,12 +25,18 @@ export const userMessages = {
   filterStatus: 'الحالة',
   allRoles: 'كل الأدوار',
   allStatuses: 'كل الحالات',
+  filterVerified: 'التفعيل',
+  allVerified: 'الكل',
 
   colId: '#',
   colName: 'المستخدم',
   colContact: 'التواصل',
   colRole: 'الدور',
   colStatus: 'الحالة',
+  verified: 'مفعّل',
+  unverified: 'لم يفعّل',
+  verifiedHint: 'أكّد إيميله وفعّل حسابه',
+  unverifiedHint: 'لسه ما أكّدش إيميله',
   colJoined: 'على التطبيق من',
   colActions: 'إجراءات',
 

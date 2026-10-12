@@ -10,7 +10,7 @@ import type {
   UserStatus,
 } from './types'
 
-const EMPTY_FILTERS: UsersFilters = { role: 'all', status: 'all', q: '' }
+const EMPTY_FILTERS: UsersFilters = { role: 'all', status: 'all', verified: 'all', q: '' }
 
 export interface UseUsers {
   status: UsersScreenStatus
@@ -25,6 +25,7 @@ export interface UseUsers {
 
   setRole: (r: UsersFilters['role']) => void
   setStatusFilter: (s: UsersFilters['status']) => void
+  setVerified: (v: UsersFilters['verified']) => void
   setQuery: (q: string) => void
   setPage: (n: number) => void
   refresh: () => void
@@ -64,7 +65,13 @@ export function useUsers({ role, approval }: { role?: UsersFilters['role']; appr
     if (!hasPageRef.current) setStatus('loading')
     try {
       const data = await listUsers({ filters, page: pageNum, approval })
-      setPageData(data)
+      // The backend may not filter on `email_verified` yet — enforce it on the page we got.
+      const want = filters.verified === 'all' ? null : filters.verified === 'yes'
+      setPageData(
+        want == null
+          ? data
+          : { ...data, items: data.items.filter((u) => u.email_verified == null || u.email_verified === want) },
+      )
       setStatus('ready')
     } catch {
       if (hasPageRef.current) {
@@ -130,6 +137,7 @@ export function useUsers({ role, approval }: { role?: UsersFilters['role']; appr
     confirming,
     setRole: (r) => patchFilters({ role: r }),
     setStatusFilter: (s) => patchFilters({ status: s }),
+    setVerified: (v) => patchFilters({ verified: v }),
     setQuery: (q) => patchFilters({ q }),
     setPage: (n) => setPageNum(Math.max(1, Math.min(n, Math.max(1, totalPages)))),
     refresh: () => void load(),

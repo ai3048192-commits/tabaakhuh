@@ -10,6 +10,7 @@ export default function UsersFilters({
   filters,
   onRole,
   onStatus,
+  onVerified,
   onQuery,
   hideRole = false,
 }: {
@@ -18,6 +19,7 @@ export default function UsersFilters({
   filters: UF
   onRole: (r: UF['role']) => void
   onStatus: (s: UF['status']) => void
+  onVerified: (v: UF['verified']) => void
   onQuery: (q: string) => void
 }) {
   const uid = useId()
@@ -49,6 +51,14 @@ export default function UsersFilters({
         <select id={`${uid}-status`} className={field} value={filters.status} onChange={(e) => onStatus(e.target.value as UF['status'])}>
           <option value="all">{M.allStatuses}</option>
           {STATUSES.map((s) => <option key={s} value={s}>{M.statusLabels[s]}</option>)}
+        </select>
+      </div>
+      <div className="flex flex-col gap-1">
+        <label htmlFor={`${uid}-verified`} className="text-xs font-black text-[#6b4f3a]">{M.filterVerified}</label>
+        <select id={`${uid}-verified`} className={field} value={filters.verified} onChange={(e) => onVerified(e.target.value as UF['verified'])}>
+          <option value="all">{M.allVerified}</option>
+          <option value="yes">{M.verified}</option>
+          <option value="no">{M.unverified}</option>
         </select>
       </div>
     </div>

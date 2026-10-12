@@ -16,6 +16,7 @@ export function listUsers(
   if (filters.role !== 'all') sp.set('role', filters.role)
   if (approval) sp.set('approval', approval)
   if (filters.status !== 'all') sp.set('status', filters.status)
+  if (filters.verified !== 'all') sp.set('email_verified', filters.verified === 'yes' ? '1' : '0')
   if (filters.q.trim() !== '') sp.set('q', filters.q.trim())
   sp.set('page', String(Math.max(1, Math.trunc(page) || 1)))
   return authedRequest<UsersPage>(`/admin/users?${sp.toString()}`, { signal })

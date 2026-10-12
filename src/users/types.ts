@@ -20,6 +20,8 @@ export interface AdminUser {
   phone: string
   role: UserRole
   status: UserStatus
+  /** Did the user confirm their email (activate the account)? Absent until the list endpoint emits it. */
+  email_verified?: boolean
   /** ISO 8601. */
   created_at: string
 }
@@ -34,6 +36,8 @@ export interface UsersPage {
 export interface UsersFilters {
   role: UserRole | 'all'
   status: UserStatus | 'all'
+  /** Email confirmed (account activated) or not. */
+  verified: 'all' | 'yes' | 'no'
   q: string
 }
 

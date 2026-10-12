@@ -25,7 +25,7 @@ export default function UsersPage({ scope = 'all' }: { scope?: UsersScope }) {
   const q = useUsers(scope === 'all' ? {} : { role: scope, approval: scope === 'customer' ? undefined : 'approved' })
   const { account } = useAuth()
   const S = M.scope[scope]
-  const filtered = (scope === 'all' && q.filters.role !== 'all') || q.filters.status !== 'all' || q.filters.q.trim() !== ''
+  const filtered = (scope === 'all' && q.filters.role !== 'all') || q.filters.status !== 'all' || q.filters.verified !== 'all' || q.filters.q.trim() !== ''
   const items = q.page?.items ?? []
 
   // Warnings are generated entirely client-side (no backend record), so their
@@ -54,7 +54,7 @@ export default function UsersPage({ scope = 'all' }: { scope?: UsersScope }) {
         )}
       />
 
-      <UsersFilters filters={q.filters} onRole={q.setRole} onStatus={q.setStatusFilter} onQuery={q.setQuery} hideRole={scope !== 'all'} />
+      <UsersFilters filters={q.filters} onRole={q.setRole} onStatus={q.setStatusFilter} onVerified={q.setVerified} onQuery={q.setQuery} hideRole={scope !== 'all'} />
 
       {q.status === 'loading' && <p className="text-sm text-gray-500">{M.loading}</p>}
 
