@@ -43,7 +43,12 @@ export interface CookApplication {
 
 export interface SignedContract {
   template_version: string
-  signed_file_url: string
+  /** Short-lived link that opens the file in place (viewer / new tab). */
+  signed_file_url: string | null
+  /** Same file as a download. Absent on older API builds. */
+  download_url?: string | null
+  /** What the file is, from its uploaded type — the URL often can't say. */
+  file_kind?: 'pdf' | 'image'
   /** ISO 8601. Primary queue sort key (FR-011). */
   signed_at: string
   /**
@@ -82,6 +87,8 @@ export interface DocumentRef {
   kind: DocumentKind
   url: string | null
   label: string
+  /** How to render it, when the backend says (the contract's `file_kind`). */
+  media?: 'image' | 'pdf'
 }
 
 export type DecisionOutcome =

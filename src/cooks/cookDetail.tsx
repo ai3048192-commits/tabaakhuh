@@ -1,4 +1,6 @@
 import { useState, type ReactNode } from 'react'
+import { Download } from 'lucide-react'
+import { safeUrl } from '../shared/safeUrl'
 import { resolveMedia } from '../review/documentMedia'
 import { cookMessages as M } from './messages'
 import type { DocumentRef, PendingCookEntry, SignedContract } from './types'
@@ -13,7 +15,12 @@ export function buildDocs(entry: PendingCookEntry): DocumentRef[] {
     { kind: 'banner', url: p.banner_url, label: M.docBanner },
   ]
   if (entry.contract) {
-    docs.push({ kind: 'contract', url: entry.contract.signed_file_url, label: M.docContract })
+    docs.push({
+      kind: 'contract',
+      url: entry.contract.signed_file_url,
+      label: M.docContract,
+      media: entry.contract.file_kind,
+    })
   }
   return docs
 }
@@ -60,6 +67,27 @@ export function DocTile({ doc, onOpen }: { doc: DocumentRef; onOpen: () => void 
         />
       )}
     </button>
+  )
+}
+
+/**
+ * "تنزيل العقد" — the backend's download link (saves the file), or the view
+ * link on an older API build. Nothing when the file can't be signed.
+ */
+export function ContractDownloadLink({ contract }: { contract: SignedContract }) {
+  const href = safeUrl(contract.download_url ?? contract.signed_file_url)
+  if (!href) return null
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      download
+      className="flex items-center gap-1 font-bold text-[#7a0d0d]"
+    >
+      <Download size={14} aria-hidden="true" />
+      {M.downloadContract}
+    </a>
   )
 }
 

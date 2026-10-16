@@ -18,4 +18,6 @@ export interface DocumentRef {
   kind: string
   url: string | null
   label: string
+  /** How to render it, when the backend says (the contract's `file_kind`). */
+  media?: 'image' | 'pdf'
 }

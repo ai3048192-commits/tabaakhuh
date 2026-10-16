@@ -50,8 +50,9 @@ export function detectMedia(url: string): DocumentMedia {
  * An unrecognised contract URL falls back to `unknown`, which the viewer frames
  * (an `<iframe>` displays PDFs, images and text alike) rather than guessing.
  */
-export function resolveMedia(doc: Pick<DocumentRef, 'kind' | 'url'>): DocumentMedia {
+export function resolveMedia(doc: Pick<DocumentRef, 'kind' | 'url' | 'media'>): DocumentMedia {
   if (doc.url === null) return 'unknown'
+  if (doc.media) return doc.media
   if (doc.kind !== 'contract') return 'image'
   return detectMedia(doc.url)
 }

@@ -66,6 +66,12 @@ describe('resolveMedia', () => {
     expect(resolveMedia({ kind: 'contract', url: 'https://cdn.test/c' })).toBe('unknown')
   })
 
+  it("takes the backend's file_kind over the URL — a Cloudinary download link has no extension", () => {
+    const url = 'https://api.cloudinary.com/v1_1/demo/image/download?format=pdf&public_id=c9'
+    expect(resolveMedia({ kind: 'contract', url })).toBe('unknown')
+    expect(resolveMedia({ kind: 'contract', url, media: 'pdf' })).toBe('pdf')
+  })
+
   it('is unknown for a missing URL', () => {
     expect(resolveMedia({ kind: 'contract', url: null })).toBe('unknown')
     expect(resolveMedia({ kind: 'id_front', url: null })).toBe('unknown')

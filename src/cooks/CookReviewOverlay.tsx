@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
-import { Check, X, FileText, Download } from 'lucide-react'
+import { Check, X, FileText } from 'lucide-react'
 import { cookMessages as M } from './messages'
-import { buildDocs, DocTile, CookDetails, ContractEvidence, formatDate } from './cookDetail'
+import { buildDocs, DocTile, CookDetails, ContractEvidence, ContractDownloadLink, formatDate } from './cookDetail'
 import type { PendingCookEntry } from './types'
 
 interface Props {
@@ -115,16 +115,7 @@ export default function CookReviewOverlay({
                   <FileText size={14} aria-hidden="true" />
                   {M.openContract}
                 </button>
-                <a
-                  href={entry.contract.signed_file_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  download
-                  className="flex items-center gap-1 font-bold text-[#7a0d0d]"
-                >
-                  <Download size={14} aria-hidden="true" />
-                  {M.downloadContract}
-                </a>
+                <ContractDownloadLink contract={entry.contract} />
               </div>
             ) : (
               <span className="text-gray-500">{M.noContractSigned}</span>

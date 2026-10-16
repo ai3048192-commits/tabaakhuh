@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import {
-  X, Loader2, ShoppingBag, CheckCircle2, XCircle, Coins, Phone, Mail, CalendarDays, Clock, FileText, RefreshCw, Download,
+  X, Loader2, ShoppingBag, CheckCircle2, XCircle, Coins, Phone, Mail, CalendarDays, Clock, FileText, RefreshCw,
 } from 'lucide-react'
 import DrawerShell from '../shared/DrawerShell'
 import DocumentViewer from '../review/DocumentViewer'
 import { cardCls } from '../shared/ui'
 import { useCityNames } from '../cities/useCityNames'
-import { CookDetails, ContractEvidence, buildDocs as buildCookDocs, DocTile } from '../cooks/cookDetail'
+import { CookDetails, ContractEvidence, ContractDownloadLink, buildDocs as buildCookDocs, DocTile } from '../cooks/cookDetail'
 import { cookMessages as CM } from '../cooks/messages'
 import { DriverDetails, buildDocs as buildDriverDocs } from '../drivers/driverDetail'
 import type { DocumentRef } from '../cooks/types'
@@ -197,17 +197,8 @@ export default function AccountDrawer({ user, onClose }: { user: AdminUser; onCl
                             <FileText size={14} aria-hidden="true" />
                             {CM.openContract}
                           </button>
-                          {/* The link is a short-lived signed download URL, fetched with this drawer. */}
-                          <a
-                            href={data.contract.signed_file_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            download
-                            className="flex items-center gap-1 font-bold text-[#7a0d0d]"
-                          >
-                            <Download size={14} aria-hidden="true" />
-                            {CM.downloadContract}
-                          </a>
+                          {/* A short-lived signed link, fetched with this drawer. */}
+                          <ContractDownloadLink contract={data.contract} />
                         </div>
                       </div>
                       <ContractEvidence contract={data.contract} />
