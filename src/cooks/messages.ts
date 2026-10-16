@@ -24,6 +24,7 @@ export const cookMessages = {
   noContractSigned: 'لم يتم توقيع العقد بعد.',
   contractLine: (version: string, date: string) => `العقد ${version} — تم التوقيع في ${date}`,
   openContract: 'فتح العقد',
+  downloadContract: 'تنزيل العقد',
   contractSection: 'العقد',
   contractMethod: 'طريقة التوقيع',
   contractDigital: 'توقيع إلكتروني من التطبيق',

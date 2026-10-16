@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import {
-  X, Loader2, ShoppingBag, CheckCircle2, XCircle, Coins, Phone, Mail, CalendarDays, Clock, FileText, RefreshCw,
+  X, Loader2, ShoppingBag, CheckCircle2, XCircle, Coins, Phone, Mail, CalendarDays, Clock, FileText, RefreshCw, Download,
 } from 'lucide-react'
 import DrawerShell from '../shared/DrawerShell'
 import DocumentViewer from '../review/DocumentViewer'
@@ -188,14 +188,27 @@ export default function AccountDrawer({ user, onClose }: { user: AdminUser; onCl
                         <span className="font-bold text-gray-600">
                           {data.contract.template_version}
                         </span>
-                        <button
-                          type="button"
-                          onClick={() => setDocIndex(docs.findIndex((d) => d.kind === 'contract'))}
-                          className="flex items-center gap-1 font-bold text-[#7a0d0d]"
-                        >
-                          <FileText size={14} aria-hidden="true" />
-                          {CM.openContract}
-                        </button>
+                        <div className="flex items-center gap-4">
+                          <button
+                            type="button"
+                            onClick={() => setDocIndex(docs.findIndex((d) => d.kind === 'contract'))}
+                            className="flex items-center gap-1 font-bold text-[#7a0d0d]"
+                          >
+                            <FileText size={14} aria-hidden="true" />
+                            {CM.openContract}
+                          </button>
+                          {/* The link is a short-lived signed download URL, fetched with this drawer. */}
+                          <a
+                            href={data.contract.signed_file_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            download
+                            className="flex items-center gap-1 font-bold text-[#7a0d0d]"
+                          >
+                            <Download size={14} aria-hidden="true" />
+                            {CM.downloadContract}
+                          </a>
+                        </div>
                       </div>
                       <ContractEvidence contract={data.contract} />
                     </>
