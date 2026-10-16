@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { Check, X, FileText } from 'lucide-react'
 import { cookMessages as M } from './messages'
-import { buildDocs, DocTile, CookDetails, formatDate } from './cookDetail'
+import { buildDocs, DocTile, CookDetails, ContractEvidence, formatDate } from './cookDetail'
 import type { PendingCookEntry } from './types'
 
 interface Props {
@@ -118,6 +118,11 @@ export default function CookReviewOverlay({
               </div>
             ) : (
               <span className="text-gray-500">{M.noContractSigned}</span>
+            )}
+            {entry.contract && (
+              <div className="mt-3 border-t border-[#efe4cc] pt-3">
+                <ContractEvidence contract={entry.contract} />
+              </div>
             )}
           </div>
         </div>

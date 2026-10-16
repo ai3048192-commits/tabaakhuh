@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { resolveMedia } from '../review/documentMedia'
 import { cookMessages as M } from './messages'
-import type { DocumentRef, PendingCookEntry } from './types'
+import type { DocumentRef, PendingCookEntry, SignedContract } from './types'
 
 /** Ordered document list for the viewer: the four images, then the contract. */
 export function buildDocs(entry: PendingCookEntry): DocumentRef[] {
@@ -60,6 +60,51 @@ export function DocTile({ doc, onOpen }: { doc: DocumentRef; onOpen: () => void 
         />
       )}
     </button>
+  )
+}
+
+function formatDateTime(iso: string): string {
+  const d = new Date(iso)
+  return Number.isNaN(d.getTime())
+    ? iso
+    : d.toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Africa/Cairo' })
+}
+
+/**
+ * How the contract was signed, and — for one signed in the app — the record
+ * that proves it: who typed which name, with which national id, when, from
+ * where, and the fingerprint of the exact text she agreed to.
+ */
+export function ContractEvidence({ contract }: { contract: SignedContract }) {
+  const digital = contract.signing_method === 'digital'
+  const row = (label: string, value: ReactNode, wide = false) => (
+    <div className={wide ? 'col-span-2' : undefined}>
+      <dt className="font-bold text-gray-400">{label}</dt>
+      <dd className="text-gray-700">{value}</dd>
+    </div>
+  )
+  return (
+    <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+      {row(M.contractMethod, digital ? M.contractDigital : M.contractUpload)}
+      {row(M.contractSignedAt, formatDateTime(contract.signed_at))}
+      {digital && (
+        <>
+          {row(M.contractSigner, val(contract.signer_name))}
+          {row(M.contractNationalId, <bdi dir="ltr">{val(contract.signer_national_id)}</bdi>)}
+          {row(M.contractIp, <bdi dir="ltr">{val(contract.signer_ip)}</bdi>)}
+          {row(M.contractAppVersion, <bdi dir="ltr">{val(contract.signer_app_version)}</bdi>)}
+          {row(M.contractDevice, <bdi dir="ltr">{val(contract.signer_device)}</bdi>, true)}
+          {row(M.contractAcks, M.contractAcksCount(contract.acknowledgements?.length ?? 0), true)}
+          {row(
+            M.contractHash,
+            <code dir="ltr" className="block break-all font-mono text-[10.5px] text-gray-600">
+              {val(contract.content_hash)}
+            </code>,
+            true,
+          )}
+        </>
+      )}
+    </dl>
   )
 }
 

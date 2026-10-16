@@ -46,6 +46,21 @@ export interface SignedContract {
   signed_file_url: string
   /** ISO 8601. Primary queue sort key (FR-011). */
   signed_at: string
+  /**
+   * `digital` = read and signed inside the app (the file is the PDF the
+   * server generated, and the signer fields below are set); `upload` = a
+   * paper contract signed by hand and uploaded. Absent on older API builds.
+   */
+  signing_method?: 'digital' | 'upload'
+  signer_name?: string | null
+  signer_national_id?: string | null
+  /** SHA-256 of the exact text she signed — printed on the PDF too. */
+  content_hash?: string | null
+  signer_ip?: string | null
+  signer_device?: string | null
+  signer_app_version?: string | null
+  /** Keys of the clauses she ticked. */
+  acknowledgements?: string[]
 }
 
 /** One row of `GET /admin/cooks/pending`. */

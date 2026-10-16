@@ -6,7 +6,8 @@ import DrawerShell from '../shared/DrawerShell'
 import DocumentViewer from '../review/DocumentViewer'
 import { cardCls } from '../shared/ui'
 import { useCityNames } from '../cities/useCityNames'
-import { CookDetails, buildDocs as buildCookDocs, DocTile } from '../cooks/cookDetail'
+import { CookDetails, ContractEvidence, buildDocs as buildCookDocs, DocTile } from '../cooks/cookDetail'
+import { cookMessages as CM } from '../cooks/messages'
 import { DriverDetails, buildDocs as buildDriverDocs } from '../drivers/driverDetail'
 import type { DocumentRef } from '../cooks/types'
 import { getAccountOverview } from './usersApi'
@@ -177,6 +178,30 @@ export default function AccountDrawer({ user, onClose }: { user: AdminUser; onCl
                     entry={{ profile: { ...data.cook_profile, phone: u.phone, email: u.email }, contract: data.contract }}
                     cityName={cityNames.resolve(data.cook_profile.city_id)}
                   />
+                </Section>
+              )}
+              {data.cook_profile && (
+                <Section title={CM.contractSection}>
+                  {data.contract ? (
+                    <>
+                      <div className="mb-3 flex items-center justify-between gap-2 text-xs">
+                        <span className="font-bold text-gray-600">
+                          {data.contract.template_version}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setDocIndex(docs.findIndex((d) => d.kind === 'contract'))}
+                          className="flex items-center gap-1 font-bold text-[#7a0d0d]"
+                        >
+                          <FileText size={14} aria-hidden="true" />
+                          {CM.openContract}
+                        </button>
+                      </div>
+                      <ContractEvidence contract={data.contract} />
+                    </>
+                  ) : (
+                    <p className="text-xs text-gray-500">{CM.noContractSigned}</p>
+                  )}
                 </Section>
               )}
               {data.driver_profile && (
