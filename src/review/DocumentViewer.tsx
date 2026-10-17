@@ -101,6 +101,9 @@ export default function DocumentViewer({ docs, index, onIndexChange, onClose, st
   )
 
   const onKeyDown = (e: React.KeyboardEvent) => {
+    // The viewer is portalled, but React still bubbles its keys to the
+    // drawer that opened it — Escape would close both, Tab hit both traps.
+    e.stopPropagation()
     switch (e.key) {
       case 'Escape':
         e.preventDefault()
@@ -158,7 +161,8 @@ export default function DocumentViewer({ docs, index, onIndexChange, onClose, st
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-4"
+      // Above drawers and dialogs (z-70) it opens from; below toasts (z-80).
+      className="fixed inset-0 z-[75] flex items-center justify-center bg-black/70 p-4"
       onKeyDown={onKeyDown}
     >
       <div
