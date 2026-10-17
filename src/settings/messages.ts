@@ -111,6 +111,7 @@ export const settingsMessages = {
     eid_adha: 'عيد الأضحى',
     mawlid: 'المولد النبوي',
     christmas: 'الكريسماس',
+    halloween: 'الهالوين',
   },
 
   // cities card

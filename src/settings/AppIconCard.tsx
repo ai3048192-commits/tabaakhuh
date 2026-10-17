@@ -10,6 +10,7 @@ import eidFitrIcon from '../assets/app-icons/eid_fitr.png'
 import eidAdhaIcon from '../assets/app-icons/eid_adha.png'
 import mawlidIcon from '../assets/app-icons/mawlid.png'
 import christmasIcon from '../assets/app-icons/christmas.png'
+import halloweenIcon from '../assets/app-icons/halloween.png'
 
 const ICONS: { key: AppIconKey; src: string }[] = [
   { key: 'default', src: defaultIcon },
@@ -18,6 +19,7 @@ const ICONS: { key: AppIconKey; src: string }[] = [
   { key: 'eid_adha', src: eidAdhaIcon },
   { key: 'mawlid', src: mawlidIcon },
   { key: 'christmas', src: christmasIcon },
+  { key: 'halloween', src: halloweenIcon },
 ]
 
 /**
@@ -53,7 +55,7 @@ export default function AppIconCard({
   return (
     <SettingsCard title={M.cardAppIconTitle} icon={<Smartphone size={18} aria-hidden="true" />}>
       <p className="mb-4 text-xs text-gray-500">{M.appIconHint}</p>
-      <div role="radiogroup" aria-label={M.cardAppIconTitle} className="grid grid-cols-3 gap-3 sm:grid-cols-6">
+      <div role="radiogroup" aria-label={M.cardAppIconTitle} className="grid grid-cols-4 gap-3 sm:grid-cols-7">
         {ICONS.map(({ key, src }) => {
           const selected = picked === key
           return (

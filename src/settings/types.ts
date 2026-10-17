@@ -29,7 +29,7 @@ export interface PlatformSettings {
 }
 
 /** The launcher icons the customer app ships with (backend `AppIcon::ALL`). */
-export type AppIconKey = 'default' | 'ramadan' | 'eid_fitr' | 'eid_adha' | 'mawlid' | 'christmas'
+export type AppIconKey = 'default' | 'ramadan' | 'eid_fitr' | 'eid_adha' | 'mawlid' | 'christmas' | 'halloween'
 
 /** A partial update — any subset of {@link PlatformSettings}, at least one key. */
 export type SettingsPatch = Partial<PlatformSettings>
