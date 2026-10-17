@@ -45,7 +45,9 @@ export function DocTile({ doc, onOpen }: { doc: DocumentRef; onOpen: () => void 
       type="button"
       onClick={onOpen}
       aria-label={doc.label}
-      className="flex aspect-[4/3] items-center justify-center overflow-hidden rounded-lg border border-gray-200 bg-gray-50 text-[11px] text-gray-400 hover:border-[#7a0d0d]"
+      // w-full: a <button> shrinks to its content, so without it the PDF
+      // placeholder collapsed to a sliver while photos stretched the others.
+      className="flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-lg border border-gray-200 bg-gray-50 text-[11px] text-gray-400 hover:border-[#7a0d0d]"
     >
       {unavailable ? (
         <span>{M.docUnavailable}</span>
