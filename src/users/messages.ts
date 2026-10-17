@@ -71,6 +71,11 @@ export const userMessages = {
   retryToast: 'تعذّر إتمام العملية. حاول مرة أخرى.',
   refreshFailedToast: 'تعذّر التحديث. حاول مرة أخرى.',
 
+  exportExcel: 'تصدير Excel',
+  exportPdf: 'تصدير PDF',
+  exporting: 'جارٍ التصدير…',
+  exportFailed: 'تعذّر تصدير الحسابات. حاول مرة أخرى.',
+
   roleLabels: {
     customer: 'عميل',
     cook: 'طاهٍ',

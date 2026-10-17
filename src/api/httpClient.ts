@@ -41,6 +41,48 @@ export async function authedRequest<T>(
   return apiRequest<T>(path, { ...opts, token })
 }
 
+/**
+ * An authenticated file download (a PDF, a spreadsheet…): the raw body as a
+ * `Blob`, plus the server's `Content-Disposition` filename when it sent one.
+ * A non-2xx answer is still an envelope, so errors — and the `401 → end
+ * session` hook — behave exactly as in {@link apiRequest}.
+ */
+export async function authedDownload(
+  path: string,
+  opts: { signal?: AbortSignal } = {},
+): Promise<{ blob: Blob; filename: string | null }> {
+  const token = tokenProvider?.() ?? null
+  if (!token) throw new ApiError(0, 'No active session')
+
+  let res: Response
+  try {
+    res = await fetch(`${BASE_URL}${path}`, {
+      headers: { Accept: 'application/json, application/pdf, */*', Authorization: `Bearer ${token}` },
+      signal: opts.signal,
+    })
+  } catch (err) {
+    if ((err as Error | undefined)?.name === 'AbortError') throw err
+    logger.warn(`network failure on GET ${path}`)
+    throw new ApiError(0, 'Network request failed')
+  }
+
+  if (!res.ok) {
+    if (res.status === 401) {
+      logger.warn(`401 on GET ${path} — ending session`)
+      unauthorizedHandler?.()
+    } else {
+      logger.warn(`${res.status} on GET ${path}`)
+    }
+    // Throws the envelope's ApiError (or a malformed-response one).
+    await parseEnvelope<never>(res)
+    throw new ApiError(res.status, `Request failed (${res.status})`)
+  }
+
+  const disposition = res.headers.get('Content-Disposition') ?? ''
+  const filename = /filename="?([^";]+)"?/i.exec(disposition)?.[1] ?? null
+  return { blob: await res.blob(), filename }
+}
+
 export interface HttpOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   body?: unknown

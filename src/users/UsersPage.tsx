@@ -10,6 +10,7 @@ import { useUsers } from './useUsers'
 import UsersFilters from './UsersFilters'
 import UsersTable from './UsersTable'
 import AccountDrawer from './AccountDrawer'
+import AccountsExportButtons from './AccountsExportButtons'
 import StatusChangeDialog from './StatusChangeDialog'
 import { userMessages as M } from './messages'
 import PageHeader from '../shared/PageHeader'
@@ -46,11 +47,17 @@ export default function UsersPage({ scope = 'all' }: { scope?: UsersScope }) {
       <PageHeader
         title={S.title}
         subtitle={q.status === 'ready' && q.page ? `${S.subtitle} · ${q.page.total} ${S.unit}` : S.subtitle}
-        actions={q.status === 'ready' && (
-          <button type="button" onClick={q.refresh} className={bannerBtnLight}>
-            <RefreshCw size={14} aria-hidden="true" />
-            {M.refresh}
-          </button>
+        actions={(scope === 'all' || q.status === 'ready') && (
+          <>
+            {/* Every account on the platform — only on "كل الحسابات". */}
+            {scope === 'all' && <AccountsExportButtons onError={flash} />}
+            {q.status === 'ready' && (
+              <button type="button" onClick={q.refresh} className={bannerBtnLight}>
+                <RefreshCw size={14} aria-hidden="true" />
+                {M.refresh}
+              </button>
+            )}
+          </>
         )}
       />
 

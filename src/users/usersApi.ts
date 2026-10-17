@@ -1,5 +1,5 @@
-import { authedRequest } from '../api/httpClient'
-import type { AccountOverview, AdminUser, UsersFilters, UsersPage, UserStatus } from './types'
+import { authedDownload, authedRequest } from '../api/httpClient'
+import type { AccountExportRow, AccountOverview, AdminUser, UsersFilters, UsersPage, UserStatus } from './types'
 
 /**
  * `/admin/users*` — Phase 9 of the backend's
@@ -50,4 +50,14 @@ export function setUserStatus(
     method: 'PATCH',
     body,
   }).then((d) => d.user)
+}
+
+/** `GET /admin/users/export` — every account (all roles, unpaged), for the Excel export. */
+export function exportAccounts(signal?: AbortSignal): Promise<AccountExportRow[]> {
+  return authedRequest<{ items: AccountExportRow[] }>('/admin/users/export', { signal }).then((d) => d.items)
+}
+
+/** `GET /admin/users/export/pdf` — the same accounts as a server-rendered PDF. */
+export function downloadAccountsPdf(signal?: AbortSignal): Promise<Blob> {
+  return authedDownload('/admin/users/export/pdf', { signal }).then((d) => d.blob)
 }

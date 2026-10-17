@@ -73,3 +73,39 @@ export interface AccountOverview {
 export type UserActionOutcome =
   | { ok: true }
   | { ok: false; reason: 'not_found' | 'transient' }
+
+/** One row of `GET /admin/users/export` — every account, flattened for Excel. */
+export interface AccountExportRow {
+  id: number
+  first_name: string
+  last_name: string
+  email: string
+  phone: string
+  role: UserRole
+  status: UserStatus
+  email_verified: boolean
+  /** ISO 8601. */
+  created_at: string | null
+  city: string | null
+  /** Cook / driver application state; null for customers and admins. */
+  approval_status: 'pending' | 'approved' | 'rejected' | null
+  store_name: string | null
+  area: string | null
+  address: string | null
+  delivery_radius_km: number | null
+  rating_avg: number | null
+  rating_count: number | null
+  is_open: boolean | null
+  vodafone_cash: string | null
+  instapay: string | null
+  vehicle_type: string | null
+  vehicle_model: string | null
+  vehicle_color: string | null
+  vehicle_plate: string | null
+  vehicle_year: number | null
+  total_orders: number
+  completed_orders: number
+  cancelled_orders: number
+  /** What a customer paid / a cook or driver earned, on delivered + completed orders. */
+  amount_egp: number
+}
