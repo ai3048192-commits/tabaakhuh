@@ -104,6 +104,19 @@ export const settingsMessages = {
   appIconCurrent: 'الحالية',
   appIconApply: 'تطبيق الأيقونة',
   appIconSavedToast: 'تم تغيير أيقونة التطبيق.',
+  // specs/070 — in-app update prompt
+  cardAppUpdateTitle: 'تحديث التطبيق',
+  appUpdateHint:
+    'لما تنزّل إصدار جديد على المتجر اكتب رقمه هنا. أي حد عنده إصدار أقدم هتظهر له رسالة جوه التطبيق فيها «تحديث» بيوديه للمتجر و«لاحقًا» بترجعله تاني يوم. لو كتبت «أقل إصدار مسموح»، اللي عنده إصدار أقدم منه مش هيقدر يأجّل. سيب الخانة فاضية عشان توقف الرسالة.',
+  appUpdateLatestAndroid: 'آخر إصدار على Google Play',
+  appUpdateLatestIos: 'آخر إصدار على App Store',
+  appUpdateMinVersion: 'أقل إصدار مسموح (اختياري — بيخلّي التحديث إجباري)',
+  appUpdateAndroidUrl: 'رابط التطبيق على Google Play',
+  appUpdateIosUrl: 'رابط التطبيق على App Store',
+  appUpdateVersionError: 'اكتب الإصدار بالشكل ده: 1.1.0',
+  appUpdateUrlError: 'لازم يكون رابط كامل بيبدأ بـ https://',
+  appUpdateSave: 'حفظ إعدادات التحديث',
+  appUpdateSavedToast: 'اتحفظت إعدادات تحديث التطبيق.',
   appIconNames: {
     default: 'الأساسية',
     ramadan: 'رمضان',

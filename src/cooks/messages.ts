@@ -53,6 +53,9 @@ export const cookMessages = {
   fieldAddress: 'العنوان',
   fieldRadius: 'نطاق التوصيل',
   radiusKm: (n: number) => `${n} كم`,
+  fieldFulfillment: 'طريقة التسليم',
+  fulfillment: (delivery?: boolean, pickup?: boolean) =>
+    [delivery ? 'دليفري الطباخة' : null, pickup ? 'استلام من المطبخ' : null].filter(Boolean).join(' + ') || '—',
   fieldBio: 'نبذة',
   fieldPayVodafone: 'محفظة إلكترونية (للعربون)',
   fieldPayInstapay: 'إنستاباي (للعربون)',

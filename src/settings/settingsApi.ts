@@ -24,6 +24,11 @@ const DEFAULTS: PlatformSettings = {
   default_delivery_radius_km: null,
   app_icon: 'default',
   deposit_percent: 20,
+  app_latest_version_android: null,
+  app_latest_version_ios: null,
+  app_min_version: null,
+  app_android_store_url: 'https://play.google.com/store/apps/details?id=com.tabbakha.tabbakha',
+  app_ios_store_url: null,
 }
 
 function normalize(raw: Partial<PlatformSettings> | null | undefined): PlatformSettings {

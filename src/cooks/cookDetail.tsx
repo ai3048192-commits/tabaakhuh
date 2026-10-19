@@ -194,6 +194,9 @@ export function CookDetails({
       <Field label={M.fieldArea} layout={layout} value={val(p.area)} />
       <Field label={M.fieldAddress} layout={layout} value={val(p.address_text)} />
       <Field label={M.fieldRadius} layout={layout} value={M.radiusKm(p.delivery_radius_km)} />
+      {p.offers_delivery !== undefined || p.offers_pickup !== undefined ? (
+        <Field label={M.fieldFulfillment} layout={layout} value={M.fulfillment(p.offers_delivery, p.offers_pickup)} />
+      ) : null}
       <Field label={M.fieldRating} layout={layout} value={M.rating(p.rating_avg, p.rating_count)} />
       {p.payment_vodafone_cash_number ? (
         <Field label={M.fieldPayVodafone} layout={layout} value={<bdi dir="ltr">{p.payment_vodafone_cash_number}</bdi>} />

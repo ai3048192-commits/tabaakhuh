@@ -34,6 +34,9 @@ export interface CookApplication {
   lat: number
   lng: number
   delivery_radius_km: number
+  /** specs/070 — her own courier delivers / the customer collects from her kitchen. */
+  offers_delivery?: boolean
+  offers_pickup?: boolean
   is_open: boolean
   approval_status: 'pending' | 'approved' | 'rejected'
   rejection_reason: string | null

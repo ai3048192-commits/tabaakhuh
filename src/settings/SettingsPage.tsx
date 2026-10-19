@@ -5,6 +5,7 @@ import { fetchCityDirectory } from '../cities/citiesApi'
 import { usePlatformSettings } from './usePlatformSettings'
 import { useSystemSettings } from './useSystemSettings'
 import AppIconCard from './AppIconCard'
+import AppUpdateCard from './AppUpdateCard'
 import ImageUploadField from './ImageUploadField'
 import SettingsCard from './SettingsCard'
 import { settingsMessages as M } from './messages'
@@ -362,6 +363,15 @@ function SystemSettings({ onToast }: { onToast: (msg: string) => void }) {
             <AppIconCard
               key={s.saved?.app_icon}
               current={s.saved?.app_icon ?? 'default'}
+              onSaved={s.applyServerSettings}
+              onToast={onToast}
+            />
+          </div>
+
+          <div className="mt-6">
+            <AppUpdateCard
+              key={[s.saved?.app_latest_version_android, s.saved?.app_latest_version_ios, s.saved?.app_min_version].join('|')}
+              saved={s.saved}
               onSaved={s.applyServerSettings}
               onToast={onToast}
             />

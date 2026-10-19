@@ -26,6 +26,16 @@ export interface PlatformSettings {
   app_icon: AppIconKey
   /** Custom-order deposit — share of the food price (0 turns deposits off). */
   deposit_percent: number
+  /**
+   * specs/070 — the in-app "new version" prompt: the newest build on each
+   * store (`1.1.0`), an optional floor below which the prompt can't be
+   * postponed, and the store pages it opens.
+   */
+  app_latest_version_android: string | null
+  app_latest_version_ios: string | null
+  app_min_version: string | null
+  app_android_store_url: string | null
+  app_ios_store_url: string | null
 }
 
 /** The launcher icons the customer app ships with (backend `AppIcon::ALL`). */

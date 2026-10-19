@@ -2,12 +2,14 @@ import { LogOut, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import logoIcon from '../assets/logo_icon_trim.png';
-import { isActivePath, menuGroups } from './navItems';
+import { isActivePath, visibleMenuGroups } from './navItems';
+import { useAppConfig } from '../shared/useAppConfig';
 
 
 export default function Sidebar({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) {
   const location = useLocation();
   const { signOut } = useAuth();
+  const { driver_delivery_enabled: driversEnabled } = useAppConfig();
 
   return (
     <>
@@ -53,7 +55,7 @@ export default function Sidebar({ isOpen, onClose }: { isOpen: boolean, onClose:
 
         {/* القائمة — مضغوطة بحيث تكفي الشاشة من غير اسكرول (والاسكرول احتياطي للشاشات القصيرة جدًا) */}
         <nav className="sidebar-scroll relative min-h-0 flex-1 space-y-3 overflow-y-auto px-3 pb-3 short:space-y-1 tiny:space-y-0.5">
-          {menuGroups.map((group, gi) => (
+          {visibleMenuGroups(driversEnabled).map((group, gi) => (
             <div key={group.title}>
               <p className="mb-1 px-3 text-[10px] font-black tracking-wider text-white/35 short:hidden">{group.title}</p>
               {gi > 0 && <div className="mx-3 mb-1 hidden h-px bg-white/10 short:block tiny:hidden" aria-hidden="true" />}

@@ -1,4 +1,5 @@
 import { lazy, Suspense, useMemo, useState } from 'react'
+import { useAppConfig } from '../shared/useAppConfig'
 import { Link } from 'react-router-dom'
 import {
   Users, ChefHat, Bike, MapPin, ShoppingCart, Coins,
@@ -141,10 +142,12 @@ export default function OverviewPage({ onQuickAction }: Props) {
   }, [extras.ordersDaily])
 
   const fire = (t: string) => onQuickAction?.(t)
+  // specs/070 — driver tiles/actions hidden while the platform's drivers are off.
+  const { driver_delivery_enabled: driversEnabled } = useAppConfig()
 
   const quickActions = [
     { key: 'إضافة طباخة', label: M.qaAddCook, icon: PlusCircle, tone: 'from-[#7a0d0d] to-[#9a1212]' },
-    { key: 'إضافة سائق', label: M.qaAddDriver, icon: Bike, tone: 'from-[#0f5e8c] to-[#1679b3]' },
+    ...(driversEnabled ? [{ key: 'إضافة سائق', label: M.qaAddDriver, icon: Bike, tone: 'from-[#0f5e8c] to-[#1679b3]' }] : []),
     { key: 'إشعار عام', label: M.qaBroadcast, icon: Send, tone: 'from-[#b68614] to-[#d9a21c]' },
     { key: 'مستخدم جديد', label: M.qaNewUser, icon: UserPlus, tone: 'from-[#1f7a4d] to-[#28995f]' },
   ]
@@ -211,8 +214,10 @@ export default function OverviewPage({ onQuickAction }: Props) {
           <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             <Kpi label={M.kpiUsers} value={formatCount(usersTotal)} icon={Users} tone="bg-slate-100 text-slate-700" />
             <Kpi label={M.kpiCooks} value={formatCount(cooksTotal)} icon={ChefHat} tone="bg-[#7a0d0d]/10 text-[#7a0d0d]" />
-            <Kpi label={M.kpiDriversAvailable} value={extras.driversOk && extras.driversAvailable != null ? formatCount(extras.driversAvailable) : M.na} icon={Bike} tone="bg-sky-100 text-sky-700" />
+{driversEnabled && (<>
+                        <Kpi label={M.kpiDriversAvailable} value={extras.driversOk && extras.driversAvailable != null ? formatCount(extras.driversAvailable) : M.na} icon={Bike} tone="bg-sky-100 text-sky-700" />
             <Kpi label={M.kpiDriversBusy} value={extras.driversOk && extras.driversBusy != null ? formatCount(extras.driversBusy) : M.na} icon={MapPin} tone="bg-orange-100 text-orange-700" />
+            </>)}
             <Kpi label={M.kpiOrders} value={formatCount(ordersTotal)} icon={ShoppingCart} tone="bg-emerald-100 text-emerald-700" />
             <Kpi label={M.kpiRevenue} value={formatCurrency(snapshot.revenue)} icon={Coins} tone="bg-[#b68614]/15 text-[#8f680d]" />
           </div>
@@ -257,6 +262,7 @@ export default function OverviewPage({ onQuickAction }: Props) {
           </div>
 
           {/* Live deliveries */}
+{driversEnabled && (
           <Panel title={M.deliveriesTitle} icon={Truck} action={<ViewAll to="/delivery" />} className="mb-6">
             {!extras.deliveriesOk ? (
               <Empty warn>{M.deliveriesError}</Empty>
@@ -312,6 +318,7 @@ export default function OverviewPage({ onQuickAction }: Props) {
               </div>
             )}
           </Panel>
+          )}
 
           {/* Queues */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 2xl:grid-cols-3">
