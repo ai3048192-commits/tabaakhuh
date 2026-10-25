@@ -1,5 +1,5 @@
-import { useEffect, useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import heroFood from "../assets/egyptian-home-food.webp";
 import logoIcon from "../assets/logo_icon_trim.png";
 import chickenImg from "../assets/chicken.jpeg";
@@ -8,7 +8,6 @@ import kronbImg from "../assets/kronb.jpeg";
 import {
   Menu,
   X,
-  LogIn,
   Sparkles,
   Star,
   ArrowLeft,
@@ -452,6 +451,18 @@ export default function LandingPage({ view = "home" }: { view?: "home" | "contac
     if (id) document.getElementById(id)?.scrollIntoView();
   }, [ready]);
   const [menuOpen, setMenuOpen] = useState(false);
+  // The admin's hidden way in: five taps on the header logo within two
+  // seconds opens /login. There is no visible sign-in button for visitors.
+  const navigate = useNavigate();
+  const logoTaps = useRef<number[]>([]);
+  const onLogoTap = () => {
+    const now = Date.now();
+    logoTaps.current = [...logoTaps.current.filter((t) => now - t < 2000), now];
+    if (logoTaps.current.length >= 5) {
+      logoTaps.current = [];
+      navigate("/login");
+    }
+  };
   const [tab, setTab] = useState<"client" | "cook">("client");
   const steps = tab === "client" ? c.how.clientSteps : c.how.cookSteps;
   const logo = safeHref(c.brand.logo) ?? logoIcon;
@@ -472,7 +483,7 @@ export default function LandingPage({ view = "home" }: { view?: "home" | "contac
       {/* ============ HEADER ============ */}
       <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-8 sm:pt-6" dir="rtl">
         <div className="mx-auto flex max-w-7xl items-center justify-between rounded-full bg-[#2a0407]/95 px-4 py-1.5 md:px-7 md:py-4 lg:bg-[#2a0407]/80 shadow-[0_25px_60px_rgba(0,0,0,0.8)] ring-1 ring-white/10 backdrop-blur-3xl transition-all duration-300">
-          <a href={isContact ? "/" : "#home"} className="group flex cursor-pointer items-center">
+          <a href={isContact ? "/" : "#home"} onClick={onLogoTap} className="group flex cursor-pointer items-center">
             <div className="relative rounded-full p-1 transition-transform md:p-1.5 duration-500 group-hover:-rotate-6 group-hover:scale-110">
               <img src={logo} alt={c.brand.name} className="h-8 w-auto object-contain drop-shadow-md md:h-11" />
             </div>
@@ -490,20 +501,8 @@ export default function LandingPage({ view = "home" }: { view?: "home" | "contac
             ))}
           </nav>
 
-          {c.brand.showLogin ? (
-            <div className="hidden items-center gap-3 md:flex">
-              <Link
-                to="/login"
-                className="group relative flex items-center gap-2.5 overflow-hidden rounded-full bg-gradient-to-r from-[#ffd27a] via-[#f4c752] to-[#d89c1e] px-7 py-3 text-sm font-black text-[#1c0204] shadow-[0_8px_30px_rgba(255,210,122,0.4)] transition-all duration-300 hover:scale-105 hover:shadow-[0_12px_40px_rgba(255,210,122,0.7)]"
-              >
-                <div className="absolute inset-0 translate-y-full bg-white/30 transition-transform duration-300 group-hover:translate-y-0" />
-                <LogIn size={17} className="transition-transform duration-300 group-hover:-translate-x-1" />
-                <span className="relative z-10 tracking-wide">{c.brand.loginLabel}</span>
-              </Link>
-            </div>
-          ) : (
-            <div className="hidden md:block" />
-          )}
+          {/* Keeps the nav centred where the sign-in button used to sit. */}
+          <div className="hidden md:block" />
 
           <button
             className="relative rounded-full bg-white/10 p-2 text-white shadow-lg transition-all duration-300 hover:bg-white/20 active:scale-95 md:hidden"
@@ -552,18 +551,6 @@ export default function LandingPage({ view = "home" }: { view?: "home" | "contac
                 ))}
               </div>
 
-              {c.brand.showLogin && (
-                <div className="border-t border-white/10 pt-3">
-                  <Link
-                    to="/login"
-                    onClick={() => setMenuOpen(false)}
-                    className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#ffd27a] via-[#f4c752] to-[#d89c1e] py-3 text-center text-sm font-black text-[#180204] shadow-lg transition-transform active:scale-95"
-                  >
-                    <LogIn size={16} />
-                    <span>{c.brand.loginLabel}</span>
-                  </Link>
-                </div>
-              )}
             </div>
           </div>
         )}

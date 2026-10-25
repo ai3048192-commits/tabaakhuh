@@ -41,6 +41,15 @@ export default function Login() {
     identifierRef.current?.focus();
   }, []);
 
+  // The admin sign-in is reached only by a hidden gesture — keep it out of search results too.
+  useEffect(() => {
+    const meta = document.createElement("meta");
+    meta.name = "robots";
+    meta.content = "noindex, nofollow";
+    document.head.appendChild(meta);
+    return () => meta.remove();
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (inFlightRef.current) return;

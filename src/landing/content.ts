@@ -36,8 +36,6 @@ export interface LandingContent {
   brand: {
     name: string
     logo: ImageUrl
-    loginLabel: string
-    showLogin: boolean
     navLinks: LinkItem[]
   }
   hero: Section & {
@@ -159,8 +157,6 @@ export const DEFAULT_LANDING_CONTENT: LandingContent = {
   brand: {
     name: 'طباخه',
     logo: '',
-    loginLabel: 'تسجيل دخول',
-    showLogin: true,
     navLinks: [
       { id: 'n1', label: 'الرئيسية', href: '#home' },
       { id: 'n2', label: 'ليه طباخه؟', href: '#why' },

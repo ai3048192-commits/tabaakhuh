@@ -44,12 +44,8 @@ export const SECTIONS: SectionDef[] = [
       return (
         <>
           <Group title="الهوية">
-            <Row>
-              <Text label="اسم المنصة" value={b.name} onChange={(v) => up({ name: v })} />
-              <Text label="نص زر الدخول" value={b.loginLabel} onChange={(v) => up({ loginLabel: v })} />
-            </Row>
+            <Text label="اسم المنصة" value={b.name} onChange={(v) => up({ name: v })} />
             <ImageInput label="اللوجو" value={b.logo} onChange={(v) => up({ logo: v })} fallback={logoIcon} hint="PNG بخلفية شفافة بيظهر أحسن." />
-            <Switch label="إظهار زر تسجيل الدخول" checked={b.showLogin} onChange={(v) => up({ showLogin: v })} />
           </Group>
           <LinksList title="روابط القائمة" items={b.navLinks} onChange={(v) => up({ navLinks: v })} />
         </>
