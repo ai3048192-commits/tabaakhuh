@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import {
   Users, ChefHat, Bike, MapPin, ShoppingCart, Coins,
   PlusCircle, Send, UserPlus, RefreshCw, AlertTriangle, Eye, ArrowLeft,
-  CalendarDays, Flame, CheckCircle2, Store, BarChart3, Zap, Truck,
+  CalendarDays, Flame, CheckCircle2, Store, BarChart3, Zap, Truck, PieChart, Receipt, ChevronLeft,
 } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useOverview } from './useOverview'
@@ -39,16 +39,40 @@ function StatusPill({ status }: { status: string }) {
   )
 }
 
-/** Same stat card as the Delivery screen: coloured icon chip, big number, label under it. */
-function Kpi({ label, value, icon: Icon, tone }: { label: string; value: string; icon: typeof Users; tone: string }) {
+/** Stat card: coloured icon chip, big number, label, optional hint. `accent` = the maroon hero card. */
+function Kpi({
+  label, value, icon: Icon, tone, hint, accent = false,
+}: {
+  label: string
+  value: string
+  icon: typeof Users
+  tone: string
+  hint?: string
+  accent?: boolean
+}) {
   return (
-    <div className="flex items-center gap-4 rounded-3xl bg-white p-5 shadow-[0_18px_40px_-30px_rgba(122,13,13,0.45)] ring-1 ring-[#efe3cc]">
-      <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl ${tone}`}>
-        <Icon size={20} aria-hidden="true" />
-      </span>
-      <div className="min-w-0">
-        <h3 className="whitespace-nowrap text-2xl font-black text-gray-900" dir="ltr">{value}</h3>
-        <p className="text-xs font-bold text-gray-500">{label}</p>
+    <div
+      className={`group relative overflow-hidden rounded-3xl p-5 transition duration-200 hover:-translate-y-0.5 ${
+        accent
+          ? 'bg-gradient-to-bl from-[#8f1414] via-[#6a0b0b] to-[#2e0405] text-white shadow-[0_22px_44px_-24px_rgba(122,13,13,0.9)]'
+          : 'bg-white shadow-[0_18px_40px_-30px_rgba(122,13,13,0.45)] ring-1 ring-[#efe3cc] hover:shadow-[0_24px_48px_-28px_rgba(122,13,13,0.55)]'
+      }`}
+    >
+      <span
+        className={`pointer-events-none absolute -left-10 -top-10 h-32 w-32 rounded-full blur-2xl ${accent ? 'bg-[#e0a52e]/25' : 'bg-[#7a0d0d]/[0.04]'}`}
+        aria-hidden="true"
+      />
+      <div className="relative flex items-center gap-4">
+        <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl ${accent ? 'bg-white/10 text-[#ffd27a] ring-1 ring-white/15' : tone}`}>
+          <Icon size={20} aria-hidden="true" />
+        </span>
+        <div className="min-w-0">
+          <p className={`text-xs font-bold ${accent ? 'text-white/65' : 'text-gray-500'}`}>{label}</p>
+          <h3 className={`whitespace-nowrap text-2xl font-black ${accent ? 'text-[#ffd27a]' : 'text-gray-900'}`} dir="ltr">
+            <span className="block text-right">{value}</span>
+          </h3>
+          {hint && <p className={`mt-0.5 truncate text-[11px] font-bold ${accent ? 'text-white/55' : 'text-gray-400'}`}>{hint}</p>}
+        </div>
       </div>
     </div>
   )
@@ -92,6 +116,98 @@ function Empty({ children, warn }: { children: ReactNode; warn?: boolean }) {
     <p className={`rounded-2xl border border-dashed py-8 text-center text-xs font-bold ${warn ? 'border-amber-200 bg-amber-50/60 text-amber-700' : 'border-[#efe3cc] bg-[#fffaf1] text-gray-400'}`}>
       {children}
     </p>
+  )
+}
+
+/** One colour per status for the share bar (the pills use `statusTone`). */
+const STATUS_BAR: Record<string, string> = {
+  pending: '#d97706',
+  pending_review: '#b68614',
+  quoted: '#e0a52e',
+  accepted: '#0284c7',
+  preparing: '#ea580c',
+  ready_for_pickup: '#7c3aed',
+  assigned_to_driver: '#2563eb',
+  picked_up: '#4f46e5',
+  on_the_way: '#0891b2',
+  delivered: '#16a34a',
+  completed: '#047857',
+  cancelled: '#dc2626',
+}
+
+/** Every status with orders in it: one stacked share bar, then a card per status linking to the filtered list. */
+function StatusBreakdown({ statuses, total }: { statuses: { status: string; count: number; known: boolean }[]; total: number }) {
+  const rows = statuses.filter((s) => s.count > 0).sort((a, b) => b.count - a.count)
+  if (rows.length === 0 || total === 0) return <Empty>{M.noOrdersYet}</Empty>
+  const pct = (n: number) => (n / total) * 100
+  return (
+    <>
+      <div className="mb-5 flex h-3 w-full overflow-hidden rounded-full bg-[#f3ead9]" aria-hidden="true">
+        {rows.map((r) => (
+          <span key={r.status} style={{ width: `${pct(r.count)}%`, background: STATUS_BAR[r.status] ?? '#9ca3af' }} />
+        ))}
+      </div>
+      <ul className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6">
+        {rows.map((r) => {
+          const label = statusText(r.status)
+          const count = formatCount(r.count)
+          const share = pct(r.count)
+          const body = (
+            <>
+              <span className="flex items-center gap-1.5 text-[11px] font-bold text-gray-500">
+                <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: STATUS_BAR[r.status] ?? '#9ca3af' }} aria-hidden="true" />
+                <span className="truncate">{label}</span>
+              </span>
+              <span className="mt-1 flex items-baseline justify-between gap-2">
+                <span className="text-lg font-black text-gray-900" dir="ltr">{count}</span>
+                <span className="text-[11px] font-black text-[#8f680d]" dir="ltr">{M.statusShare(share < 1 ? share.toFixed(1) : String(Math.round(share)))}</span>
+              </span>
+            </>
+          )
+          const cls = 'flex flex-col rounded-2xl bg-[#fffaf1] px-3.5 py-3 ring-1 ring-[#f3ead9] transition'
+          return (
+            <li key={r.status}>
+              {r.known ? (
+                <Link
+                  to={`/orders?status=${r.status}`}
+                  aria-label={M.statusCardLinkLabel(label, count)}
+                  className={`${cls} hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_14px_28px_-20px_rgba(122,13,13,0.5)] hover:ring-[#e6d3ae]`}
+                >
+                  {body}
+                </Link>
+              ) : (
+                <div className={cls}>{body}</div>
+              )}
+            </li>
+          )
+        })}
+      </ul>
+    </>
+  )
+}
+
+/** A dashboard queue row: order number + cook, optional status, total, and the details button. */
+function OrderLine({ order: o, onOpen, showStatus = false }: { order: Order; onOpen: () => void; showStatus?: boolean }) {
+  return (
+    <li className="flex items-center gap-3 py-3 text-sm">
+      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#7a0d0d]/[0.07] text-[#7a0d0d]">
+        <Receipt size={15} aria-hidden="true" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block font-black text-[#7a0d0d]" dir="ltr"><span className="block text-right">{o.order_number}</span></span>
+        {o.cook_name && <span className="block truncate text-xs text-gray-400">{o.cook_name}</span>}
+      </span>
+      {showStatus && <StatusPill status={o.status} />}
+      <span className="shrink-0 font-bold text-gray-700" dir="ltr">{formatCurrency(o.total)}</span>
+      <button
+        type="button"
+        aria-label={M.colDetails}
+        onClick={onOpen}
+        className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-[#7a0d0d] transition hover:bg-[#7a0d0d]/10"
+      >
+        <ChevronLeft size={16} aria-hidden="true" />
+      </button>
+    </li>
   )
 }
 
@@ -142,6 +258,10 @@ export default function OverviewPage({ onQuickAction }: Props) {
   const usersTotal = snapshot ? snapshot.roles.reduce((s, r) => s + r.count, 0) : 0
   const cooksTotal = snapshot ? (snapshot.roles.find((r) => r.role === 'cook')?.count ?? 0) : 0
   const ordersTotal = snapshot ? snapshot.statuses.reduce((s, x) => s + x.count, 0) : 0
+  const FINAL = ['delivered', 'completed', 'cancelled']
+  const ordersActive = snapshot ? snapshot.statuses.filter((x) => !FINAL.includes(x.status)).reduce((s, x) => s + x.count, 0) : 0
+  const customers = snapshot ? (snapshot.roles.find((r) => r.role === 'customer')?.count ?? 0) : 0
+  const weekTotal = (extras.ordersDaily ?? []).reduce((s, p) => s + p.count, 0)
 
   const chart = useMemo(() => {
     const pts = extras.ordersDaily ?? []
@@ -240,21 +360,30 @@ export default function OverviewPage({ onQuickAction }: Props) {
 
       {status === 'ready' && snapshot && (
         <>
-          {/* KPI cards */}
-          <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            <Kpi label={M.kpiUsers} value={formatCount(usersTotal)} icon={Users} tone="bg-slate-100 text-slate-700" />
+          {/* KPI cards — column count follows the tile count so no card is left alone on a row */}
+          <div className={`mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 ${driversEnabled ? 'xl:grid-cols-3' : 'xl:grid-cols-4'}`}>
+            <Kpi label={M.kpiRevenue} value={formatCurrency(snapshot.revenue)} icon={Coins} tone="" hint={M.revenueScopeNote} accent />
+            <Kpi label={M.kpiOrders} value={formatCount(ordersTotal)} icon={ShoppingCart} tone="bg-emerald-100 text-emerald-700" hint={M.kpiOrdersActive(formatCount(ordersActive))} />
+            <Kpi label={M.kpiUsers} value={formatCount(usersTotal)} icon={Users} tone="bg-slate-100 text-slate-700" hint={M.kpiUsersHint(formatCount(customers))} />
             <Kpi label={M.kpiCooks} value={formatCount(cooksTotal)} icon={ChefHat} tone="bg-[#7a0d0d]/10 text-[#7a0d0d]" />
-{driversEnabled && (<>
-                        <Kpi label={M.kpiDriversAvailable} value={extras.driversOk && extras.driversAvailable != null ? formatCount(extras.driversAvailable) : M.na} icon={Bike} tone="bg-sky-100 text-sky-700" />
-            <Kpi label={M.kpiDriversBusy} value={extras.driversOk && extras.driversBusy != null ? formatCount(extras.driversBusy) : M.na} icon={MapPin} tone="bg-orange-100 text-orange-700" />
-            </>)}
-            <Kpi label={M.kpiOrders} value={formatCount(ordersTotal)} icon={ShoppingCart} tone="bg-emerald-100 text-emerald-700" />
-            <Kpi label={M.kpiRevenue} value={formatCurrency(snapshot.revenue)} icon={Coins} tone="bg-[#b68614]/15 text-[#8f680d]" />
+            {driversEnabled && (
+              <>
+                <Kpi label={M.kpiDriversAvailable} value={extras.driversOk && extras.driversAvailable != null ? formatCount(extras.driversAvailable) : M.na} icon={Bike} tone="bg-sky-100 text-sky-700" />
+                <Kpi label={M.kpiDriversBusy} value={extras.driversOk && extras.driversBusy != null ? formatCount(extras.driversBusy) : M.na} icon={MapPin} tone="bg-orange-100 text-orange-700" />
+              </>
+            )}
           </div>
 
           {/* Chart + quick actions */}
           <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-            <Panel title={M.chartTitle} icon={BarChart3} className="lg:col-span-2">
+            <Panel
+              title={M.chartTitle}
+              icon={BarChart3}
+              className="lg:col-span-2"
+              action={weekTotal > 0 ? (
+                <span className="rounded-full bg-[#faf3e7] px-3 py-1 text-xs font-black text-[#8f680d]">{M.chartWeekTotal(formatCount(weekTotal))}</span>
+              ) : undefined}
+            >
               {!extras.ordersDailyOk ? (
                 <Empty warn>{M.chartError}</Empty>
               ) : (extras.ordersDaily?.length ?? 0) === 0 ? (
@@ -290,6 +419,16 @@ export default function OverviewPage({ onQuickAction }: Props) {
               </div>
             </Panel>
           </div>
+
+          {/* Orders by status */}
+          <Panel
+            title={M.ordersGroupTitle}
+            icon={PieChart}
+            action={<ViewAll to="/orders" />}
+            className="mb-6"
+          >
+            <StatusBreakdown statuses={snapshot.statuses} total={ordersTotal} />
+          </Panel>
 
           {/* Live deliveries */}
 {driversEnabled && (
@@ -358,18 +497,7 @@ export default function OverviewPage({ onQuickAction }: Props) {
               ) : (
                 <ul className="divide-y divide-[#f3ead9]">
                   {(extras.preparing ?? []).map((o) => (
-                    <li key={o.id} className="flex items-center justify-between gap-3 py-3 text-sm">
-                      <span className="font-black text-[#7a0d0d]" dir="ltr">{o.order_number}</span>
-                      <span className="font-bold text-gray-500" dir="ltr">{formatCurrency(o.total)}</span>
-                      <button
-                        type="button"
-                        aria-label={M.colDetails}
-                        onClick={() => setDetail(o)}
-                        className="grid h-8 w-8 place-items-center rounded-lg text-[#7a0d0d] transition hover:bg-[#7a0d0d]/10"
-                      >
-                        <Eye size={16} aria-hidden="true" />
-                      </button>
-                    </li>
+                    <OrderLine key={o.id} order={o} onOpen={() => setDetail(o)} />
                   ))}
                 </ul>
               )}
@@ -408,19 +536,7 @@ export default function OverviewPage({ onQuickAction }: Props) {
               ) : (
                 <ul className="divide-y divide-[#f3ead9]">
                   {(extras.completedOrders ?? []).map((o) => (
-                    <li key={o.id} className="flex items-center justify-between gap-3 py-3 text-sm">
-                      <span className="font-black text-[#7a0d0d]" dir="ltr">{o.order_number}</span>
-                      <StatusPill status={o.status} />
-                      <span className="font-bold text-gray-500" dir="ltr">{formatCurrency(o.total)}</span>
-                      <button
-                        type="button"
-                        aria-label={M.colDetails}
-                        onClick={() => setDetail(o)}
-                        className="grid h-8 w-8 place-items-center rounded-lg text-[#7a0d0d] transition hover:bg-[#7a0d0d]/10"
-                      >
-                        <Eye size={16} aria-hidden="true" />
-                      </button>
-                    </li>
+                    <OrderLine key={o.id} order={o} onOpen={() => setDetail(o)} showStatus />
                   ))}
                 </ul>
               )}

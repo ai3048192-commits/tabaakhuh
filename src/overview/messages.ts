@@ -51,6 +51,11 @@ export const overviewMessages = {
 
   // --- Rich home layout ---
   kpiUsers: 'إجمالي المستخدمين',
+  kpiOrdersActive: (n: string) => `${n} طلب شغّال دلوقتي`,
+  kpiUsersHint: (customers: string) => `${customers} عميل`,
+  chartWeekTotal: (n: string) => `${n} طلب في الفترة`,
+  statusShare: (pct: string) => `${pct}%`,
+  noOrdersYet: 'لسه مفيش طلبات.',
   kpiCooks: 'إجمالي الطهاة',
   kpiDriversAvailable: 'دليفري متاح الآن',
   kpiDriversBusy: 'دليفري مشغول',

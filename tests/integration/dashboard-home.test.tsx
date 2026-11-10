@@ -79,11 +79,11 @@ describe('Dashboard home — rich layout', () => {
     stubAll()
     renderAtDashboard(fm)
 
-    await screen.findByText(M.completedOrdersTitle)
-    expect(screen.getByText('ORD-2026-000950')).toBeInTheDocument() // delivered
-    expect(screen.getByText('ORD-2026-000902')).toBeInTheDocument() // completed
-    expect(screen.getByText(M.statusLabel.delivered)).toBeInTheDocument()
-    expect(screen.getByText(M.statusLabel.completed)).toBeInTheDocument()
+    const panel = (await screen.findByText(M.completedOrdersTitle)).closest('section')!
+    expect(within(panel).getByText('ORD-2026-000950')).toBeInTheDocument() // delivered
+    expect(within(panel).getByText('ORD-2026-000902')).toBeInTheDocument() // completed
+    expect(within(panel).getByText(M.statusLabel.delivered)).toBeInTheDocument()
+    expect(within(panel).getByText(M.statusLabel.completed)).toBeInTheDocument()
   })
 
   it('opening a delivery row shows its detail modal', async () => {
@@ -101,6 +101,16 @@ describe('Dashboard home — rich layout', () => {
     expect(within(dialog).getAllByText('150 ج.م').length).toBeGreaterThan(0)
     await user.click(within(dialog).getAllByRole('button', { name: M.close })[0])
     expect(screen.queryByRole('dialog')).toBeNull()
+  })
+
+  it('shows every status with orders as a link to the filtered list', async () => {
+    stubAll()
+    renderAtDashboard(fm)
+    const panel = (await screen.findByText(M.ordersGroupTitle)).closest('section')!
+    // completed = 980 of 1071 orders
+    const link = within(panel).getByRole('link', { name: M.statusCardLinkLabel(M.statusLabel.completed, '980') })
+    expect(link).toHaveAttribute('href', '/orders?status=completed')
+    expect(within(link).getByText('92%')).toBeInTheDocument()
   })
 
   it('quick-action buttons fire onQuickAction with the right key', async () => {
