@@ -3,7 +3,7 @@ import { useAppConfig } from '../shared/useAppConfig'
 import { Link } from 'react-router-dom'
 import {
   Users, ChefHat, Bike, MapPin, ShoppingCart, Coins,
-  PlusCircle, Send, UserPlus, RefreshCw, AlertTriangle, Eye, X, ArrowLeft,
+  PlusCircle, Send, UserPlus, RefreshCw, AlertTriangle, Eye, ArrowLeft,
   CalendarDays, Flame, CheckCircle2, Store, BarChart3, Zap, Truck,
 } from 'lucide-react'
 import type { ReactNode } from 'react'
@@ -15,6 +15,7 @@ import { overviewMessages as M } from './messages'
 import type { ActiveDelivery } from '../delivery/types'
 import type { Order } from '../orders/types'
 import PageHeader from '../shared/PageHeader'
+import OrderDetailDialog from '../orders/OrderDetailDialog'
 import { bannerBtnLight } from '../shared/ui'
 import { pillCls, statusTone } from '../shared/statusTone'
 
@@ -97,17 +98,46 @@ function Empty({ children, warn }: { children: ReactNode; warn?: boolean }) {
 const todayLabel = () =>
   new Date().toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
 
-type DetailModal =
-  | { kind: 'delivery'; row: ActiveDelivery }
-  | { kind: 'order'; row: Order }
-  | null
+/**
+ * A live-delivery row carries only a slice of its order. Shape it as the
+ * order panel's opening snapshot — the panel fetches the full record
+ * (`GET /admin/orders/{id}`) and fills in people, items, address and timeline.
+ */
+function deliveryAsOrder(d: ActiveDelivery): Order {
+  return {
+    id: d.order_id,
+    order_number: d.order_number,
+    customer_id: 0,
+    cook_id: 0,
+    cook_name: d.cook_name,
+    cook_avatar_url: null,
+    type: 'regular',
+    status: d.status as Order['status'],
+    delivery_address_id: 0,
+    requested_delivery_date: '',
+    delivery_time_slot: null,
+    subtotal: Math.max(0, (d.total ?? 0) - (d.commission ?? 0)),
+    delivery_fee: d.commission ?? 0,
+    total: d.total ?? 0,
+    customer_note: null,
+    cancel_reason: null,
+    items: [],
+    custom_details: null,
+    quote: null,
+    status_history: [],
+    delivery_type: 'delivery',
+    driver_id: d.driver_id,
+    driver_name: d.driver_name,
+    delivery_address_text: d.area,
+  }
+}
 
 /** `/dashboard` — the platform home: KPIs, daily-orders chart, quick actions, live deliveries, queues. */
 export default function OverviewPage({ onQuickAction }: Props) {
   const { status, snapshot, lastUpdated, refreshing, refreshError, refresh } = useOverview()
   const extras = useHomeExtras()
   const cityNames = useCityNames()
-  const [detail, setDetail] = useState<DetailModal>(null)
+  const [detail, setDetail] = useState<Order | null>(null)
 
   const usersTotal = snapshot ? snapshot.roles.reduce((s, r) => s + r.count, 0) : 0
   const cooksTotal = snapshot ? (snapshot.roles.find((r) => r.role === 'cook')?.count ?? 0) : 0
@@ -305,7 +335,7 @@ export default function OverviewPage({ onQuickAction }: Props) {
                           <button
                             type="button"
                             aria-label={M.colDetails}
-                            onClick={() => setDetail({ kind: 'delivery', row: d })}
+                            onClick={() => setDetail(deliveryAsOrder(d))}
                             className="grid h-9 w-9 place-items-center rounded-xl text-[#7a0d0d] transition hover:bg-[#7a0d0d]/10"
                           >
                             <Eye size={17} aria-hidden="true" />
@@ -334,7 +364,7 @@ export default function OverviewPage({ onQuickAction }: Props) {
                       <button
                         type="button"
                         aria-label={M.colDetails}
-                        onClick={() => setDetail({ kind: 'order', row: o })}
+                        onClick={() => setDetail(o)}
                         className="grid h-8 w-8 place-items-center rounded-lg text-[#7a0d0d] transition hover:bg-[#7a0d0d]/10"
                       >
                         <Eye size={16} aria-hidden="true" />
@@ -385,7 +415,7 @@ export default function OverviewPage({ onQuickAction }: Props) {
                       <button
                         type="button"
                         aria-label={M.colDetails}
-                        onClick={() => setDetail({ kind: 'order', row: o })}
+                        onClick={() => setDetail(o)}
                         className="grid h-8 w-8 place-items-center rounded-lg text-[#7a0d0d] transition hover:bg-[#7a0d0d]/10"
                       >
                         <Eye size={16} aria-hidden="true" />
@@ -399,40 +429,7 @@ export default function OverviewPage({ onQuickAction }: Props) {
         </>
       )}
 
-      {detail && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label={detail.kind === 'delivery' ? M.detailDeliveryTitle : M.detailOrderTitle}>
-          <div className="w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-2xl">
-            <div className="flex items-center justify-between bg-gradient-to-l from-[#7a0d0d] to-[#3d0606] px-6 py-5 text-white">
-              <h3 className="text-lg font-black">{detail.kind === 'delivery' ? M.detailDeliveryTitle : M.detailOrderTitle}</h3>
-              <button type="button" onClick={() => setDetail(null)} aria-label={M.close} className="rounded-xl p-2 transition hover:bg-white/20">
-                <X size={24} aria-hidden="true" />
-              </button>
-            </div>
-            <div className="space-y-4 p-8 text-sm">
-              {detail.kind === 'delivery' ? (
-                <>
-                  <Row label={M.fDriver} value={detail.row.driver_name ?? M.na} />
-                  <Row label={M.fOrderNo} value={detail.row.order_number} ltr />
-                  <Row label={M.fAddress} value={detail.row.area ?? M.na} />
-                  <Row label={M.fPrice} value={detail.row.total != null ? formatCurrency(detail.row.total) : M.na} ltr />
-                  <Row label={M.fCommission} value={detail.row.commission != null ? formatCurrency(detail.row.commission) : M.na} ltr />
-                </>
-              ) : (
-                <>
-                  <Row label={M.fOrderNumber} value={detail.row.order_number} ltr />
-                  <Row label={M.fOrderStatus} value={statusText(detail.row.status)} />
-                  <Row label={M.fPrice} value={formatCurrency(detail.row.total)} ltr />
-                </>
-              )}
-            </div>
-            <div className="flex justify-end border-t border-[#f3ead9] bg-[#fffaf1] px-8 py-5">
-              <button type="button" onClick={() => setDetail(null)} className="rounded-2xl bg-[#7a0d0d] px-8 py-3 font-black text-white transition hover:bg-[#9a1212]">
-                {M.close}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {detail && <OrderDetailDialog order={detail} onClose={() => setDetail(null)} onChanged={() => void refresh()} />}
 
       <div aria-live="polite" role="status" className="sr-only">
         {refreshError ? M.refreshFailedNotice : lastUpdated ? M.lastUpdated(formatTime(lastUpdated)) : ''}
@@ -441,11 +438,3 @@ export default function OverviewPage({ onQuickAction }: Props) {
   )
 }
 
-function Row({ label, value, ltr }: { label: string; value: string; ltr?: boolean }) {
-  return (
-    <div className="flex justify-between border-b border-[#f3ead9] py-3 last:border-0">
-      <span className="text-gray-500">{label}</span>
-      <span className="font-bold text-gray-800" dir={ltr ? 'ltr' : undefined}>{value}</span>
-    </div>
-  )
-}

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import {
   X, Copy, Check, User, ChefHat, Bike, Phone, MapPin, CalendarClock, Store, Truck,
   StickyNote, XCircle, Receipt, Sparkles, Loader2, RotateCcw, ExternalLink, History,
+  Users, Wallet, ShoppingBag, Hash, Clock, Timer, Info, Package,
 } from 'lucide-react'
 import DrawerShell from '../shared/DrawerShell'
 import { safeUrl } from '../shared/safeUrl'
@@ -37,12 +38,13 @@ export default function OrderDetailDialog({
   }, [])
 
   const cancelled = isCancelled(order.status)
+  const pieces = order.items.reduce((n, it) => n + it.quantity, 0)
   const note = order.customer_note?.trim()
   const reason = order.cancel_reason?.trim()
 
   return (
     <DrawerShell label={M.detailTitle(order.order_number)} onDismiss={onClose} width="lg">
-      <Header order={order} closeRef={closeRef} onClose={onClose} />
+      <Header order={order} pieces={pieces} closeRef={closeRef} onClose={onClose} />
 
       <div className="flex-1 space-y-4 overflow-y-auto bg-[#f7f1e6] p-4 sm:p-5">
         {status === 'loading' && (
@@ -75,7 +77,7 @@ export default function OrderDetailDialog({
           <Progress status={order.status} pickup={order.delivery_type === 'pickup'} />
         )}
 
-        <Section title={M.sectionPeople}>
+        <Section title={M.sectionPeople} icon={Users}>
           <div className="grid gap-3 sm:grid-cols-3">
             <PersonCard
               icon={User}
@@ -102,7 +104,7 @@ export default function OrderDetailDialog({
           </div>
         </Section>
 
-        <Section title={M.sectionDelivery}>
+        <Section title={M.sectionDelivery} icon={Truck}>
           <dl className="space-y-3">
             <InfoRow icon={order.delivery_type === 'pickup' ? Store : Truck} label={M.deliveryType}>
               {order.delivery_type === 'pickup' ? M.deliveryTypePickup : order.delivery_type ? M.deliveryTypeDelivery : '—'}
@@ -136,14 +138,17 @@ export default function OrderDetailDialog({
         {order.type === 'custom' && order.custom_details && <CustomRequest order={order} />}
         {order.quote && <Quote order={order} />}
 
-        <Section title={M.lineItems}>
+        <Section title={M.lineItems} icon={ShoppingBag} aside={pieces > 0 ? M.itemsCount(pieces) : undefined}>
           {order.items.length === 0 ? (
             <p className="text-sm text-gray-500">{M.noLineItems}</p>
           ) : (
             <ul className="divide-y divide-[#f3ead9]">
               {order.items.map((it) => (
-                <li key={it.id} className="flex items-start justify-between gap-3 py-2.5">
-                  <div className="min-w-0">
+                <li key={it.id} className="flex items-start gap-3 py-3">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[#7a0d0d] to-[#4a0608] text-sm font-black text-white shadow-sm" aria-hidden="true">
+                    {it.quantity}×
+                  </span>
+                  <div className="min-w-0 flex-1">
                     <p className="text-sm font-black text-gray-900">{it.item_name}</p>
                     {it.size && <p className="text-xs text-gray-500">{M.sizeLabel(it.size.name)}</p>}
                     {it.add_ons && it.add_ons.length > 0 && (
@@ -160,9 +165,9 @@ export default function OrderDetailDialog({
           )}
         </Section>
 
-        <Section title={M.sectionPayment}>
+        <Section title={M.sectionPayment} icon={Wallet}>
           <dl className="space-y-2 text-sm">
-            <Money label={M.colSubtotal} value={order.subtotal} />
+            <Money label={pieces > 0 ? M.itemsSubtotal(pieces) : M.colSubtotal} value={order.subtotal} />
             <Money label={M.colDeliveryFee} value={order.delivery_fee} />
             <div className="mt-2 flex items-center justify-between rounded-xl bg-[#7a0d0d] px-3.5 py-2.5 text-white">
               <dt className="text-sm font-black">{M.colTotal}</dt>
@@ -172,7 +177,7 @@ export default function OrderDetailDialog({
         </Section>
 
         {note && (
-          <Section title={M.customerNote}>
+          <Section title={M.customerNote} icon={StickyNote}>
             <p className="flex gap-2 text-sm leading-relaxed text-gray-700">
               <StickyNote size={15} className="mt-0.5 shrink-0 text-[#b68614]" aria-hidden="true" />
               {note}
@@ -182,6 +187,8 @@ export default function OrderDetailDialog({
 
         {status === 'ready' && <Timeline order={order} />}
 
+        <Meta order={order} />
+
         <CancelOrderPanel
           order={order}
           onCancelled={() => {
@@ -190,16 +197,28 @@ export default function OrderDetailDialog({
           }}
         />
       </div>
+
+      <div className="flex items-center justify-between gap-3 border-t border-[#efe3cc] bg-white px-4 py-3 sm:px-5">
+        <div className="min-w-0">
+          <p className="text-[11px] font-bold text-gray-400">{M.colTotal}</p>
+          <p className="text-lg font-black text-[#7a0d0d]">{M.currency(order.total)}</p>
+        </div>
+        <button type="button" onClick={onClose} className="rounded-2xl bg-[#7a0d0d] px-6 py-2.5 text-sm font-black text-white shadow-[0_10px_24px_-12px_rgba(122,13,13,0.8)] transition hover:bg-[#9a1212] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#e0a52e]/40">
+          {M.close}
+        </button>
+      </div>
     </DrawerShell>
   )
 }
 
 function Header({
   order,
+  pieces,
   closeRef,
   onClose,
 }: {
   order: Order
+  pieces: number
   closeRef: React.RefObject<HTMLButtonElement | null>
   onClose: () => void
 }) {
@@ -213,38 +232,86 @@ function Header({
       /* clipboard blocked — nothing to do */
     }
   }
+  const pickup = order.delivery_type === 'pickup'
   return (
-    <div className="bg-gradient-to-l from-[#7a0d0d] to-[#3a0507] p-5 text-white">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            <p className="text-lg font-black tracking-wide" dir="ltr">{order.order_number}</p>
-            <button type="button" onClick={() => void copy()} aria-label={M.copy} className="grid h-7 w-7 place-items-center rounded-lg text-white/70 transition hover:bg-white/10 hover:text-white">
-              {copied ? <Check size={14} aria-hidden="true" /> : <Copy size={14} aria-hidden="true" />}
-            </button>
-            {copied && <span className="text-[11px] font-bold text-[#ffd27a]">{M.copied}</span>}
+    <div className="relative overflow-hidden bg-gradient-to-bl from-[#8f1414] via-[#6a0b0b] to-[#2e0405] p-5 text-white">
+      <span className="pointer-events-none absolute -left-16 -top-16 h-48 w-48 rounded-full bg-[#e0a52e]/15 blur-2xl" aria-hidden="true" />
+      <span className="pointer-events-none absolute -bottom-20 right-10 h-40 w-40 rounded-full bg-white/5 blur-2xl" aria-hidden="true" />
+      <div className="relative flex items-start justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/10 text-[#ffd27a] ring-1 ring-white/15">
+            <Package size={22} aria-hidden="true" />
+          </span>
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5">
+              <p className="truncate text-xl font-black tracking-wide" dir="ltr">{order.order_number}</p>
+              <button type="button" onClick={() => void copy()} aria-label={M.copy} className="grid h-7 w-7 shrink-0 place-items-center rounded-lg text-white/70 transition hover:bg-white/10 hover:text-white">
+                {copied ? <Check size={14} aria-hidden="true" /> : <Copy size={14} aria-hidden="true" />}
+              </button>
+              {copied && <span className="text-[11px] font-bold text-[#ffd27a]">{M.copied}</span>}
+            </div>
+            {order.created_at && (
+              <p className="mt-0.5 text-xs font-bold text-white/65">{M.placedAt(formatOrderDateTime(order.created_at))}</p>
+            )}
           </div>
-          {order.created_at && (
-            <p className="mt-0.5 text-xs font-bold text-white/60">{M.placedAt(formatOrderDateTime(order.created_at))}</p>
-          )}
         </div>
         <button ref={closeRef} type="button" onClick={onClose} aria-label={M.close} className="grid h-9 w-9 shrink-0 place-items-center rounded-xl text-white/70 transition hover:bg-white/10 hover:text-white">
           <X size={18} aria-hidden="true" />
         </button>
       </div>
-      <div className="mt-3 flex flex-wrap items-center gap-2">
+      <div className="relative mt-3 flex flex-wrap items-center gap-2">
         <OrderTypeBadge type={order.type} />
         <OrderStatusBadge status={order.status} />
-        <span className="mr-auto text-xl font-black text-[#ffd27a]">{M.currency(order.total)}</span>
       </div>
+      <dl className="relative mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <Tile icon={Wallet} label={M.tileTotal} value={M.currency(order.total)} accent />
+        <Tile icon={ShoppingBag} label={M.tileItems} value={pieces > 0 ? M.itemsCount(pieces) : '—'} />
+        <Tile icon={pickup ? Store : Truck} label={M.tileMethod} value={pickup ? M.deliveryTypePickup : order.delivery_type ? M.deliveryTypeDelivery : '—'} />
+        <Tile
+          icon={CalendarClock}
+          label={M.tileWhen}
+          value={order.requested_delivery_date ? `${formatOrderDate(order.requested_delivery_date)}${order.delivery_time_slot ? ` · ${order.delivery_time_slot}` : ''}` : '—'}
+        />
+      </dl>
     </div>
   )
 }
 
-function Section({ title, children }: { title: string; children: ReactNode }) {
+function Tile({ icon: Icon, label, value, accent = false }: { icon: typeof MapPin; label: string; value: string; accent?: boolean }) {
   return (
-    <section className="rounded-2xl bg-white p-4 shadow-[0_12px_30px_-24px_rgba(122,13,13,0.5)] ring-1 ring-[#efe3cc]">
-      <h3 className="mb-3 text-xs font-black text-[#6b4f3a]">{title}</h3>
+    <div className="rounded-2xl bg-white/[0.08] px-3 py-2.5 ring-1 ring-white/10 backdrop-blur-sm">
+      <dt className="flex items-center gap-1.5 text-[11px] font-bold text-white/60">
+        <Icon size={12} aria-hidden="true" /> {label}
+      </dt>
+      <dd className={`mt-0.5 truncate text-sm font-black ${accent ? 'text-[#ffd27a]' : 'text-white'}`}>{value}</dd>
+    </div>
+  )
+}
+
+function Section({
+  title,
+  icon: Icon,
+  aside,
+  children,
+}: {
+  title: string
+  icon?: typeof MapPin
+  aside?: string
+  children: ReactNode
+}) {
+  return (
+    <section className="rounded-2xl bg-white p-4 shadow-[0_14px_32px_-26px_rgba(122,13,13,0.55)] ring-1 ring-[#efe3cc] sm:p-5">
+      <div className="mb-3.5 flex items-center justify-between gap-2">
+        <h3 className="flex items-center gap-2 text-sm font-black text-gray-900">
+          {Icon && (
+            <span className="grid h-7 w-7 place-items-center rounded-lg bg-[#7a0d0d]/[0.08] text-[#7a0d0d]">
+              <Icon size={14} aria-hidden="true" />
+            </span>
+          )}
+          {title}
+        </h3>
+        {aside && <span className="rounded-full bg-[#faf3e7] px-2.5 py-0.5 text-[11px] font-black text-[#8f680d]">{aside}</span>}
+      </div>
       {children}
     </section>
   )
@@ -368,7 +435,7 @@ function CustomRequest({ order }: { order: Order }) {
       ? `${cd.budget_min != null ? M.currency(cd.budget_min) : '—'} – ${cd.budget_max != null ? M.currency(cd.budget_max) : '—'}`
       : null
   return (
-    <Section title={M.customDetails}>
+    <Section title={M.customDetails} icon={Sparkles}>
       <dl className="grid gap-3 sm:grid-cols-2">
         {cd.occasion_type != null && <Fact label={M.occasionType} value={cd.occasion_type} />}
         {cd.guest_count != null && <Fact label={M.guestCount} value={String(cd.guest_count)} />}
@@ -398,7 +465,7 @@ function Fact({ label, value }: { label: string; value: string }) {
 function Quote({ order }: { order: Order }) {
   const q = order.quote!
   return (
-    <Section title={M.sectionQuote}>
+    <Section title={M.sectionQuote} icon={Receipt}>
       <div className="flex items-start gap-3">
         <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#b68614]/10 text-[#8f680d]">
           <Sparkles size={16} aria-hidden="true" />
@@ -425,7 +492,7 @@ function Quote({ order }: { order: Order }) {
 function Timeline({ order }: { order: Order }) {
   const entries = order.status_history
   return (
-    <Section title={M.sectionTimeline}>
+    <Section title={M.sectionTimeline} icon={History}>
       {entries.length === 0 ? (
         <p className="flex items-center gap-2 text-sm text-gray-500">
           <History size={14} aria-hidden="true" /> {M.timelineEmpty}
@@ -453,5 +520,45 @@ function Timeline({ order }: { order: Order }) {
         </ol>
       )}
     </Section>
+  )
+}
+
+function minutesBetween(a: string, b: string): number | null {
+  const ms = new Date(b).getTime() - new Date(a).getTime()
+  return Number.isFinite(ms) && ms >= 0 ? Math.round(ms / 60000) : null
+}
+
+/** The bookkeeping view: ids for support lookups, when it was placed, last moved, and how long it took. */
+function Meta({ order }: { order: Order }) {
+  const history = order.status_history
+  const last = history.length > 0 ? history[history.length - 1].created_at : null
+  const finished = history.find((e) => e.status === 'delivered' || e.status === 'completed')
+  const duration = order.created_at && finished ? minutesBetween(order.created_at, finished.created_at) : null
+  return (
+    <Section title={M.sectionMeta} icon={Info}>
+      <dl className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+        <MetaFact icon={Hash} label={M.metaInternalId} value={`#${order.id}`} ltr />
+        <MetaFact icon={Receipt} label={M.metaType} value={order.type === 'custom' ? M.typeCustom : M.typeRegular} />
+        {order.created_at && <MetaFact icon={Clock} label={M.metaPlacedAt} value={formatOrderDateTime(order.created_at)} />}
+        {last && <MetaFact icon={History} label={M.metaLastUpdate} value={formatOrderDateTime(last)} />}
+        {duration != null && <MetaFact icon={Timer} label={M.metaDuration} value={M.minutes(duration)} />}
+        {order.customer_id > 0 && <MetaFact icon={User} label={M.metaCustomerId} value={`#${order.customer_id}`} ltr />}
+        {order.cook_id > 0 && <MetaFact icon={ChefHat} label={M.metaCookId} value={`#${order.cook_id}`} ltr />}
+        {order.driver_id != null && <MetaFact icon={Bike} label={M.metaDriverId} value={`#${order.driver_id}`} ltr />}
+      </dl>
+    </Section>
+  )
+}
+
+function MetaFact({ icon: Icon, label, value, ltr = false }: { icon: typeof MapPin; label: string; value: string; ltr?: boolean }) {
+  return (
+    <div className="rounded-xl bg-[#fffaf1] px-3 py-2.5 ring-1 ring-[#f3ead9]">
+      <dt className="flex items-center gap-1 text-[11px] font-bold text-gray-400">
+        <Icon size={11} aria-hidden="true" /> {label}
+      </dt>
+      <dd className="mt-0.5 text-sm font-black text-gray-800" dir={ltr ? 'ltr' : undefined}>
+        {ltr ? <span className="block text-right">{value}</span> : value}
+      </dd>
+    </div>
   )
 }

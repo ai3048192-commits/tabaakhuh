@@ -97,7 +97,8 @@ describe('Dashboard home — rich layout', () => {
     )
     const dialog = await screen.findByRole('dialog')
     expect(within(dialog).getByText('ORD-2026-000800')).toBeInTheDocument()
-    expect(within(dialog).getByText('150.00 ج.م')).toBeInTheDocument()
+    // the full order panel: total shown in the summary tile, the payment box and the footer
+    expect(within(dialog).getAllByText('150 ج.م').length).toBeGreaterThan(0)
     await user.click(within(dialog).getAllByRole('button', { name: M.close })[0])
     expect(screen.queryByRole('dialog')).toBeNull()
   })
