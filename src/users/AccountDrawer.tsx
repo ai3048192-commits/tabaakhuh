@@ -6,7 +6,7 @@ import DrawerShell from '../shared/DrawerShell'
 import DocumentViewer from '../review/DocumentViewer'
 import { cardCls } from '../shared/ui'
 import { useCityNames } from '../cities/useCityNames'
-import { CookDetails, ContractEvidence, ContractDownloadLink, buildDocs as buildCookDocs, DocTile } from '../cooks/cookDetail'
+import { CookDetails, ContractEvidence, ContractDownloadLink, buildDocs as buildCookDocs, DocTile, IdentityVerification } from '../cooks/cookDetail'
 import { cookMessages as CM } from '../cooks/messages'
 import { DriverDetails, buildDocs as buildDriverDocs } from '../drivers/driverDetail'
 import type { DocumentRef } from '../cooks/types'
@@ -177,6 +177,13 @@ export default function AccountDrawer({ user, onClose }: { user: AdminUser; onCl
                   <CookDetails
                     entry={{ profile: { ...data.cook_profile, phone: u.phone, email: u.email }, contract: data.contract }}
                     cityName={cityNames.resolve(data.cook_profile.city_id)}
+                  />
+                </Section>
+              )}
+              {data.cook_profile && (
+                <Section title={CM.verificationSection}>
+                  <IdentityVerification
+                    entry={{ profile: { ...data.cook_profile, phone: u.phone, email: u.email }, contract: data.contract }}
                   />
                 </Section>
               )}

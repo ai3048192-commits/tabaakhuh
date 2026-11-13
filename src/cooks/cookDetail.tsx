@@ -1,8 +1,9 @@
 import { useState, type ReactNode } from 'react'
-import { Download } from 'lucide-react'
+import { Copy, Download, Mail, MessageCircle } from 'lucide-react'
 import { safeUrl } from '../shared/safeUrl'
 import { resolveMedia } from '../review/documentMedia'
 import { cookMessages as M } from './messages'
+import { sendVerificationLink } from './cooksApi'
 import type { DocumentRef, PendingCookEntry, SignedContract } from './types'
 
 /** Ordered document list for the viewer: the four images, then the contract. */
@@ -206,5 +207,98 @@ export function CookDetails({
       ) : null}
       {p.bio ? <Field label={M.fieldBio} layout={layout} value={p.bio} wide /> : null}
     </dl>
+  )
+}
+
+const VERIFICATION_URL = 'https://tabbakha.app/cook-verification/'
+
+/** Egyptian mobile → wa.me international form (01xxxxxxxxx → 201xxxxxxxxx). */
+function waNumber(phone: string | null | undefined): string | null {
+  const digits = (phone ?? '').replace(/\D/g, '')
+  if (digits.startsWith('20') && digits.length === 12) return digits
+  if (digits.startsWith('0') && digits.length === 11) return `2${digits}`
+  if (digits.startsWith('1') && digits.length === 10) return `20${digits}`
+  return null
+}
+
+/**
+ * The identity verification the cook sent from the website form (the apps no
+ * longer collect ID), plus ways to send her the form: email it from the
+ * server, copy the link, or open WhatsApp with a ready message.
+ */
+export function IdentityVerification({ entry }: { entry: PendingCookEntry }) {
+  const p = entry.profile
+  const [mail, setMail] = useState<'idle' | 'sending' | 'sent' | 'failed'>('idle')
+  const [copied, setCopied] = useState(false)
+  const firstName = (p.name ?? '').split(' ')[0] || ''
+  const wa = waNumber(p.phone)
+
+  const send = async () => {
+    setMail('sending')
+    try {
+      await sendVerificationLink(p.id)
+      setMail('sent')
+    } catch {
+      setMail('failed')
+    }
+  }
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(VERIFICATION_URL)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      /* clipboard blocked — the link is visible below anyway */
+    }
+  }
+
+  return (
+    <div className="text-xs">
+      {p.verification_submitted_at ? (
+        <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-gray-600">
+          <div className="col-span-2 font-bold text-green-700">
+            {M.verificationSubmitted(formatDate(p.verification_submitted_at))}
+          </div>
+          <div>
+            <dt className="font-bold text-gray-400">{M.verificationFullName}</dt>
+            <dd>{val(p.verification_full_name)}</dd>
+          </div>
+          <div>
+            <dt className="font-bold text-gray-400">{M.verificationNationalId}</dt>
+            <dd><bdi dir="ltr">{val(p.verification_national_id)}</bdi></dd>
+          </div>
+        </dl>
+      ) : (
+        <p className="font-bold text-[#b45309]">{M.verificationMissing}</p>
+      )}
+      <div className="mt-3 flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          onClick={send}
+          disabled={mail === 'sending'}
+          className="flex items-center gap-1 font-bold text-[#7a0d0d] disabled:opacity-50"
+        >
+          <Mail size={14} aria-hidden="true" />
+          {mail === 'sending' ? M.verificationSending : mail === 'sent' ? M.verificationSent : M.verificationSendEmail}
+        </button>
+        <button type="button" onClick={copy} className="flex items-center gap-1 font-bold text-[#7a0d0d]">
+          <Copy size={14} aria-hidden="true" />
+          {copied ? M.verificationCopied : M.verificationCopy}
+        </button>
+        {wa && (
+          <a
+            href={`https://wa.me/${wa}?text=${encodeURIComponent(M.verificationWhatsAppText(firstName))}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 font-bold text-[#15803d]"
+          >
+            <MessageCircle size={14} aria-hidden="true" />
+            {M.verificationWhatsApp}
+          </a>
+        )}
+      </div>
+      {mail === 'failed' && <p className="mt-2 text-red-600">{M.verificationSendFailed}</p>}
+      <p className="mt-2 text-gray-400"><bdi dir="ltr">{VERIFICATION_URL}</bdi></p>
+    </div>
   )
 }

@@ -27,6 +27,14 @@ export interface CookApplication {
   avatar_url: string | null
   national_id_front_url: string | null
   national_id_back_url: string | null
+  /**
+   * Identity verification the cook sent from the website form
+   * (tabbakha.app/cook-verification) — the apps no longer collect ID.
+   * Name/number come only to an admin.
+   */
+  verification_submitted_at?: string | null
+  verification_full_name?: string | null
+  verification_national_id?: string | null
   banner_url: string | null
   city_id: number
   area: string

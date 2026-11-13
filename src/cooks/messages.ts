@@ -92,4 +92,19 @@ export const cookMessages = {
   noLongerPendingToast: 'لم يعد هذا الطلب في انتظار المراجعة.',
   notFoundToast: 'تعذّر العثور على الطلب.',
   decisionRetryToast: 'تعذّر إتمام العملية. حاول مرة أخرى.',
+
+  verificationSection: 'توثيق الهوية',
+  verificationSubmitted: (date: string) => `بعتت بيانات التوثيق يوم ${date}`,
+  verificationMissing: 'لسه مبعتتش بيانات التوثيق (الاسم والرقم القومي وصورة البطاقة).',
+  verificationFullName: 'الاسم زي البطاقة',
+  verificationNationalId: 'الرقم القومي',
+  verificationSendEmail: 'ابعت لينك التوثيق بالإيميل',
+  verificationSending: 'بيتبعت…',
+  verificationSent: 'اتبعت ✓',
+  verificationSendFailed: 'معرفناش نبعت الإيميل. جرّب تاني.',
+  verificationCopy: 'نسخ اللينك',
+  verificationCopied: 'اتنسخ ✓',
+  verificationWhatsApp: 'ابعت على واتساب',
+  verificationWhatsAppText: (name: string) =>
+    `أهلًا ${name}، عشان نراجع طلبك في طبّاخة ونفعّل حسابك، محتاجين نوثّق هويتك من هنا: https://tabbakha.app/cook-verification/ (ادخلي بنفس إيميل وباسورد التطبيق)`,
 } as const

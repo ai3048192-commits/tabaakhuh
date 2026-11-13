@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { Check, X, FileText } from 'lucide-react'
 import { cookMessages as M } from './messages'
-import { buildDocs, DocTile, CookDetails, ContractEvidence, ContractDownloadLink, formatDate } from './cookDetail'
+import { buildDocs, DocTile, CookDetails, ContractEvidence, ContractDownloadLink, formatDate, IdentityVerification } from './cookDetail'
 import type { PendingCookEntry } from './types'
 
 interface Props {
@@ -87,6 +87,11 @@ export default function CookReviewOverlay({
         <div className="flex-1 overflow-y-auto p-5">
           <section className="mb-5">
             <CookDetails entry={entry} cityName={cityName} />
+          </section>
+
+          <section className="mb-5 rounded-lg border border-[#efe4cc] p-3">
+            <h3 className="mb-2 text-xs font-bold text-gray-400">{M.verificationSection}</h3>
+            <IdentityVerification entry={entry} />
           </section>
 
           <section className="mb-5">

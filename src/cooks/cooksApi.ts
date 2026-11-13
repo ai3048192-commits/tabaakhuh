@@ -20,6 +20,11 @@ export function approveCook(id: number): Promise<CookApplication> {
   return authedRequest<CookApplication>(`/admin/cooks/${id}/approve`, { method: 'POST' })
 }
 
+/** `POST /admin/cooks/{id}/verification-link` — emails her the ID-verification form. */
+export function sendVerificationLink(id: number): Promise<null> {
+  return authedRequest<null>(`/admin/cooks/${id}/verification-link`, { method: 'POST' })
+}
+
 /** `POST /admin/cooks/{id}/reject` — body `{ reason }`. Propagates `ApiError`. */
 export function rejectCook(id: number, reason: string): Promise<CookApplication> {
   return authedRequest<CookApplication>(`/admin/cooks/${id}/reject`, {
