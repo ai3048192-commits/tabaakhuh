@@ -3,7 +3,7 @@ import {
   LayoutGrid, Users, ShoppingBag, ChefHat,
   TrendingUp, MessageSquareWarning, Settings,
   Bike, MapPin, Wallet, AlertTriangle, Truck, LayoutTemplate, UserRound, ClipboardList, ClipboardCheck,
-  Navigation, HandCoins, Tags, FileSignature, type LucideIcon,
+  Navigation, HandCoins, Tags, FileSignature, KeyRound, type LucideIcon,
 } from 'lucide-react';
 
 /**
@@ -45,6 +45,7 @@ export const menuGroups: { title: string; items: MenuItem[] }[] = [
       { name: 'طلبات السحب', icon: Wallet, path: '/withdrawals', drivers: true },
       { name: 'التقارير المالية', icon: TrendingUp, path: '/reports' },
       { name: 'الشكاوى والاقتراحات', icon: MessageSquareWarning, path: '/complaints' },
+      { name: 'أكواد الإيميل', icon: KeyRound, path: '/email-codes' },
       { name: 'بلاغات الحوادث', icon: AlertTriangle, path: '/incidents', drivers: true },
     ],
   },

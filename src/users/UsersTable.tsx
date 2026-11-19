@@ -1,4 +1,4 @@
-import { Eye, Ban, ShieldCheck, UserCheck, FileWarning, MailCheck, MailWarning } from 'lucide-react'
+import { Eye, Ban, ShieldCheck, UserCheck, FileWarning, MailCheck, MailWarning, Trash2 } from 'lucide-react'
 import { warningMessages as WM } from '../warnings/messages'
 import { userMessages as M } from './messages'
 import { tenure } from './tenure'
@@ -40,6 +40,7 @@ export default function UsersTable({
   onView,
   onStatus,
   onWarn,
+  onDelete,
   hideRole = false,
 }: {
   /** Role-scoped screens: every row has the same role, so the column is dropped. */
@@ -52,6 +53,8 @@ export default function UsersTable({
   onStatus: (u: AdminUser, next: UserStatus) => void
   /** Only cooks and drivers can receive a warning letter. */
   onWarn: (u: AdminUser) => void
+  /** Permanent delete — never offered for admins or the signed-in account. */
+  onDelete: (u: AdminUser) => void
 }) {
   const th = 'px-4 py-3 text-right text-xs font-bold text-gray-400'
   const td = 'px-4 py-3.5 align-middle text-sm text-gray-700'
@@ -127,6 +130,18 @@ export default function UsersTable({
                         onClick={() => onWarn(u)}
                       >
                         <FileWarning size={15} aria-hidden="true" />
+                      </button>
+                    )}
+                    {!isSelf && u.role !== 'admin' && (
+                      <button
+                        type="button"
+                        className={`${iconBtn} text-red-600 hover:border-red-300 hover:bg-red-50 hover:text-red-700`}
+                        disabled={busy}
+                        aria-label={`${M.delete}: ${`${u.first_name} ${u.last_name}`.trim()}`}
+                        title={M.delete}
+                        onClick={() => onDelete(u)}
+                      >
+                        <Trash2 size={15} aria-hidden="true" />
                       </button>
                     )}
                   </div>

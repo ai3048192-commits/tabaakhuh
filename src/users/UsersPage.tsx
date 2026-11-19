@@ -12,6 +12,7 @@ import UsersTable from './UsersTable'
 import AccountDrawer from './AccountDrawer'
 import AccountsExportButtons from './AccountsExportButtons'
 import StatusChangeDialog from './StatusChangeDialog'
+import DeleteUserDialog from './DeleteUserDialog'
 import { userMessages as M } from './messages'
 import PageHeader from '../shared/PageHeader'
 import { bannerBtnLight } from '../shared/ui'
@@ -80,7 +81,7 @@ export default function UsersPage({ scope = 'all' }: { scope?: UsersScope }) {
 
       {q.status === 'ready' && items.length > 0 && q.page && (
         <>
-          <UsersTable items={items} busyId={q.busyId} currentUserId={account?.id ?? null} onView={q.openDetail} onStatus={q.askStatus} onWarn={setWarning} hideRole={scope !== 'all'} />
+          <UsersTable items={items} busyId={q.busyId} currentUserId={account?.id ?? null} onView={q.openDetail} onStatus={q.askStatus} onWarn={setWarning} onDelete={q.askDelete} hideRole={scope !== 'all'} />
           <nav className="mt-4 flex items-center justify-between gap-3" aria-label={`صفحة ${q.page.page} من ${q.totalPages}`}>
             <p className="text-xs font-bold text-gray-500" dir="rtl">
               صفحة {q.page.page} من {q.totalPages} · {q.page.total} {S.unit}
@@ -124,6 +125,14 @@ export default function UsersPage({ scope = 'all' }: { scope?: UsersScope }) {
           busy={q.busyId === q.confirming.user.id}
           onConfirm={(reason) => void q.confirmStatus(reason)}
           onCancel={q.cancelStatus}
+        />
+      )}
+      {q.deleting && (
+        <DeleteUserDialog
+          user={q.deleting}
+          busy={q.busyId === q.deleting.id}
+          onConfirm={() => void q.confirmDelete()}
+          onCancel={q.cancelDelete}
         />
       )}
     </div>

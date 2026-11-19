@@ -61,3 +61,12 @@ export function exportAccounts(signal?: AbortSignal): Promise<AccountExportRow[]
 export function downloadAccountsPdf(signal?: AbortSignal): Promise<Blob> {
   return authedDownload('/admin/users/export/pdf', { signal }).then((d) => d.blob)
 }
+
+/**
+ * `DELETE /admin/users/{id}` — permanently deletes the account and all of its
+ * data (orders, profile, dishes, wallet, files). 409 while it has an open
+ * order, 403 for an admin account.
+ */
+export function deleteUser(id: number): Promise<void> {
+  return authedRequest<unknown>(`/admin/users/${id}`, { method: 'DELETE' }).then(() => undefined)
+}

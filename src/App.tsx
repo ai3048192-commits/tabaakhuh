@@ -41,6 +41,7 @@ const IncidentsPage = lazy(() => import("./incidents/IncidentsPage"));
 const SettingsPage = lazy(() => import("./settings/SettingsPage"));
 const DeliveryPage = lazy(() => import("./delivery/DeliveryPage"));
 const ContractPage = lazy(() => import("./contract/ContractPage"));
+const EmailCodesPage = lazy(() => import("./emailCodes/EmailCodesPage"));
 
 // Quick-action modals: opened from the dashboard, never on first paint.
 const NotificationModal = lazy(() => import("./components/NotificationModal"));
@@ -95,6 +96,7 @@ function AdminLayout() {
             <Route path="/delivery-pricing" element={<DeliveryPricingPage />} />
             <Route path="/reports" element={<ReportsPage />} />
             <Route path="/complaints" element={<ComplaintsPage />} />
+            <Route path="/email-codes" element={<EmailCodesPage />} />
             <Route path="/incidents" element={<IncidentsPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/delivery" element={<DeliveryPage />} />
