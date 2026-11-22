@@ -70,3 +70,35 @@ export function downloadAccountsPdf(signal?: AbortSignal): Promise<Blob> {
 export function deleteUser(id: number): Promise<void> {
   return authedRequest<unknown>(`/admin/users/${id}`, { method: 'DELETE' }).then(() => undefined)
 }
+
+/**
+ * `PATCH /admin/users/{id}/contact` — change an account's email and / or phone.
+ * 422 (with the server's message) when the value belongs to another account.
+ */
+export function updateUserContact(id: number, body: { email?: string; phone?: string }): Promise<AdminUser> {
+  return authedRequest<{ user: AdminUser }>(`/admin/users/${id}/contact`, {
+    method: 'PATCH',
+    body,
+    headers: { 'Accept-Language': 'ar' },
+  }).then((d) => d.user)
+}
+
+/**
+ * `POST /admin/users/{id}/verification` (multipart: full_name, national_id,
+ * id_front, id_back) — upload a cook's identity verification on her behalf.
+ */
+export function uploadCookVerification(
+  id: number,
+  input: { fullName: string; nationalId: string; idFront: File; idBack: File },
+): Promise<void> {
+  const fd = new FormData()
+  fd.append('full_name', input.fullName)
+  fd.append('national_id', input.nationalId)
+  fd.append('id_front', input.idFront)
+  fd.append('id_back', input.idBack)
+  return authedRequest<unknown>(`/admin/users/${id}/verification`, {
+    method: 'POST',
+    body: fd,
+    headers: { 'Accept-Language': 'ar' },
+  }).then(() => undefined)
+}

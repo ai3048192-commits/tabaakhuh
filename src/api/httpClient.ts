@@ -103,7 +103,9 @@ export async function apiRequest<T>(path: string, opts: HttpOptions = {}): Promi
   const { method = 'GET', body, token, signal } = opts
 
   const headers: Record<string, string> = { Accept: 'application/json', ...opts.headers }
-  if (body !== undefined) headers['Content-Type'] = 'application/json'
+  // A FormData body (file upload) goes as multipart — the browser sets the boundary.
+  const multipart = typeof FormData !== 'undefined' && body instanceof FormData
+  if (body !== undefined && !multipart) headers['Content-Type'] = 'application/json'
   if (token) headers.Authorization = `Bearer ${token}`
 
   let res: Response
@@ -111,7 +113,7 @@ export async function apiRequest<T>(path: string, opts: HttpOptions = {}): Promi
     res = await fetch(`${BASE_URL}${path}`, {
       method,
       headers,
-      body: body !== undefined ? JSON.stringify(body) : undefined,
+      body: body === undefined ? undefined : multipart ? (body as FormData) : JSON.stringify(body),
       signal,
     })
   } catch (err) {

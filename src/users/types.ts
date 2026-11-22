@@ -67,6 +67,12 @@ export interface AccountOverview {
     /** Paid (customer), earned from dishes (cook) or from delivery fees (driver) — finished orders only. */
     amount_egp: number
   }
+  /**
+   * Governorate (المحافظة) and city / area (المدينة): a cook's from her
+   * profile, a customer's from their default (else newest) saved address.
+   * Absent on an older backend.
+   */
+  location?: { governorate: string | null; city: string | null }
 }
 
 /** Result of a status-change attempt. */

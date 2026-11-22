@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import {
-  X, Loader2, ShoppingBag, CheckCircle2, XCircle, Coins, Phone, Mail, CalendarDays, Clock, FileText, RefreshCw,
+  X, Loader2, ShoppingBag, CheckCircle2, XCircle, Coins, Phone, Mail, CalendarDays, Clock, FileText, RefreshCw, MapPin, Pencil, Upload,
 } from 'lucide-react'
 import DrawerShell from '../shared/DrawerShell'
 import DocumentViewer from '../review/DocumentViewer'
@@ -11,6 +11,7 @@ import { cookMessages as CM } from '../cooks/messages'
 import { DriverDetails, buildDocs as buildDriverDocs } from '../drivers/driverDetail'
 import type { DocumentRef } from '../cooks/types'
 import { getAccountOverview } from './usersApi'
+import { ContactEditForm, VerificationUploadForm } from './AccountEditForms'
 import { tenure } from './tenure'
 import { userMessages as M } from './messages'
 import type { AccountOverview, AdminUser } from './types'
@@ -39,10 +40,13 @@ function Stat({ label, value, icon: Icon, tone }: { label: string; value: string
   )
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({ title, action, children }: { title: string; action?: React.ReactNode; children: React.ReactNode }) {
   return (
     <section className={`${cardCls} p-5`}>
-      <h3 className="mb-4 text-sm font-black text-[#7a0d0d]">{title}</h3>
+      <div className="mb-4 flex items-center justify-between gap-2">
+        <h3 className="text-sm font-black text-[#7a0d0d]">{title}</h3>
+        {action}
+      </div>
       {children}
     </section>
   )
@@ -59,13 +63,23 @@ export default function AccountDrawer({ user, onClose }: { user: AdminUser; onCl
   const [attempt, setAttempt] = useState(0)
   const [docIndex, setDocIndex] = useState<number | null>(null)
   const [avatarBroken, setAvatarBroken] = useState(false)
+  const [editingContact, setEditingContact] = useState(false)
+  const [uploadingId, setUploadingId] = useState(false)
+  const [savedNote, setSavedNote] = useState<string | null>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
   const cityNames = useCityNames()
+  const reload = (note: string) => {
+    setEditingContact(false)
+    setUploadingId(false)
+    setSavedNote(note)
+    setAttempt((a) => a + 1)
+  }
 
   useEffect(() => { closeRef.current?.focus() }, [])
   useEffect(() => {
     const ctrl = new AbortController()
-    setState('loading')
+    // Keep the page on screen while refreshing after a save.
+    setState((prev) => (prev === 'ready' ? prev : 'loading'))
     getAccountOverview(user.id, ctrl.signal)
       .then((d) => { setData(d); setState('ready') })
       .catch((err) => { if ((err as Error)?.name !== 'AbortError') setState('error') })
@@ -152,7 +166,26 @@ export default function AccountDrawer({ user, onClose }: { user: AdminUser; onCl
                 </div>
               )}
 
-              <Section title="بيانات التواصل">
+              {savedNote && (
+                <p role="status" className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-xs font-bold text-emerald-700">{savedNote}</p>
+              )}
+              <Section
+                title="بيانات التواصل"
+                action={!editingContact && (
+                  <button type="button" onClick={() => { setSavedNote(null); setEditingContact(true) }} className="inline-flex items-center gap-1 text-xs font-bold text-[#7a0d0d]">
+                    <Pencil size={13} aria-hidden="true" /> تعديل الرقم / الإيميل
+                  </button>
+                )}
+              >
+                {editingContact ? (
+                  <ContactEditForm
+                    userId={u.id}
+                    phone={u.phone}
+                    email={u.email}
+                    onSaved={() => reload('اتحفظ رقم التليفون / الإيميل الجديد.')}
+                    onCancel={() => setEditingContact(false)}
+                  />
+                ) : (
                 <dl className="space-y-2.5 text-sm">
                   <div className="flex items-center gap-2.5">
                     <Phone size={14} className="text-[#b68614]" aria-hidden="true" />
@@ -169,7 +202,22 @@ export default function AccountDrawer({ user, onClose }: { user: AdminUser; onCl
                     <dt className="sr-only">{M.fieldJoined}</dt>
                     <dd className="text-gray-600">تاريخ التسجيل: <span dir="ltr">{u.created_at?.slice(0, 10) ?? '—'}</span></dd>
                   </div>
+                  {u.role !== 'admin' && (
+                    <div className="flex items-center gap-2.5">
+                      <MapPin size={14} className="text-[#b68614]" aria-hidden="true" />
+                      <dt className="sr-only">المحافظة والمدينة</dt>
+                      <dd className="text-gray-600">
+                        المحافظة: <span className="font-bold text-gray-800">{data.location?.governorate || '—'}</span>
+                        <span className="mx-2 text-gray-300">·</span>
+                        المدينة: <span className="font-bold text-gray-800">{data.location?.city || '—'}</span>
+                      </dd>
+                    </div>
+                  )}
+                  {u.role === 'customer' && !data.location?.governorate && !data.location?.city && (
+                    <p className="text-[11px] text-gray-400">لسه مضافش عنوان في التطبيق.</p>
+                  )}
                 </dl>
+                )}
               </Section>
 
               {data.cook_profile && (
@@ -181,10 +229,25 @@ export default function AccountDrawer({ user, onClose }: { user: AdminUser; onCl
                 </Section>
               )}
               {data.cook_profile && (
-                <Section title={CM.verificationSection}>
+                <Section
+                  title={CM.verificationSection}
+                  action={!uploadingId && (
+                    <button type="button" onClick={() => { setSavedNote(null); setUploadingId(true) }} className="inline-flex items-center gap-1 text-xs font-bold text-[#7a0d0d]">
+                      <Upload size={13} aria-hidden="true" /> رفع صورة البطاقة
+                    </button>
+                  )}
+                >
                   <IdentityVerification
                     entry={{ profile: { ...data.cook_profile, phone: u.phone, email: u.email }, contract: data.contract }}
                   />
+                  {uploadingId && (
+                    <VerificationUploadForm
+                      userId={u.id}
+                      defaultName={data.cook_profile.verification_full_name ?? ''}
+                      onSaved={() => reload('اتحفظت بيانات التوثيق وصور البطاقة.')}
+                      onCancel={() => setUploadingId(false)}
+                    />
+                  )}
                 </Section>
               )}
               {data.cook_profile && (
