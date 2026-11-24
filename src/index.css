@@ -62,8 +62,16 @@ html {
     backdrop-filter: none !important;
   }
 }
+/* The gold ticker under the hero: two copies of the strip slide by half their
+   width, so the loop is seamless. It runs left→right to suit the RTL page. */
+@keyframes lp-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(50%); }
+}
+.lp-marquee { animation: lp-marquee 40s linear infinite; }
+
 @media (prefers-reduced-motion: reduce) {
-  .lp-float, .lp-float-soft, .lp-float-delay, .lp-glow { animation: none; }
+  .lp-float, .lp-float-soft, .lp-float-delay, .lp-glow, .lp-marquee { animation: none; }
 }
 
 .lp-no-scrollbar::-webkit-scrollbar { display: none; }

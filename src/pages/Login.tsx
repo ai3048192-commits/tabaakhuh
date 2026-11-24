@@ -1,7 +1,21 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Lock, Eye, EyeOff, LogIn, ArrowRight, ShieldCheck, User, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  ChefHat,
+  ClipboardList,
+  Eye,
+  EyeOff,
+  Loader2,
+  Lock,
+  LogIn,
+  ShieldCheck,
+  Truck,
+  User,
+  Wallet,
+} from "lucide-react";
 import logoIcon from "../assets/logo_icon_trim.png";
+import heroFood from "../assets/egyptian-home-food.webp";
 import { useAuth, type SignInResult } from "../auth/AuthContext";
 import { messages } from "../auth/messages";
 
@@ -14,6 +28,27 @@ const REASON_MESSAGE: Record<FailReason, string> = {
   server_error: messages.serverError,
   network_error: messages.networkError,
 };
+
+/** What the admin manages from here — shown on the photo panel (desktop only). */
+const HIGHLIGHTS = [
+  { icon: ClipboardList, title: "الطلبات", text: "متابعة كل طلب لحظة بلحظة" },
+  { icon: ChefHat, title: "الطباخات", text: "مراجعة وتفعيل الحسابات" },
+  { icon: Truck, title: "التوصيل", text: "المناديب والمدن والأسعار" },
+  { icon: Wallet, title: "السحوبات", text: "تحويل الأرباح أول بأول" },
+];
+
+const fieldShell = (invalid: boolean) =>
+  `group flex items-center gap-3 rounded-2xl border bg-[#fdfaf5] px-4 transition-all duration-200 ${
+    invalid
+      ? "border-red-400 bg-red-50/40 ring-4 ring-red-500/10"
+      : "border-[#eadfcd] hover:border-[#d8c6a6] focus-within:border-[#7a0d0d] focus-within:bg-white focus-within:ring-4 focus-within:ring-[#7a0d0d]/10"
+  }`;
+
+const fieldIcon = (invalid: boolean) =>
+  `shrink-0 transition-colors ${invalid ? "text-red-400" : "text-[#b9a48a] group-focus-within:text-[#7a0d0d]"}`;
+
+const inputClass =
+  "w-full bg-transparent py-4 text-right text-[15px] font-medium text-[#2b1a12] outline-none placeholder:text-[#c4b199]";
 
 export default function Login() {
   const { signIn, notice, clearNotice } = useAuth();
@@ -81,158 +116,204 @@ export default function Login() {
   return (
     <div
       dir="rtl"
-      className="relative flex min-h-screen items-center justify-center bg-gradient-to-br from-[#fcf8f2] via-[#f4ebd0]/30 to-[#e8dfc9]/50 p-4 text-gray-800 overflow-hidden"
+      className="grid min-h-screen bg-[#fbf6ee] text-[#2b1a12] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]"
     >
-      {/* Decorative background ambient blobs */}
-      <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-[#7a0d0d]/10 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-[#e0b64d]/20 blur-3xl pointer-events-none" />
+      {/* Form side */}
+      <div className="relative flex flex-col overflow-hidden px-5 py-6 sm:px-10 sm:py-8">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-40 [background-image:radial-gradient(#e7d8bd_1px,transparent_1px)] [background-size:22px_22px]"
+          aria-hidden="true"
+        />
+        <div
+          className="pointer-events-none absolute -left-32 -top-32 h-80 w-80 rounded-full bg-[#e0a52e]/15 blur-3xl"
+          aria-hidden="true"
+        />
+        <div
+          className="pointer-events-none absolute -bottom-40 -right-24 h-96 w-96 rounded-full bg-[#7a0d0d]/10 blur-3xl"
+          aria-hidden="true"
+        />
 
-      <div className="relative grid w-full max-w-4xl overflow-hidden rounded-[2.55rem] bg-white/80 backdrop-blur-xl shadow-[0_30px_100px_-20px_rgba(122,13,13,0.15)] border border-white/60 md:grid-cols-2">
-        
-        {/* Brand panel */}
-        <div className="relative hidden flex-col justify-between overflow-hidden bg-gradient-to-br from-[#7a0d0d] via-[#660b0b] to-[#450505] p-10 text-white md:flex">
-          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]" />
-          
-          <Link to="/" className="relative flex items-center gap-3 group">
-            <div className="grid h-12 w-12 place-items-center rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-inner group-hover:scale-105 transition-transform">
-              <img src={logoIcon} alt="طباخه" className="h-7 w-auto object-contain" />
-            </div>
-            <span className="font-black text-lg tracking-wide text-white/90">طباخه | Tabakha</span>
+        <div className="relative flex items-center justify-between gap-4">
+          <Link to="/" className="flex w-fit items-center gap-2.5">
+            <img src={logoIcon} alt="" className="h-10 w-auto object-contain" />
+            <span className="text-xl font-black text-[#7a0d0d]">طباخه</span>
           </Link>
-
-          <div className="relative my-auto py-6">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-xs font-semibold text-[#e0b64d] mb-4 backdrop-blur-md">
-              <Sparkles size={14} />
-              بوابة الإدارة المركزية
-            </div>
-            <h2 className="text-3xl font-black leading-tight tracking-tight">مرحباً بك مجدداً، يا قائد النظام</h2>
-            <p className="mt-3 text-sm leading-relaxed text-white/75">
-              سجّل دخولك الآن لإدارة الطلبات، متابعة الطباخات، وشبكة التوصيل بكل كفاءة وسهولة.
-            </p>
-            <div className="mt-6 flex items-center gap-2.5 text-xs font-bold text-white/80 bg-black/20 p-3 rounded-xl border border-white/10">
-              <ShieldCheck size={18} className="text-[#e0b64d]" aria-hidden="true" />
-              منطقة آمنة ومشفّرة مخصصة للمشرفين والأدمن فقط
-            </div>
-          </div>
-
           <Link
             to="/"
-            className="relative inline-flex items-center gap-2 text-xs font-bold text-white/70 transition hover:text-white group w-fit"
+            className="group inline-flex items-center gap-1.5 rounded-full border border-[#eadfcd] bg-white/80 px-4 py-2 text-xs font-extrabold text-[#5c4636] transition hover:border-[#7a0d0d]/30 hover:text-[#7a0d0d]"
           >
-            <ArrowRight size={15} aria-hidden="true" className="group-hover:translate-x-1 transition-transform" />
-            الرجوع إلى الصفحة الرئيسية للموقع
+            <ArrowRight
+              size={15}
+              aria-hidden="true"
+              className="transition-transform group-hover:translate-x-0.5"
+            />
+            الرجوع للصفحة الرئيسية
           </Link>
         </div>
 
-        {/* Form panel */}
-        <div className="p-8 sm:p-12 flex flex-col justify-center">
-          <div className="mb-8 text-center md:text-right">
-            <div className="mb-4 flex justify-center md:hidden">
-              <div className="grid h-16 w-16 place-items-center rounded-2xl bg-[#7a0d0d] shadow-lg shadow-[#7a0d0d]/30">
-                <img src={logoIcon} alt="طباخه" className="h-10 w-auto object-contain" />
-              </div>
+        <div className="relative mx-auto my-auto w-full max-w-[27rem] py-10">
+          <div className="rounded-[2rem] border border-[#eadfcd] bg-white/95 p-7 shadow-[0_30px_70px_-35px_rgba(43,26,18,0.35)] sm:p-9">
+            <div className="flex items-center gap-3">
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-[#8f1414] to-[#5a0909] text-white shadow-[0_12px_24px_-10px_rgba(122,13,13,0.7)]">
+                <ShieldCheck size={22} aria-hidden="true" />
+              </span>
+              <span className="rounded-full bg-[#e0a52e]/15 px-3 py-1 text-xs font-extrabold text-[#8a5c06]">
+                لوحة تحكم الإدارة
+              </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-[#7a0d0d] tracking-tight">تسجيل الدخول</h1>
-            <p className="mt-1.5 text-sm text-gray-500">أدخل بيانات الاعتماد الخاصة بحسابك للمتابعة.</p>
-          </div>
+            <h1 className="mt-6 text-3xl font-black tracking-tight sm:text-[2.1rem]">تسجيل الدخول</h1>
+            <p className="mt-2 text-sm leading-relaxed text-[#75604f]">
+              ادخل ببيانات حساب الإدارة عشان تتابع الطلبات والطباخات والتوصيل.
+            </p>
 
-          <form onSubmit={handleSubmit} noValidate aria-busy={submitting} className="space-y-4">
-            {formError && (
-              <div
-                ref={errorRef}
-                role="alert"
-                aria-live="assertive"
-                tabIndex={-1}
-                className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm font-bold text-red-700 outline-none animate-shake"
-              >
-                {formError}
-              </div>
-            )}
-
-            {/* Identifier */}
-            <div>
-              <label htmlFor={idField} className="mb-1.5 block text-xs font-bold text-gray-700">
-                البريد الإلكتروني أو رقم الهاتف
-              </label>
-              <div className={`flex items-center gap-2.5 rounded-xl border bg-gray-50/50 px-3.5 transition-all duration-200 ${fieldErrors.identifier ? 'border-red-500 bg-red-50/20' : 'border-gray-200 hover:border-gray-300 focus-within:border-[#7a0d0d] focus-within:bg-white focus-within:ring-4 focus-within:ring-[#7a0d0d]/10'}`}>
-                <User size={18} className="text-gray-400 shrink-0" aria-hidden="true" />
-                <input
-                  id={idField}
-                  ref={identifierRef}
-                  type="text"
-                  dir="ltr"
-                  autoComplete="username"
-                  value={identifier}
-                  onChange={(e) => setIdentifier(e.target.value)}
-                  aria-invalid={fieldErrors.identifier ? true : undefined}
-                  aria-describedby={fieldErrors.identifier ? idErr : undefined}
-                  placeholder="admin@tabakha.app"
-                  className="w-full bg-transparent py-3 text-sm text-gray-800 outline-none placeholder:text-gray-400 text-right"
-                />
-              </div>
-              {fieldErrors.identifier && (
-                <p id={idErr} className="mt-1.5 text-xs font-bold text-red-600">
-                  {fieldErrors.identifier}
-                </p>
+            <form onSubmit={handleSubmit} noValidate aria-busy={submitting} className="mt-8 space-y-5">
+              {formError && (
+                <div
+                  ref={errorRef}
+                  role="alert"
+                  aria-live="assertive"
+                  tabIndex={-1}
+                  className="animate-shake flex items-start gap-2.5 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold leading-relaxed text-red-700 outline-none"
+                >
+                  <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-red-500" aria-hidden="true" />
+                  {formError}
+                </div>
               )}
-            </div>
 
-            {/* Password */}
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label htmlFor={pwField} className="block text-xs font-bold text-gray-700">
+              {/* Identifier */}
+              <div>
+                <label htmlFor={idField} className="mb-2 block text-sm font-extrabold text-[#5c4636]">
+                  البريد الإلكتروني أو رقم الهاتف
+                </label>
+                <div className={fieldShell(!!fieldErrors.identifier)}>
+                  <User size={18} className={fieldIcon(!!fieldErrors.identifier)} aria-hidden="true" />
+                  <input
+                    id={idField}
+                    ref={identifierRef}
+                    type="text"
+                    dir="ltr"
+                    autoComplete="username"
+                    value={identifier}
+                    onChange={(e) => setIdentifier(e.target.value)}
+                    aria-invalid={fieldErrors.identifier ? true : undefined}
+                    aria-describedby={fieldErrors.identifier ? idErr : undefined}
+                    placeholder="name@example.com"
+                    className={inputClass}
+                  />
+                </div>
+                {fieldErrors.identifier && (
+                  <p id={idErr} className="mt-1.5 text-xs font-bold text-red-600">
+                    {fieldErrors.identifier}
+                  </p>
+                )}
+              </div>
+
+              {/* Password */}
+              <div>
+                <label htmlFor={pwField} className="mb-2 block text-sm font-extrabold text-[#5c4636]">
                   كلمة المرور
                 </label>
+                <div className={fieldShell(!!fieldErrors.password)}>
+                  <Lock size={18} className={fieldIcon(!!fieldErrors.password)} aria-hidden="true" />
+                  <input
+                    id={pwField}
+                    ref={passwordRef}
+                    type={showPass ? "text" : "password"}
+                    dir="ltr"
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    aria-invalid={fieldErrors.password ? true : undefined}
+                    aria-describedby={fieldErrors.password ? pwErr : undefined}
+                    placeholder="••••••••"
+                    className={inputClass}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPass((v) => !v)}
+                    aria-label={showPass ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
+                    aria-pressed={showPass}
+                    className="-ml-1 grid h-9 w-9 shrink-0 place-items-center rounded-xl text-[#b9a48a] transition hover:bg-[#7a0d0d]/[0.06] hover:text-[#7a0d0d]"
+                  >
+                    {showPass ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
+                  </button>
+                </div>
+                {fieldErrors.password && (
+                  <p id={pwErr} className="mt-1.5 text-xs font-bold text-red-600">
+                    {fieldErrors.password}
+                  </p>
+                )}
               </div>
-              <div className={`flex items-center gap-2.5 rounded-xl border bg-gray-50/50 px-3.5 transition-all duration-200 ${fieldErrors.password ? 'border-red-500 bg-red-50/20' : 'border-gray-200 hover:border-gray-300 focus-within:border-[#7a0d0d] focus-within:bg-white focus-within:ring-4 focus-within:ring-[#7a0d0d]/10'}`}>
-                <Lock size={18} className="text-gray-400 shrink-0" aria-hidden="true" />
-                <input
-                  id={pwField}
-                  ref={passwordRef}
-                  type={showPass ? "text" : "password"}
-                  dir="ltr"
-                  autoComplete="current-password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  aria-invalid={fieldErrors.password ? true : undefined}
-                  aria-describedby={fieldErrors.password ? pwErr : undefined}
-                  placeholder="••••••••"
-                  className="w-full bg-transparent py-3 text-sm text-gray-800 outline-none placeholder:text-gray-400 text-right"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPass((v) => !v)}
-                  aria-label={showPass ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
-                  aria-pressed={showPass}
-                  className="text-gray-400 transition hover:text-[#7a0d0d] p-1"
-                >
-                  {showPass ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
-                </button>
-              </div>
-              {fieldErrors.password && (
-                <p id={pwErr} className="mt-1.5 text-xs font-bold text-red-600">
-                  {fieldErrors.password}
-                </p>
-              )}
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="group relative !mt-7 flex w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-l from-[#8f1414] to-[#6a0b0b] py-4 text-[15px] font-black text-white shadow-[0_16px_32px_-14px_rgba(122,13,13,0.75)] transition-all hover:-translate-y-0.5 hover:shadow-[0_20px_36px_-14px_rgba(122,13,13,0.85)] active:translate-y-0 active:scale-[0.99] disabled:translate-y-0 disabled:cursor-wait disabled:opacity-70"
+              >
+                {submitting ? (
+                  <Loader2 size={18} className="animate-spin" aria-hidden="true" />
+                ) : (
+                  <LogIn size={18} aria-hidden="true" />
+                )}
+                {submitting ? "جاري التحقق والدخول..." : "تسجيل الدخول"}
+              </button>
+            </form>
+
+            <div className="mt-7 flex items-start gap-2.5 rounded-2xl bg-[#fbf6ee] px-4 py-3 text-xs leading-relaxed text-[#75604f]">
+              <ShieldCheck size={16} className="mt-px shrink-0 text-[#b0790f]" aria-hidden="true" />
+              الدخول متاح لحسابات الإدارة بس. لو نسيت بياناتك، كلّم مسؤول النظام.
             </div>
-
-            <button
-              type="submit"
-              disabled={submitting}
-              className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7a0d0d] to-[#5a0909] py-3.5 text-sm font-black text-white shadow-lg shadow-[#7a0d0d]/25 transition-all hover:from-[#660b0b] hover:to-[#450505] hover:shadow-xl hover:shadow-[#7a0d0d]/35 active:scale-[0.99] disabled:opacity-60 cursor-pointer"
-            >
-              <LogIn size={18} aria-hidden="true" />
-              {submitting ? "جاري التحقق والدخول..." : "تسجيل الدخول"}
-            </button>
-          </form>
-
-          <p className="mt-8 text-center text-xs text-gray-500 md:hidden">
-            <Link to="/" className="font-bold text-[#7a0d0d] hover:underline">
-              الرجوع إلى الصفحة الرئيسية
-            </Link>
-          </p>
+          </div>
         </div>
 
+        <p className="relative text-center text-xs font-bold text-[#a08b75]">© طباخه | Tabakha</p>
+      </div>
+
+      {/* Photo side (desktop) */}
+      <div className="relative hidden overflow-hidden lg:block">
+        <img src={heroFood} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#7a0d0d]/90 via-[#3a120c]/80 to-[#1d1210]/95" />
+        <div
+          className="pointer-events-none absolute -left-24 -top-24 h-96 w-96 rounded-full border-[3rem] border-[#e0a52e]/15"
+          aria-hidden="true"
+        />
+        <div
+          className="pointer-events-none absolute -bottom-32 right-10 h-80 w-80 rounded-full border-[2.5rem] border-white/[0.05]"
+          aria-hidden="true"
+        />
+
+        <div className="relative flex h-full flex-col justify-between p-12 text-white xl:p-16">
+          <span className="inline-flex w-fit items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-extrabold text-[#f3c766] backdrop-blur-sm">
+            <span className="h-2 w-2 rounded-full bg-[#1fa855]" aria-hidden="true" />
+            طباخه | Tabakha
+          </span>
+
+          <div>
+            <p className="max-w-lg text-4xl font-black leading-[1.3] xl:text-[2.9rem]">
+              أكل بيتي،
+              <span className="block text-[#f3c766]">من إيدين أمينة.</span>
+            </p>
+            <p className="mt-4 max-w-md text-[15px] leading-[1.9] text-white/75">
+              من هنا بتدير الطلبات، مراجعة الطباخات والمناديب، المدن وأسعار التوصيل، والسحوبات.
+            </p>
+            <ul className="mt-10 grid max-w-xl grid-cols-2 gap-3">
+              {HIGHLIGHTS.map(({ icon: Icon, title, text }) => (
+                <li
+                  key={title}
+                  className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.07] p-4 backdrop-blur-sm"
+                >
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#e0a52e]/20 text-[#f3c766]">
+                    <Icon size={20} aria-hidden="true" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-sm font-black">{title}</span>
+                    <span className="mt-0.5 block text-xs leading-relaxed text-white/65">{text}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   );
